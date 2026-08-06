@@ -50,12 +50,21 @@
           "name": "main",
           "pattern": "",
           "target": "main"
+        },
+        {
+          "name": "detail",
+          "pattern": "detail/{specId}",
+          "target": "detail"
         }
       ],
       "targets": {
         "main": {
           "viewName": "Main",
           "viewLevel": 1
+        },
+        "detail": {
+          "viewName": "Detail",
+          "viewLevel": 2
         }
       }
     },

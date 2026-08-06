@@ -120,3 +120,111 @@
   gap: 0.5rem;
 }
 
+
+/* Detail page fills its container */
+.detailPage {
+  height: 100%;
+}
+.detailPage > .sapMPageScroll {
+  height: 100%;
+  overflow: hidden;
+}
+.detailPage > .sapMPageScroll > .sapMPageScrollContent {
+  height: 100%;
+}
+
+/* ===== Detail Page ===== */
+
+/* ShellBar title: blue bold */
+.sapFShellBarTitle {
+  color: var(--sapLinkColor) !important;
+  font-weight: bold !important;
+}
+
+.detailSpecSubtitle,
+.detailSpecSubtitle .sapMText {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+}
+
+.detailHeaderAvatar {
+  width: 5rem !important;
+  height: 5rem !important;
+  min-width: 5rem !important;
+  min-height: 5rem !important;
+}
+.detailHeaderAvatar .sapUiIcon {
+  font-size: 2.5rem !important;
+  line-height: 5rem !important;
+}
+
+.detailAttrLabel {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSmallSize) !important;
+}
+
+.detailHeaderCol {
+  min-width: 16rem;
+}
+
+/* List page DynamicPage content: top 16px, left/right 32px */
+.mainDynamicPage .sapFDynamicPageContent {
+  padding: 1rem 2rem !important;
+}
+
+/* Detail page: no DynamicPage content padding (tabs handle their own padding) */
+.detailPage .sapFDynamicPageContent {
+  padding: 0 !important;
+}
+
+/* Remove ITB content padding entirely */
+.detailPage .sapMITBNoContentPadding > .sapMITBContainerContent > .sapMITBContent,
+.detailPage .sapMITBContainerContent,
+.detailPage .sapMITBContent {
+  padding: 0 !important;
+  background: var(--sapBackgroundColor, #fff) !important;
+}
+
+/* Tab content: single source of padding */
+.detailTabContent {
+  padding: 0 2rem 0 2rem;
+  min-height: 100vh;
+  background: var(--sapBackgroundColor, #fff);
+}
+
+.detailSectionToolbar.sapMTB {
+  background: transparent !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.detailPanel.sapMPanel .sapMPanelContent {
+  padding: var(--sapUiContentPadding, 1rem) !important;
+}
+
+.detailFormGrid { width: 100%; }
+.detailFormRow {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: var(--sapUiMediumMargin, 1rem);
+}
+.detailFormCell,
+.detailFormRow > .sapMFlexItem {
+  flex: 0 0 25% !important;
+  min-width: 0;
+  box-sizing: border-box;
+  padding-right: var(--sapUiSmallMargin, 0.5rem);
+}
+.detailFormRow > .sapMFlexItem:last-child { padding-right: 0; }
+
+.detailFormLabel {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSmallSize) !important;
+  margin-bottom: 0.125rem;
+}
+
+.detailTable.sapMListTbl .sapMListTblCell,
+.detailTable.sapMListTbl .sapMListTblHeaderCell {
+  border-right: none !important;
+}
