@@ -3,6 +3,7 @@
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
   xmlns:f="sap.f"
+  xmlns:form="sap.ui.layout.form"
   displayBlock="true">
 
   <Page showHeader="false" enableScrolling="false" class="detailPage">
@@ -80,40 +81,28 @@
               <!-- General Tab -->
               <IconTabFilter text="General" key="general">
                 <VBox class="detailTabContent">
-                  <Panel headerText="Basic Data" expandable="false" class="detailPanel sapUiMediumMarginBottom">
-                    <VBox class="detailFormGrid">
-                      <HBox class="detailFormRow">
-                        <VBox class="detailFormCell">
-                          <Label text="ID:" class="detailFormLabel" />
-                          <Text text="{detail>/id}" />
-                        </VBox>
-                        <VBox class="detailFormCell">
-                          <Label text="Version:" class="detailFormLabel" />
-                          <Text text="{detail>/version}" />
-                        </VBox>
-                        <VBox class="detailFormCell">
-                          <Label text="Status:" class="detailFormLabel" />
-                          <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" />
-                        </VBox>
-                        <VBox class="detailFormCell">
-                          <Label text="Specification Type:" class="detailFormLabel" />
-                          <Text text="{detail>/specType}" />
-                        </VBox>
-                      </HBox>
-                      <HBox class="detailFormRow">
-                        <VBox class="detailFormCell">
-                          <Label text="Name:" class="detailFormLabel" />
-                          <Text text="{detail>/name}" />
-                        </VBox>
-                        <VBox class="detailFormCell" />
-                        <VBox class="detailFormCell" />
-                        <VBox class="detailFormCell">
-                          <Label text="Product Category:" class="detailFormLabel" />
-                          <Text text="{detail>/productCategory}" />
-                        </VBox>
-                      </HBox>
-                    </VBox>
-                  </Panel>
+                  <Title text="Basic Data" level="H4" class="sapUiSmallMarginBottom" />
+                  <form:SimpleForm
+                    layout="ColumnLayout"
+                    columnsM="2" columnsL="4" columnsXL="4"
+                    class="sapUiMediumMarginBottom">
+                    <Label text="ID:" />
+                    <Text text="{detail>/id}" />
+                    <Label text="Version:" />
+                    <Text text="{detail>/version}" />
+                    <Label text="Status:" />
+                    <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" />
+                    <Label text="Specification Type:" />
+                    <Text text="{detail>/specType}" />
+                    <Label text="Name:" />
+                    <Text text="{detail>/name}" />
+                    <Label text="" />
+                    <Text text="" />
+                    <Label text="" />
+                    <Text text="" />
+                    <Label text="Product Category:" />
+                    <Text text="{detail>/productCategory}" />
+                  </form:SimpleForm>
                   <VBox>
                     <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                       <Title text="Other Versions" level="H4" />
