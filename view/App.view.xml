@@ -1,31 +1,42 @@
 <mvc:View
-  xmlns:mvc="sap.ui.core.mvc"
-  xmlns="sap.m"
-  xmlns:f="sap.f"
-  displayBlock="true"
-  controllerName="com.sap.demo.managespec.controller.App">
+    controllerName="com.sap.demo.managespec.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.f"
+    xmlns:m="sap.m"
+    displayBlock="true"
+    class="manageSpecApp">
 
-  <f:ShellBar
-    id="appShellBar"
-    title="Manage Specifications"
-    homeIcon="images/logo_sap.png"
-    homeIconTooltip="SAP"
-    showNavButton="true"
-    showSearch="true"
-    showNotifications="true"
-    showProductSwitcher="false"
-    showMenuButton="false"
-    navButtonPressed=".onNavBack">
-    <f:additionalContent>
-      <OverflowToolbarButton icon="sap-icon://headset" type="Transparent" />
-      <OverflowToolbarButton icon="sap-icon://contacts" type="Transparent" />
-      <OverflowToolbarButton icon="sap-icon://tag" type="Transparent" />
-    </f:additionalContent>
-    <f:profile>
-      <Avatar initials="yx" displayShape="Circle" />
-    </f:profile>
-  </f:ShellBar>
+    <ShellBar
+        id="appShellBar"
+        title="Manage Specifications"
+        showNavButton="true"
+        showNotifications="true"
+        showProductSwitcher="false"
+        navButtonPressed=".onNavBack"
+        homeIcon="./images/logo_sap.png"
+        homeIconPressed=".onHomePressed">
+        <additionalContent>
+            <m:OverflowToolbarButton icon="sap-icon://headset" type="Transparent" />
+            <m:OverflowToolbarButton icon="sap-icon://contacts" type="Transparent" />
+            <m:OverflowToolbarButton icon="sap-icon://tag" type="Transparent" />
+        </additionalContent>
+        <menu>
+            <m:Menu>
+                <m:MenuItem text="Manage Specifications" icon="sap-icon://document"/>
+            </m:Menu>
+        </menu>
+        <profile>
+            <m:Avatar
+                id="userAvatar"
+                initials="yx"
+                displaySize="XS"
+                press=".onAvatarPress"/>
+        </profile>
+        <searchManager>
+            <SearchManager id="searchManager" placeholder="Search..."/>
+        </searchManager>
+    </ShellBar>
 
-  <App id="app" class="manageSpecApp" />
+    <m:App id="app" class="manageSpecFCL"/>
 
 </mvc:View>
