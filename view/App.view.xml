@@ -14,9 +14,14 @@
     showSearch="true"
     showNotifications="true"
     showProductSwitcher="false"
-    showCopilot="false"
+    showMenuButton="true"
     notificationsNumber="3"
     navButtonPressed=".onNavBack">
+    <f:additionalContent>
+      <Button icon="sap-icon://headset" type="Transparent" />
+      <Button icon="sap-icon://contacts" type="Transparent" />
+      <Button icon="sap-icon://favorite" type="Transparent" />
+    </f:additionalContent>
     <f:profile>
       <Avatar initials="yx" displayShape="Circle" />
     </f:profile>

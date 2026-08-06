@@ -39,6 +39,16 @@
   padding-right: 0 !important;
 }
 
+/* DynamicPage title and header: 48px left/right */
+.sapFDynamicPageTitle {
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+}
+.sapFDynamicPageHeader {
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+}
+
 /* Filter rows: flex row, items share equal fixed column width matching across both rows */
 .manageSpecFilterRow {
   width: 100%;
@@ -135,12 +145,6 @@
 
 /* ===== Detail Page ===== */
 
-/* ShellBar title: blue bold */
-.sapFShellBarTitle {
-  color: var(--sapLinkColor) !important;
-  font-weight: bold !important;
-}
-
 .detailSpecSubtitle,
 .detailSpecSubtitle .sapMText {
   color: var(--sapContent_LabelColor) !important;
@@ -169,7 +173,7 @@
 
 /* List page DynamicPage content: top 16px, left/right 32px */
 .mainDynamicPage .sapFDynamicPageContent {
-  padding: 1rem 2rem !important;
+  padding: 1rem 3rem !important;
 }
 
 /* Detail page: no DynamicPage content padding (tabs handle their own padding) */
@@ -187,7 +191,7 @@
 
 /* Tab content: single source of padding */
 .detailTabContent {
-  padding: 0 2rem 0 2rem;
+  padding: 0 3rem 0 3rem;
   min-height: 100vh;
   background: var(--sapBackgroundColor, #fff);
 }
@@ -227,4 +231,13 @@
 .detailTable.sapMListTbl .sapMListTblCell,
 .detailTable.sapMListTbl .sapMListTblHeaderCell {
   border-right: none !important;
+}
+
+.detailDocName.sapMText {
+  font-weight: bold !important;
+}
+
+.detailDocStandardBtn.sapMBtn .sapMBtnContent {
+  color: var(--sapLinkColor) !important;
+  font-weight: bold !important;
 }
