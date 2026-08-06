@@ -8,7 +8,7 @@
 
   <Page showHeader="false" enableScrolling="false" class="manageSpecPage">
     <content>
-      <f:DynamicPage id="mainPage" toggleHeaderOnTitleClick="true" showFooter="false">
+      <f:DynamicPage id="mainPage" class="mainDynamicPage" toggleHeaderOnTitleClick="true" showFooter="false">
 
         <f:title>
           <f:DynamicPageTitle>

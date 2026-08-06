@@ -1,0 +1,232 @@
+<mvc:View
+  controllerName="com.sap.demo.managespec.controller.Detail"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f"
+  displayBlock="true">
+
+  <Page showHeader="false" enableScrolling="false" class="detailPage">
+    <content>
+      <f:DynamicPage id="detailPage" toggleHeaderOnTitleClick="true" showFooter="false" stickySubheaderProvider="detailTabBar">
+
+        <f:title>
+          <f:DynamicPageTitle>
+            <f:heading>
+              <VBox>
+                <Title text="{detail>/name}" level="H2" />
+                <Text text="{detail>/technicalName}" class="detailSpecSubtitle" />
+              </VBox>
+            </f:heading>
+            <f:snappedHeading>
+              <VBox>
+                <Title text="{detail>/name}" level="H3" />
+                <Text text="{detail>/technicalName}" class="detailSpecSubtitle" />
+              </VBox>
+            </f:snappedHeading>
+            <f:actions>
+              <Button text="Delete" type="Default" />
+              <Button text="Copy" type="Default" />
+              <Button text="Change Product Category" type="Default" />
+              <Button text="Transfer Data" type="Default" />
+              <MenuButton text="Next Steps" type="Default" buttonMode="Regular" menuPosition="BeginBottom">
+                <menu>
+                  <Menu>
+                    <items>
+                      <MenuItem text="Submit for Review" />
+                      <MenuItem text="Release" />
+                      <MenuItem text="Block" />
+                    </items>
+                  </Menu>
+                </menu>
+              </MenuButton>
+              <Button text="New Version" type="Default" />
+              <Button icon="sap-icon://action" type="Default" />
+            </f:actions>
+          </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+          <f:DynamicPageHeader pinnable="true">
+            <HBox alignItems="Start" class="sapUiMediumMarginBottom">
+              <Avatar src="sap-icon://product" displayShape="Square" class="detailHeaderAvatar sapUiMediumMarginEnd" />
+              <VBox class="sapUiMediumMarginEnd detailHeaderCol">
+                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                  <Label text="Version:" class="detailAttrLabel sapUiTinyMarginEnd" />
+                  <Text text="{detail>/version}" />
+                </HBox>
+                <HBox alignItems="Center">
+                  <Label text="Status:" class="detailAttrLabel sapUiTinyMarginEnd" />
+                  <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" icon="{detail>/statusIcon}" />
+                </HBox>
+              </VBox>
+              <VBox class="detailHeaderCol">
+                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                  <Label text="Specification Type:" class="detailAttrLabel sapUiTinyMarginEnd" />
+                  <Text text="{detail>/specType}" />
+                </HBox>
+                <HBox alignItems="Center">
+                  <Label text="Product Category:" class="detailAttrLabel sapUiTinyMarginEnd" />
+                  <Text text="{detail>/productCategory}" />
+                </HBox>
+              </VBox>
+            </HBox>
+          </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+          <IconTabBar id="detailTabBar" class="detailTabBar sapUiNoContentPadding" expanded="true" select=".onTabSelect">
+            <items>
+
+              <!-- General Tab -->
+              <IconTabFilter text="General" key="general">
+                <VBox class="detailTabContent">
+                  <Panel headerText="Basic Data" expandable="false" class="detailPanel sapUiMediumMarginBottom">
+                    <VBox class="detailFormGrid">
+                      <HBox class="detailFormRow">
+                        <VBox class="detailFormCell">
+                          <Label text="ID:" class="detailFormLabel" />
+                          <Text text="{detail>/id}" />
+                        </VBox>
+                        <VBox class="detailFormCell">
+                          <Label text="Version:" class="detailFormLabel" />
+                          <Text text="{detail>/version}" />
+                        </VBox>
+                        <VBox class="detailFormCell">
+                          <Label text="Status:" class="detailFormLabel" />
+                          <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" />
+                        </VBox>
+                        <VBox class="detailFormCell">
+                          <Label text="Specification Type:" class="detailFormLabel" />
+                          <Text text="{detail>/specType}" />
+                        </VBox>
+                      </HBox>
+                      <HBox class="detailFormRow">
+                        <VBox class="detailFormCell">
+                          <Label text="Name:" class="detailFormLabel" />
+                          <Text text="{detail>/name}" />
+                        </VBox>
+                        <VBox class="detailFormCell" />
+                        <VBox class="detailFormCell" />
+                        <VBox class="detailFormCell">
+                          <Label text="Product Category:" class="detailFormLabel" />
+                          <Text text="{detail>/productCategory}" />
+                        </VBox>
+                      </HBox>
+                    </VBox>
+                  </Panel>
+                  <VBox>
+                    <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                      <Title text="Other Versions" level="H4" />
+                      <ToolbarSpacer />
+                      <SearchField placeholder="Search" width="14rem" />
+                      <Button icon="sap-icon://action-settings" type="Transparent" />
+                      <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
+                    </Toolbar>
+                    <Table items="{detail>/otherVersions}" class="sapUiSizeCompact detailTable">
+                      <columns>
+                        <Column><Text text="Name" /></Column>
+                        <Column width="8rem"><Text text="Version" /></Column>
+                        <Column><Text text="Status" /></Column>
+                      </columns>
+                      <items>
+                        <ColumnListItem>
+                          <cells>
+                            <Text text="{name}" />
+                            <Text text="{version}" />
+                            <ObjectStatus text="{statusText}" state="{statusState}" />
+                          </cells>
+                        </ColumnListItem>
+                      </items>
+                      <noData>
+                        <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
+                          title="No items available" description="When there are, you'll find them here." />
+                      </noData>
+                    </Table>
+                  </VBox>
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Properties Tab -->
+              <IconTabFilter text="Properties" key="properties">
+                <VBox class="detailTabContent">
+                  <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
+                    title="No data" description="No properties have been defined yet." />
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Related Objects Tab -->
+              <IconTabFilter text="Related Objects" key="relatedObjects">
+                <VBox class="detailTabContent">
+                  <VBox>
+                    <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                      <Title text="Collaborations" level="H4" />
+                      <ToolbarSpacer />
+                      <Button text="Add" type="Transparent" />
+                      <Button text="Remove" type="Transparent" enabled="false" />
+                      <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
+                    </Toolbar>
+                    <Table items="{detail>/collaborations}" mode="MultiSelect" class="sapUiSizeCompact detailTable">
+                      <columns>
+                        <Column><Text text="Name" /></Column>
+                        <Column><Text text="Description" /></Column>
+                        <Column width="10rem"><Text text="Created On" /></Column>
+                        <Column><Text text="Created By" /></Column>
+                      </columns>
+                      <items>
+                        <ColumnListItem>
+                          <cells>
+                            <Text text="{name}" />
+                            <Text text="{description}" />
+                            <Text text="{createdOn}" />
+                            <Text text="{createdBy}" />
+                          </cells>
+                        </ColumnListItem>
+                      </items>
+                      <noData>
+                        <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
+                          title="No items available" description="When there are, you'll find them here." />
+                      </noData>
+                    </Table>
+                  </VBox>
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Documents Tab -->
+              <IconTabFilter text="Documents" key="documents">
+                <VBox class="detailTabContent">
+                  <Table items="{detail>/documents}" mode="MultiSelect" class="sapUiSizeCompact detailTable">
+                    <columns>
+                      <Column width="5rem"><Text text="Type" /></Column>
+                      <Column><Text text="Name" /></Column>
+                      <Column width="10rem"><Text text="Modified On" /></Column>
+                      <Column><Text text="Created By" /></Column>
+                      <Column width="7rem"><Text text="Size" /></Column>
+                    </columns>
+                    <items>
+                      <ColumnListItem>
+                        <cells>
+                          <Avatar src="sap-icon://ppt-attachment" displayShape="Square" class="manageSpecAvatar" />
+                          <Text text="{name}" />
+                          <Text text="{modifiedOn}" />
+                          <Text text="{createdBy}" />
+                          <Text text="{size}" />
+                        </cells>
+                      </ColumnListItem>
+                    </items>
+                    <noData>
+                      <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
+                        title="No documents" description="No documents have been attached yet." />
+                    </noData>
+                  </Table>
+                </VBox>
+              </IconTabFilter>
+
+            </items>
+          </IconTabBar>
+        </f:content>
+
+      </f:DynamicPage>
+    </content>
+  </Page>
+
+</mvc:View>

@@ -91,17 +91,20 @@ sap.ui.define([
     onItemPress: function (oEvent) {
       var oItem = oEvent.getSource();
       var oCtx = oItem.getBindingContext();
-      MessageToast.show("Opening: " + oCtx.getProperty("name"));
+      var sSpecId = oCtx.getProperty("id");
+      this.getOwnerComponent().getRouter().navTo("detail", { specId: sSpecId });
     },
 
     onSpecNamePress: function (oEvent) {
       var oCtx = oEvent.getSource().getBindingContext();
-      MessageToast.show("Opening: " + oCtx.getProperty("name"));
+      var sSpecId = oCtx.getProperty("id");
+      this.getOwnerComponent().getRouter().navTo("detail", { specId: sSpecId });
     },
 
     onNavigatePress: function (oEvent) {
       var oCtx = oEvent.getSource().getBindingContext();
-      MessageToast.show("Navigate to: " + oCtx.getProperty("name"));
+      var sSpecId = oCtx.getProperty("id");
+      this.getOwnerComponent().getRouter().navTo("detail", { specId: sSpecId });
     },
 
     onCreatePress: function () {
