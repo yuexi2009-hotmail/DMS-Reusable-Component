@@ -14,13 +14,12 @@
     showSearch="true"
     showNotifications="true"
     showProductSwitcher="false"
-    showMenuButton="true"
-    notificationsNumber="3"
+    showMenuButton="false"
     navButtonPressed=".onNavBack">
     <f:additionalContent>
-      <Button icon="sap-icon://headset" type="Transparent" />
-      <Button icon="sap-icon://contacts" type="Transparent" />
-      <Button icon="sap-icon://favorite" type="Transparent" />
+      <OverflowToolbarButton icon="sap-icon://headset" type="Transparent" />
+      <OverflowToolbarButton icon="sap-icon://contacts" type="Transparent" />
+      <OverflowToolbarButton icon="sap-icon://tag" type="Transparent" />
     </f:additionalContent>
     <f:profile>
       <Avatar initials="yx" displayShape="Circle" />
