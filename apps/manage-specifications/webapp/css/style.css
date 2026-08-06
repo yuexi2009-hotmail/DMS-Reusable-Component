@@ -2,7 +2,15 @@
 
 /* Shell + App stack: App fills remaining height below ShellBar */
 .manageSpecApp {
-  height: calc(100% - 2.75rem);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.manageSpecFCL {
+  flex: 1;
+  min-height: 0;
 }
 
 /* Page fills its container */

@@ -53,6 +53,9 @@ sap.ui.define([
       var oRootView = this.getOwnerComponent().getRootControl();
       var oShellBar = oRootView.byId("appShellBar");
       if (oShellBar) { oShellBar.setTitle("Manage Specifications"); }
+
+      var oAppView = oRootView.getModel("appView");
+      if (oAppView) { oAppView.setProperty("/showNavButton", true); }
     }
 
   });
