@@ -45,7 +45,7 @@ sap.ui.define([
         otherVersions: [],
         collaborations: [],
         documents: [
-          { name: "Spec_Overview_Draft_v1.pptx", modifiedOn: "Aug 2, 2026", createdBy: "EK_TRANSLATE", size: "2.4 MB" }
+          { name: "ObjectLinks-Overview-April2026.pptx", modifiedOn: "Aug 6, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "1.21 MB" }
         ]
       });
       this.getView().setModel(oDetailModel, "detail");
