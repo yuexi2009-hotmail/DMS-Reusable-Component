@@ -1,0 +1,122 @@
+/* Manage Specifications — app styles (SAP design tokens only) */
+
+/* Shell + App stack: App fills remaining height below ShellBar */
+.manageSpecApp {
+  height: calc(100% - 2.75rem);
+}
+
+/* Page fills its container */
+.manageSpecPage {
+  height: 100%;
+}
+.manageSpecPage > .sapMPageScroll {
+  height: 100%;
+  overflow: hidden;
+}
+.manageSpecPage > .sapMPageScroll > .sapMPageScrollContent {
+  height: 100%;
+}
+
+/* Blue bold "Standard" title — target the rendered sapMTitle span */
+.manageSpecTitle .sapMTitle,
+.manageSpecTitle > span {
+  color: var(--sapLinkColor) !important;
+  font-weight: bold;
+}
+
+/* Filter container: no extra padding */
+.manageSpecFilterContainer {
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Override DynamicPageHeader internal padding so filters align with table */
+.sapFDynamicPageHeader .sapFDynamicPageHeaderContent,
+.sapFDynamicPageHeaderContent,
+.sapFDynamicPageHeader > div {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Filter rows: flex row, items share equal fixed column width matching across both rows */
+.manageSpecFilterRow {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+
+/* Gap between row 1 and row 2 */
+.manageSpecFilterRowTop {
+  margin-bottom: 0.5rem;
+}
+
+/* Each filter item: equal fixed basis — 6 columns with 5 gaps of 1rem each */
+.manageSpecFilterRow > .sapMFlexItem {
+  flex: 0 0 calc((100% - 5rem) / 6) !important;
+  min-width: 0;
+  margin-right: 1rem;
+}
+.manageSpecFilterRow > .sapMFlexItem:last-child {
+  margin-right: 0;
+}
+
+/* Table navigation arrow: grey not blue */
+.sapMListTblNavigated .sapMListTblNavCol .sapMLIBType,
+.sapMListTblNavCol .sapUiIcon,
+.sapMLIBImgNav .sapUiIcon,
+.sapMListNavImg .sapUiIcon {
+  color: var(--sapContent_LabelColor) !important;
+}
+.sapMListTbl .sapMLIBType .sapMListNavImg {
+  color: var(--sapContent_LabelColor) !important;
+}
+.sapMListTbl .sapMListTblCell,
+.sapMListTbl .sapMListTblHeaderCell {
+  border-right: none !important;
+}
+
+/* Avatar: light blue background with blue icon */
+.manageSpecAvatar,
+.manageSpecAvatar.sapFAvatar {
+  background-color: #ddeeff !important;
+}
+.manageSpecAvatar .sapUiIcon::before,
+.manageSpecAvatar span[data-sap-ui-icon-content]::before,
+.manageSpecAvatar .sapUiIcon {
+  color: #1a5bb4 !important;
+}
+
+/* Table row: bold black spec name */
+.manageSpecRowTitle,
+.manageSpecRowTitle .sapMText {
+  font-weight: bold !important;
+  color: var(--sapTextColor) !important;
+}
+
+/* Table row: grey subtitle (technical name) */
+.manageSpecRowSubtitle,
+.manageSpecRowSubtitle .sapMText {
+  color: var(--sapContent_LabelColor) !important;
+}
+
+/* Hide DatePicker default placeholder text */
+.manageSpecFilterContainer .sapMInputBaseInner::placeholder {
+  color: transparent !important;
+}
+
+/* Bold version number */
+.manageSpecVersionBold,
+.manageSpecVersionBold .sapMText {
+  font-weight: bold !important;
+}
+.manageSpecGoActions,
+.manageSpecFilterRow > .sapMFlexItem.manageSpecGoActions {
+  margin-left: auto !important;
+  flex: 0 0 auto !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+

@@ -1,0 +1,212 @@
+<mvc:View
+  controllerName="com.sap.demo.managespec.controller.Main"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page showHeader="false" enableScrolling="false" class="manageSpecPage">
+    <content>
+      <f:DynamicPage id="mainPage" toggleHeaderOnTitleClick="true" showFooter="false">
+
+        <f:title>
+          <f:DynamicPageTitle>
+            <f:heading>
+              <HBox alignItems="Center">
+                <Title text="Standard" level="H2" class="sapUiSmallMarginEnd manageSpecTitle" />
+                <Button icon="sap-icon://slim-arrow-down" type="Transparent" press=".onViewSwitchPress" />
+              </HBox>
+            </f:heading>
+            <f:snappedHeading>
+              <HBox alignItems="Center">
+                <Title text="Standard" level="H3" class="sapUiSmallMarginEnd manageSpecTitle" />
+                <Button icon="sap-icon://slim-arrow-down" type="Transparent" press=".onViewSwitchPress" />
+              </HBox>
+            </f:snappedHeading>
+            <f:navigationActions>
+              <Button icon="sap-icon://share-2" type="Transparent" tooltip="Share" press=".onSharePress" />
+              <Button icon="sap-icon://navigation-down-arrow" type="Transparent" tooltip="More" press=".onSettingsPress" />
+            </f:navigationActions>
+          </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+          <f:DynamicPageHeader pinnable="true">
+            <!-- Full-width filter area with page-level padding -->
+            <VBox class="manageSpecFilterContainer sapUiSizeCompact">
+
+              <!-- Row 1: Search + 5 dropdowns spanning full width -->
+              <HBox class="manageSpecFilterRow manageSpecFilterRowTop" alignItems="End">
+                <VBox class="manageSpecFilterItem">
+                  <SearchField id="searchField" placeholder="Search" liveChange=".onSearch" />
+                </VBox>
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Editing Status:" labelFor="editingStatusFilter" />
+                  <Select id="editingStatusFilter" width="100%" change=".onFilterChange">
+                    <items>
+                      <core:Item key="" text="All" />
+                      <core:Item key="Draft" text="Draft" />
+                      <core:Item key="Active" text="Active" />
+                      <core:Item key="Locked" text="Locked" />
+                    </items>
+                  </Select>
+                </VBox>
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Status:" labelFor="statusFilter" />
+                  <Select id="statusFilter" width="100%" change=".onFilterChange">
+                    <items>
+                      <core:Item key="" text="" />
+                      <core:Item key="Draft" text="Draft" />
+                      <core:Item key="InReview" text="In Review" />
+                      <core:Item key="Release" text="Release" />
+                      <core:Item key="Blocked" text="Blocked" />
+                    </items>
+                  </Select>
+                </VBox>
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Specification Type:" labelFor="specTypeFilter" />
+                  <Select id="specTypeFilter" width="100%" change=".onFilterChange">
+                    <items>
+                      <core:Item key="" text="" />
+                      <core:Item key="MM_SpecType_Full" text="MM_SpecType_Full" />
+                      <core:Item key="GG001" text="GG001" />
+                      <core:Item key="WF" text="WF" />
+                      <core:Item key="TM26" text="TM26 CW02 ANALYTIC PROP" />
+                    </items>
+                  </Select>
+                </VBox>
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Product Category:" labelFor="productCategoryInput" />
+                  <Input id="productCategoryInput" width="100%" />
+                </VBox>
+                <VBox class="manageSpecFilterItem manageSpecFilterItemLast">
+                  <Label text="Created By:" labelFor="createdByFilter" />
+                  <Select id="createdByFilter" width="100%" change=".onFilterChange">
+                    <items>
+                      <core:Item key="" text="" />
+                      <core:Item key="EK_TRANSLATE" text="EK_TRANSLATE" />
+                      <core:Item key="EK_TRANSLATE_2" text="EK_TRANSLATE_2" />
+                      <core:Item key="TM26_USER" text="TM26 CW02 User" />
+                    </items>
+                  </Select>
+                </VBox>
+              </HBox>
+
+              <!-- Row 2: 3 dropdowns + spacer + Go/Adapt flush right -->
+              <HBox class="manageSpecFilterRow" alignItems="End">
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Changed By:" labelFor="changedByFilter" />
+                  <Select id="changedByFilter" width="100%" change=".onFilterChange">
+                    <items>
+                      <core:Item key="" text="" />
+                      <core:Item key="EK_TRANSLATE" text="EK_TRANSLATE" />
+                      <core:Item key="TM26_USER" text="TM26 CW02 User" />
+                    </items>
+                  </Select>
+                </VBox>
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Created On:" labelFor="createdOnFilter" />
+                  <DatePicker id="createdOnFilter" width="100%" placeholder="" />
+                </VBox>
+                <VBox class="manageSpecFilterItem">
+                  <Label text="Changed On:" labelFor="changedOnFilter" />
+                  <DatePicker id="changedOnFilter" width="100%" placeholder="" />
+                </VBox>
+                <HBox alignItems="Center" class="manageSpecGoActions">
+                  <Button text="Go" type="Emphasized" press=".onGoPress" />
+                  <Button text="Adapt Filters" type="Transparent" press=".onAdaptFiltersPress" />
+                </HBox>
+              </HBox>
+
+            </VBox>
+          </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+          <VBox>
+
+            <OverflowToolbar class="sapUiSizeCompact">
+              <Title text="Specifications (2,766)" level="H3" id="tableTitle" />
+              <ToolbarSpacer />
+              <Button id="copyBtn" text="Copy" type="Transparent" press=".onCopyPress" enabled="false" />
+              <MenuButton text="Mass Change" type="Transparent" buttonMode="Regular" press=".onMassChangePress">
+                <menu>
+                  <Menu>
+                    <items>
+                      <MenuItem text="Change Status" press=".onChangeStatus" />
+                      <MenuItem text="Change Type" press=".onChangeType" />
+                    </items>
+                  </Menu>
+                </menu>
+              </MenuButton>
+              <Button id="compareBtn" text="Compare" type="Transparent" press=".onComparePress" enabled="false" />
+              <MenuButton id="createBtn" text="Create" type="Transparent" buttonMode="Regular" press=".onCreatePress">
+                <menu>
+                  <Menu>
+                    <items>
+                      <MenuItem text="Create New" press=".onCreatePress" />
+                      <MenuItem text="Create from Template" press=".onCreateOptionsPress" />
+                    </items>
+                  </Menu>
+                </menu>
+              </MenuButton>
+              <Button id="deleteBtn" text="Delete" type="Transparent" press=".onDeletePress" enabled="false" />
+              <Button icon="sap-icon://copy" type="Transparent" tooltip="Copy to clipboard" press=".onClipboardPress" />
+              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Column settings" press=".onColumnSettingsPress" />
+            </OverflowToolbar>
+
+            <Table
+              id="specificationsTable"
+              items="{/specifications}"
+              mode="MultiSelect"
+              selectionChange=".onSelectionChange"
+              noDataText="No specifications found"
+              sticky="ColumnHeaders,HeaderToolbar"
+              growing="true"
+              growingThreshold="20"
+              class="sapUiSizeCompact">
+
+              <columns>
+                <Column width="7rem">
+                  <Text text="Thumbnail" />
+                </Column>
+                <Column>
+                  <Text text="Specification" />
+                </Column>
+                <Column width="7rem" hAlign="Center">
+                  <Text text="Version" />
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true">
+                  <Text text="Status" />
+                </Column>
+                <Column minScreenWidth="Desktop" demandPopin="true">
+                  <Text text="Specification Type" />
+                </Column>
+              </columns>
+
+              <items>
+                <ColumnListItem type="Navigation" press=".onItemPress">
+                  <cells>
+                    <Avatar src="sap-icon://product" displayShape="Square" backgroundColor="Accent1" size="S" class="manageSpecAvatar" />
+                    <VBox>
+                      <Text text="{name}" class="manageSpecRowTitle" />
+                      <Text text="{technicalName}" class="manageSpecRowSubtitle" />
+                      <Link text="{editingStatus}" visible="{showEditingStatus}" press=".onSpecNamePress" />
+                    </VBox>
+                    <Text text="{version}" class="manageSpecVersionBold" />
+                    <ObjectStatus text="{statusText}" state="{statusState}" icon="{statusIcon}" />
+                    <Text text="{specType}" />
+                  </cells>
+                </ColumnListItem>
+              </items>
+
+            </Table>
+          </VBox>
+        </f:content>
+
+      </f:DynamicPage>
+    </content>
+  </Page>
+
+</mvc:View>
