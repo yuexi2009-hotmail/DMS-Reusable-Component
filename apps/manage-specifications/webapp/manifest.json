@@ -1,0 +1,81 @@
+{
+  "_version": "1.57.0",
+  "sap.app": {
+    "id": "com.sap.demo.managespec",
+    "type": "application",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "Manage Specifications",
+    "description": "Browse, filter and manage product specifications"
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": false
+    }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "com.sap.demo.managespec.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "models": {
+      "": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/mockData.json"
+      },
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.sap.demo.managespec.i18n.i18n",
+          "supportedLocales": [""],
+          "fallbackLocale": ""
+        }
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "com.sap.demo.managespec.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "async": true
+      },
+      "routes": [
+        {
+          "name": "main",
+          "pattern": "",
+          "target": "main"
+        }
+      ],
+      "targets": {
+        "main": {
+          "viewName": "Main",
+          "viewLevel": 1
+        }
+      }
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.f": {},
+        "sap.ui.layout": {},
+        "sap.uxap": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "resources": {
+      "css": [
+        { "uri": "css/style.css" }
+      ]
+    }
+  }
+}

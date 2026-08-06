@@ -1,0 +1,37 @@
+<mvc:View
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f"
+  displayBlock="true">
+
+  <f:ShellBar
+    id="appShellBar"
+    title="Manage Specifications"
+    homeIcon="images/logo_sap.png"
+    homeIconTooltip="SAP"
+    showNavButton="true"
+    showSearch="true"
+    showNotifications="true"
+    showProductSwitcher="false"
+    notificationsNumber="3"
+    navButtonPress=".onNavBack">
+    <f:profile>
+      <Avatar initials="yx" colorScheme="Accent6" displayShape="Circle" />
+    </f:profile>
+    <f:additionalContent>
+      <Button icon="sap-icon://headset" type="Transparent" tooltip="Support" />
+      <Button icon="sap-icon://customer" type="Transparent" tooltip="Contact" />
+      <Button icon="sap-icon://tag" type="Transparent" tooltip="Tags" />
+    </f:additionalContent>
+    <f:menu>
+      <Menu>
+        <items>
+          <MenuItem text="Manage Specifications" />
+        </items>
+      </Menu>
+    </f:menu>
+  </f:ShellBar>
+
+  <App id="app" class="manageSpecApp" />
+
+</mvc:View>
