@@ -145,6 +145,49 @@
 
 /* ===== Detail Page ===== */
 
+/* ShellBar title: dark color, normal weight */
+.sapFShellBarTitle,
+.sapFShellBarItem.sapMTitle,
+.sapFShellBarItem .sapMTitleStyle,
+.sapFShellBar h1.sapFShellBarItem,
+.sapFShellBar .sapMTitle .sapUiSelectable {
+  color: #131E29 !important;
+  font-weight: normal !important;
+}
+
+/* Custom ShellBar (sap.m.Bar) */
+.appShellBar.sapMBar {
+  background: #fff !important;
+  border-bottom: 1px solid var(--sapGroup_TitleBorderColor) !important;
+  height: 2.75rem !important;
+  box-shadow: none !important;
+}
+.appShellBar .appShellBarNavBtn.sapMBtn .sapUiIcon {
+  color: var(--sapTextColor) !important;
+}
+.appShellBar .appShellBarLogo.sapMImg {
+  margin: 0 0.5rem !important;
+}
+.appShellBar .appShellBarTitleBtn.sapMBtn .sapMBtnContent {
+  color: #131E29 !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  font-family: "72", "72full", Arial, Helvetica, sans-serif !important;
+}
+.appShellBar .appShellBarTitleBtn.sapMBtn .sapUiIcon {
+  color: #131E29 !important;
+  font-size: 0.75rem !important;
+}
+.appShellBar .appShellBarIcon.sapMBtn .sapUiIcon {
+  color: var(--sapContent_IconColor) !important;
+  font-size: 1.125rem !important;
+}
+.appShellBar .appShellBarAvatar {
+  width: 2rem !important;
+  height: 2rem !important;
+  font-size: 0.75rem !important;
+}
+
 .detailSpecSubtitle,
 .detailSpecSubtitle .sapMText {
   color: var(--sapContent_LabelColor) !important;
