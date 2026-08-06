@@ -242,7 +242,7 @@
 
 /* Tab content: single source of padding */
 .detailTabContent {
-  padding: 0 3rem 0 3rem;
+  padding: 1rem 3rem 0 3rem;
   min-height: 100vh;
   background: var(--sapBackgroundColor, #fff);
 }
@@ -255,6 +255,12 @@
 
 .detailPanel.sapMPanel .sapMPanelContent {
   padding: var(--sapUiContentPadding, 1rem) !important;
+}
+
+.detailPanel.sapMPanel {
+  border: 1px solid var(--sapGroup_ContentBorderColor) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: var(--sapContent_Shadow0) !important;
 }
 
 .detailFormGrid { width: 100%; }
