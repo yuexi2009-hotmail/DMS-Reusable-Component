@@ -460,8 +460,9 @@
   font-size: var(--sapFontSize) !important;
 }
 .detailDocNumber.sapMText,
-.detailTreeTable2 .detailDocNumber.sapMText,
-.detailTreeTable1 .detailDocNumber.sapMText {
+.detailTreeTable .detailDocNumber.sapMText,
+.detailTreeTable1 .detailDocNumber.sapMText,
+.detailTreeTable2 .detailDocNumber.sapMText {
   font-weight: bold !important;
   color: var(--sapTextColor) !important;
 }

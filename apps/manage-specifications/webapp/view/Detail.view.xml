@@ -269,13 +269,12 @@
                     visibleRowCount="4"
                     rowSelectionChange=".onDocSelectionChange"
                     toggleOpenState=".onDocTreeToggle"
-                    class="sapUiSizeCompact">
+                    class="sapUiSizeCompact detailTreeTable">
                     <ui:columns>
                       <ui:Column width="20rem">
                         <Label text="Document Info" />
                         <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>docNumber} : ${detail>description} }"
-                            class="{= ${detail>isParent} === true ? 'detailDocNumber' : '' }" />
+                          <FormattedText htmlText="{= ${detail>isParent} === true ? ('&lt;strong&gt;' + ${detail>docNumber} + '&lt;/strong&gt;') : ${detail>description} }" />
                         </ui:template>
                       </ui:Column>
                       <ui:Column>
@@ -347,8 +346,7 @@
                       <ui:Column width="20rem">
                         <Label text="Document Info" />
                         <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>docNumber} : ${detail>description} }"
-                            class="{= ${detail>isParent} === true ? 'detailDocNumber' : '' }" />
+                          <FormattedText htmlText="{= ${detail>isParent} === true ? ('&lt;strong&gt;' + ${detail>docNumber} + '&lt;/strong&gt;') : ${detail>description} }" />
                         </ui:template>
                       </ui:Column>
                       <ui:Column>
@@ -424,8 +422,7 @@
                         <Label text="Document Info" />
                         <ui:template>
                           <VBox class="detailDocInfoCell">
-                            <Text text="{= ${detail>isParent} === true ? ${detail>docNumber} : ${detail>description} }"
-                              class="{= ${detail>isParent} === true ? 'detailDocNumber' : '' }" />
+                            <FormattedText htmlText="{= ${detail>isParent} === true ? ('&lt;strong&gt;' + ${detail>docNumber} + '&lt;/strong&gt;') : ${detail>description} }" />
                             <Text text="{= ${detail>isParent} === true ? ${detail>docDescription} : (${detail>modifiedOn} ? ('Last modified on ' + ${detail>modifiedOn} + ' by ' + ${detail>createdBy}) : '') }"
                               class="detailDocMeta" />
                           </VBox>
