@@ -257,8 +257,12 @@
 /* Tab content: single source of padding */
 .detailTabContent {
   padding: 1rem 3rem 0 3rem;
-  min-height: 100vh;
   background: var(--sapBackgroundColor, #fff);
+}
+
+/* Remove only the content area bottom border, keep tab strip border */
+.detailPage .sapMITBContent {
+  border-bottom: none !important;
 }
 
 .detailSectionToolbar.sapMTB {
@@ -306,6 +310,26 @@
 .detailTable.sapMListTbl .sapMListTblCell,
 .detailTable.sapMListTbl .sapMListTblHeaderCell {
   border-right: none !important;
+}
+.detailTable.sapMListTbl,
+.detailTable.sapMListTbl .sapMListUl,
+.detailTable.sapMListTbl > .sapMListBorderTop,
+.detailTable.sapMListTbl > .sapMListBorderBottom {
+  border-bottom: none !important;
+  border-top: none !important;
+}
+.detailTabContent .sapMList,
+.detailTabContent .sapMListTbl {
+  border-bottom: none !important;
+}
+/* Remove last row bottom border and table footer line */
+.detailTable.sapMListTbl .sapMLIB:last-child,
+.detailTable.sapMListTbl .sapMListTblRow:last-child {
+  border-bottom: none !important;
+}
+.detailGeneralPage .sapMLIB:last-child,
+.detailGeneralPage .sapMListTblRow:last-child {
+  border-bottom: none !important;
 }
 
 
