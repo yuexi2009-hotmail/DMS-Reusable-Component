@@ -358,8 +358,7 @@
                       <ui:Column>
                         <Label text="Description" />
                         <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>docDescription} : (${detail>modifiedOn} ? ('Last modified on ' + ${detail>modifiedOn} + ' by ' + ${detail>createdBy}) : '') }"
-                            class="{= ${detail>isParent} === true ? '' : 'detailDocMeta' }" />
+                          <FormattedText htmlText="{= ${detail>isParent} === true ? ${detail>docDescription} : (${detail>modifiedOn} ? ('&lt;span style=&quot;color:var(--sapContent_LabelColor)&quot;&gt;Last modified on ' + ${detail>modifiedOn} + ' by ' + ${detail>createdBy} + '&lt;/span&gt;') : '') }" />
                         </ui:template>
                       </ui:Column>
                       <ui:Column width="8rem">
