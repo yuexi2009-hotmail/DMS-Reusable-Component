@@ -74,6 +74,7 @@
         "sap.m": {},
         "sap.f": {},
         "sap.ui.layout": {},
+        "sap.ui.table": {},
         "sap.uxap": {}
       }
     },

@@ -261,34 +261,54 @@
                     <Button text="Unlink Document" type="Transparent" enabled="false" />
                     <Button icon="sap-icon://action-settings" type="Transparent" />
                   </Toolbar>
-                  <Table items="{detail>/documents}" mode="MultiSelect" class="sapUiSizeCompact detailTable">
-                    <columns>
-                      <Column width="5rem"><Text text="Type" /></Column>
-                      <Column><Text text="Name" /></Column>
-                      <Column width="9rem"><Text text="Modified On" /></Column>
-                      <Column><Text text="Created By" /></Column>
-                      <Column><Text text="Modified By" /></Column>
-                      <Column width="7rem"><Text text="Size" /></Column>
-                      <Column width="3rem" />
-                    </columns>
-                    <items>
-                      <ColumnListItem>
-                        <cells>
-                          <Avatar src="sap-icon://document" displayShape="Square" class="manageSpecAvatar" />
-                          <Text text="{name}" class="detailDocName" />
-                          <Text text="{modifiedOn}" />
-                          <Text text="{createdBy}" />
-                          <Text text="{modifiedBy}" />
-                          <Text text="{size}" />
-                          <Button icon="sap-icon://overflow" type="Transparent" />
-                        </cells>
-                      </ColumnListItem>
-                    </items>
-                    <noData>
-                      <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
-                        title="No documents" description="No documents have been attached yet." />
-                    </noData>
-                  </Table>
+                  <ui:TreeTable
+                    id="documentsTreeTable"
+                    rows="{path: 'detail>/documents', parameters: {arrayNames: ['children']}}"
+                    selectionMode="MultiToggle"
+                    visibleRowCountMode="Fixed"
+                    visibleRowCount="4"
+                    toggleOpenState=".onDocTreeToggle"
+                    class="sapUiSizeCompact">
+                    <ui:columns>
+                      <ui:Column width="20rem">
+                        <Label text="Document Info" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>docNumber} : ${detail>description} }"
+                            class="{= ${detail>isParent} === true ? 'detailDocNumber' : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column>
+                        <Label text="Description" />
+                        <ui:template>
+                          <Text text="{detail>docDescription}" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Type" />
+                        <ui:template>
+                          <Text text="{detail>type}" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Part" />
+                        <ui:template>
+                          <Text text="{detail>part}" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Version" />
+                        <ui:template>
+                          <Text text="{detail>version}" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="4rem" hAlign="End">
+                        <Label text="" />
+                        <ui:template>
+                          <Button icon="sap-icon://navigation-right-arrow" type="Transparent" press=".onDocumentNavigate" />
+                        </ui:template>
+                      </ui:Column>
+                    </ui:columns>
+                  </ui:TreeTable>
                 </VBox>
               </IconTabFilter>
 
