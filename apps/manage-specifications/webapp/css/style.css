@@ -231,6 +231,20 @@
 .detailPage .sapFDynamicPageContent {
   padding: 0 !important;
 }
+.detailPage .sapFDynamicPageContentFitContainer {
+  padding: 0 !important;
+}
+
+/* Tab strip header: 48px left padding only */
+.detailPage .sapMITB > .sapMITH {
+  padding-left: 3rem !important;
+  padding-right: 0 !important;
+}
+/* Tab content container: no padding */
+.detailPage .sapMITB {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 
 /* Remove ITB content padding entirely */
 .detailPage .sapMITBNoContentPadding > .sapMITBContainerContent > .sapMITBContent,
@@ -251,6 +265,10 @@
   background: transparent !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+.detailPlainToolbar.sapMTB {
+  border-bottom: none !important;
+  min-height: 2rem !important;
 }
 
 .detailPanel.sapMPanel .sapMPanelContent {
@@ -288,6 +306,121 @@
 .detailTable.sapMListTbl .sapMListTblCell,
 .detailTable.sapMListTbl .sapMListTblHeaderCell {
   border-right: none !important;
+}
+
+
+/* Embedded ObjectPageLayout inside General tab */
+.detailGeneralPage.sapUxAPObjectPageLayout {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+.detailGeneralPage .sapUxAPObjectPageContent {
+  height: auto !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+.detailGeneralPage .sapUxAPObjectPageScroll {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+.detailGeneralPage [id$="-spacer"] {
+  height: 0 !important;
+  display: none !important;
+}
+.detailGeneralPage .sapUxAPObjectPageContainer,
+.detailGeneralPage .sapUxAPObjectPageSection,
+.detailGeneralPage .sapUxAPObjectPageSectionHeader,
+.detailGeneralPage .sapUxAPObjectPageSectionContainer,
+.detailGeneralPage .sapUxAPObjectPageSubSection,
+.detailGeneralPage .sapUiRespGrid,
+.detailGeneralPage .sapUiRespGridHSpace1,
+.detailGeneralPage .sapUiRespGridVSpace1,
+.detailGeneralPage [class*="sapUiRespGridSpan"] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.detailGeneralPage .sapUxAPBlockContainer {
+  background: transparent !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.detailGeneralPage .sapUxAPBlockContainer.sapUxAPObjectPageSubSectionAlignContent {
+  padding: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.detailGeneralPage .sapUiSimpleForm.sapUxAPObjectPageSubSectionAlignContent {
+  padding: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+/* All sections use Toolbar inside VBox for titles — hide all ObjectPage section headers */
+.detailGeneralPage .sapUxAPObjectPageSectionHeader {
+  display: none !important;
+}
+.detailGeneralPage .sapUxAPObjectPageSection {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+.detailGeneralPage .sapUxAPObjectPageSubSection {
+  padding-top: 0 !important;
+}
+.detailGeneralPage .sapMList,
+.detailGeneralPage .sapMListTbl {
+  width: 100% !important;
+  margin-right: 0 !important;
+  border-right: none !important;
+}
+.detailGeneralPage .sapUxAPObjectPageContainer {
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+.detailGeneralPage .sapUxAPObjectPageSection {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+.detailGeneralPage .sapUxAPObjectPageSectionTitle .sapMTitleStyleH4,
+.detailGeneralPage .sapUxAPObjectPageSectionTitle .sapUiSelectable {
+  font-size: 1rem !important;
+  font-weight: bold !important;
+}
+.detailGeneralPage .sapUxAPObjectPageHeaderContent,
+.detailGeneralPage .sapUxAPAnchorBar,
+.detailGeneralPage .sapUxAPObjectPageNavigation,
+.detailGeneralPage .sapUxAPObjectPageHeaderDetails {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.detailTablePanel.sapMPanel {
+  border: 1px solid var(--sapGroup_ContentBorderColor) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: none !important;
+  background: var(--sapBackgroundColor, #fff) !important;
+}
+.detailTablePanel.sapMPanel > .sapMPanelContent {
+  padding: 0 !important;
+}
+
+.detailWhereUsedForm.sapUiSimpleForm,
+.detailWhereUsedForm.sapUiSimpleForm > .sapUiRespGrid {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.detailWhereUsedToolbar.sapMTB {
+  width: 100% !important;
 }
 
 .detailDocName.sapMText {

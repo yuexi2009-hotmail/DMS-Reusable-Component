@@ -4,6 +4,8 @@
   xmlns="sap.m"
   xmlns:f="sap.f"
   xmlns:form="sap.ui.layout.form"
+  xmlns:uxap="sap.uxap"
+  xmlns:ui="sap.ui.table"
   displayBlock="true">
 
   <Page showHeader="false" enableScrolling="false" class="detailPage">
@@ -11,7 +13,7 @@
       <f:DynamicPage id="detailPage" toggleHeaderOnTitleClick="true" showFooter="false" stickySubheaderProvider="detailTabBar">
 
         <f:title>
-          <f:DynamicPageTitle>
+          <f:DynamicPageTitle class="sapUiSizeCompact">
             <f:heading>
               <VBox>
                 <Title text="{detail>/name}" level="H2" />
@@ -25,11 +27,11 @@
               </VBox>
             </f:snappedHeading>
             <f:actions>
-              <Button text="Delete" type="Default" />
-              <Button text="Copy" type="Default" />
-              <Button text="Change Product Category" type="Default" />
-              <Button text="Transfer Data" type="Default" />
-              <MenuButton text="Next Steps" type="Default" buttonMode="Regular" menuPosition="BeginBottom">
+              <Button text="Delete" type="Ghost" />
+              <Button text="Copy" type="Ghost" />
+              <Button text="Change Product Category" type="Ghost" />
+              <Button text="Transfer Data" type="Ghost" />
+              <MenuButton text="Next Steps" type="Ghost" buttonMode="Regular" menuPosition="BeginBottom">
                 <menu>
                   <Menu>
                     <items>
@@ -40,8 +42,8 @@
                   </Menu>
                 </menu>
               </MenuButton>
-              <Button text="New Version" type="Default" />
-              <Button icon="sap-icon://action" type="Default" />
+              <Button text="New Version" type="Ghost" />
+              <Button icon="sap-icon://action" type="Transparent" />
             </f:actions>
           </f:DynamicPageTitle>
         </f:title>
@@ -80,59 +82,90 @@
 
               <!-- General Tab -->
               <IconTabFilter text="General" key="general">
-                <VBox class="detailTabContent">
-                  <Title text="Basic Data" level="H4" class="sapUiSmallMarginBottom" />
-                  <form:SimpleForm
-                    layout="ColumnLayout"
-                    columnsM="2" columnsL="4" columnsXL="4"
-                    class="sapUiMediumMarginBottom">
-                    <Label text="ID:" />
-                    <Text text="{detail>/id}" />
-                    <Label text="Version:" />
-                    <Text text="{detail>/version}" />
-                    <Label text="Status:" />
-                    <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" />
-                    <Label text="Specification Type:" />
-                    <Text text="{detail>/specType}" />
-                    <Label text="Name:" />
-                    <Text text="{detail>/name}" />
-                    <Label text="" />
-                    <Text text="" />
-                    <Label text="" />
-                    <Text text="" />
-                    <Label text="Product Category:" />
-                    <Text text="{detail>/productCategory}" />
-                  </form:SimpleForm>
-                  <VBox>
-                    <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                      <Title text="Other Versions" level="H4" />
-                      <ToolbarSpacer />
-                      <SearchField placeholder="Search" width="14rem" />
-                      <Button icon="sap-icon://action-settings" type="Transparent" />
-                      <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
-                    </Toolbar>
-                    <Table items="{detail>/otherVersions}" class="sapUiSizeCompact detailTable">
-                      <columns>
-                        <Column><Text text="Name" /></Column>
-                        <Column width="8rem"><Text text="Version" /></Column>
-                        <Column><Text text="Status" /></Column>
-                      </columns>
-                      <items>
-                        <ColumnListItem>
-                          <cells>
-                            <Text text="{name}" />
-                            <Text text="{version}" />
-                            <ObjectStatus text="{statusText}" state="{statusState}" />
-                          </cells>
-                        </ColumnListItem>
-                      </items>
-                      <noData>
-                        <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
-                          title="No items available" description="When there are, you'll find them here." />
-                      </noData>
-                    </Table>
-                  </VBox>
-                </VBox>
+                <uxap:ObjectPageLayout
+                  id="generalObjectPage"
+                  useIconTabBar="false"
+                  upperCaseAnchorBar="false"
+                  showTitleInHeaderContent="false"
+                  alwaysShowContentHeader="false"
+                  preserveHeaderStateOnScroll="false"
+                  showAnchorBar="false"
+                  showHeaderContent="false"
+                  enableLazyLoading="false"
+                  class="detailGeneralPage">
+                  <uxap:sections>
+
+                    <uxap:ObjectPageSection title=" " titleUppercase="false">
+                      <uxap:subSections>
+                        <uxap:ObjectPageSubSection title=" ">
+                          <uxap:blocks>
+                            <VBox width="100%">
+                              <Toolbar class="sapUiSizeCompact detailSectionToolbar detailPlainToolbar">
+                                <Title text="Basic Data" level="H4" />
+                              </Toolbar>
+                              <form:SimpleForm
+                                layout="ColumnLayout"
+                                columnsM="2" columnsL="4" columnsXL="4"
+                                class="sapUxAPObjectPageSubSectionAlignContent">
+                                <Label text="ID" />
+                                <Text text="{detail>/id}" />
+                                <Label text="Status" />
+                                <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" />
+                                <Label text="Name" />
+                                <Text text="{detail>/name}" />
+                                <Label text="Product Category" />
+                                <Text text="{detail>/productCategory}" />
+                                <Label text="Version" />
+                                <Text text="{detail>/version}" />
+                                <Label text="Specification Type" />
+                                <Text text="{detail>/specType}" />
+                              </form:SimpleForm>
+                            </VBox>
+                          </uxap:blocks>
+                        </uxap:ObjectPageSubSection>
+                      </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <uxap:ObjectPageSection title=" " titleUppercase="false">
+                      <uxap:subSections>
+                        <uxap:ObjectPageSubSection title=" ">
+                          <uxap:blocks>
+                            <VBox width="100%">
+                              <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                                <Title text="Other Versions" level="H4" />
+                                <ToolbarSpacer />
+                                <SearchField placeholder="Search" width="14rem" />
+                                <Button icon="sap-icon://action-settings" type="Transparent" />
+                                <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
+                              </Toolbar>
+                              <Table items="{detail>/otherVersions}" class="sapUiSizeCompact detailTable">
+                                <columns>
+                                  <Column><Text text="Name" /></Column>
+                                  <Column width="8rem"><Text text="Version" /></Column>
+                                  <Column><Text text="Status" /></Column>
+                                </columns>
+                                <items>
+                                  <ColumnListItem>
+                                    <cells>
+                                      <Text text="{name}" />
+                                      <Text text="{version}" />
+                                      <ObjectStatus text="{statusText}" state="{statusState}" />
+                                    </cells>
+                                  </ColumnListItem>
+                                </items>
+                                <noData>
+                                  <IllustratedMessage illustrationType="sapIllus-NoData" illustrationSize="Dot"
+                                    title="No items available" description="When there are, you'll find them here." />
+                                </noData>
+                              </Table>
+                            </VBox>
+                          </uxap:blocks>
+                        </uxap:ObjectPageSubSection>
+                      </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                  </uxap:sections>
+                </uxap:ObjectPageLayout>
               </IconTabFilter>
 
               <!-- Properties Tab -->

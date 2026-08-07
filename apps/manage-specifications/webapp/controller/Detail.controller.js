@@ -24,6 +24,29 @@ sap.ui.define([
     _onRouteMatched: function (oEvent) {
       var sSpecId = oEvent.getParameter("arguments").specId;
       this._loadDetail(sSpecId);
+      this._fixObjectPageScroll();
+    },
+
+    _fixObjectPageScroll: function () {
+      var oOPL = this.getView().byId("generalObjectPage");
+      if (!oOPL) { return; }
+
+      // Patch _adjustHeaderHeights to always report 0 header height
+      // so ObjectPage never sets a non-zero padding-top on the scroll container
+      if (!oOPL.__headerHeightPatched) {
+        var fnOrig = oOPL._adjustHeaderHeights && oOPL._adjustHeaderHeights.bind(oOPL);
+        if (fnOrig) {
+          oOPL._adjustHeaderHeights = function () {
+            fnOrig();
+            var oDom = oOPL.getDomRef();
+            if (oDom) {
+              var oScroll = oDom.querySelector(".sapUxAPObjectPageScroll");
+              if (oScroll) { oScroll.style.paddingTop = "0px"; }
+            }
+          };
+        }
+        oOPL.__headerHeightPatched = true;
+      }
     },
 
     _loadDetail: function (sSpecId) {
