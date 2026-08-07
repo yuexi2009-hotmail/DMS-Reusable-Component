@@ -455,6 +455,36 @@
   color: var(--sapContent_LabelColor) !important;
   font-size: var(--sapFontSmallSize) !important;
 }
+.detailDocMeta.sapMText {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+}
+.detailDocNumber.sapMText,
+.detailTreeTable2 .detailDocNumber.sapMText,
+.detailTreeTable1 .detailDocNumber.sapMText {
+  font-weight: bold !important;
+  color: var(--sapTextColor) !important;
+}
+.detailTreeTable1 .detailDocMeta.sapMText {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+}
+/* Documents 2: fixed row height via rowHeight property; content cells allow wrapping */
+.detailTreeTable2 .sapUiTableDataCell {
+  white-space: normal !important;
+  vertical-align: middle !important;
+}
+.detailTreeTable2 .detailDocNumber.sapMText {
+  font-weight: bold !important;
+  color: var(--sapTextColor) !important;
+}
+.detailTreeTable2 .detailDocMeta.sapMText {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+}
+.detailDocInfoCell {
+  gap: 0.125rem;
+}
 /* TreeTable row height: auto for two-line rows */
 #documentsTreeTable .sapUiTableCell {
   height: auto !important;
@@ -469,6 +499,39 @@
 #documentsTreeTable .sapUiTableTr > td {
   height: auto !important;
   vertical-align: middle !important;
+}
+
+/* Link Document Dialog: search toolbar padding + bottom border */
+.linkDocSearchBar.sapMTB {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-bottom: none !important;
+}
+/* Unlink confirmation dialog: compact size */
+.unlinkDialog.sapMDialog {
+  min-width: 20rem !important;
+}
+.unlinkDialog .sapMDialogSection {
+  padding: 0.5rem 1rem !important;
+}
+.unlinkDialog .sapMBar {
+  min-height: 2.5rem !important;
+  height: 2.5rem !important;
+}
+.unlinkDialog .sapMBtn {
+  height: 1.625rem !important;
+  min-height: 1.625rem !important;
+  line-height: 1.625rem !important;
+}
+.unlinkDialog .sapMBtnInner {
+  height: 1.625rem !important;
+  min-height: 1.625rem !important;
+  line-height: 1.625rem !important;
+  padding: 0 0.5rem !important;
+}
+
+.linkDocTabBar.sapMITB > .sapMITBHead {
+  border-top: none !important;
 }
 
 .detailDocStandardBtn.sapMBtn .sapMBtnContent {

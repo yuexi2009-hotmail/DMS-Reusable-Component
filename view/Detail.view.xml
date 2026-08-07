@@ -252,13 +252,13 @@
                       <menu>
                         <Menu>
                           <items>
-                            <MenuItem text="Link Existing Document" />
+                            <MenuItem text="Link Existing Document" press=".onLinkExistingDocument" />
                             <MenuItem text="Link New Document" />
                           </items>
                         </Menu>
                       </menu>
                     </MenuButton>
-                    <Button text="Unlink Document" type="Transparent" enabled="false" />
+                    <Button id="unlinkBtn" text="Unlink Document" type="Transparent" enabled="false" press=".onUnlinkDocument" />
                     <Button icon="sap-icon://action-settings" type="Transparent" />
                   </Toolbar>
                   <ui:TreeTable
@@ -267,6 +267,7 @@
                     selectionMode="MultiToggle"
                     visibleRowCountMode="Fixed"
                     visibleRowCount="4"
+                    rowSelectionChange=".onDocSelectionChange"
                     toggleOpenState=".onDocTreeToggle"
                     class="sapUiSizeCompact">
                     <ui:columns>
@@ -292,13 +293,160 @@
                       <ui:Column width="8rem">
                         <Label text="Part" />
                         <ui:template>
-                          <Text text="{detail>part}" />
+                          <Text text="{= ${detail>isParent} === true ? ${detail>part} : '' }" />
                         </ui:template>
                       </ui:Column>
                       <ui:Column width="8rem">
                         <Label text="Version" />
                         <ui:template>
-                          <Text text="{detail>version}" />
+                          <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="4rem" hAlign="End">
+                        <Label text="" />
+                        <ui:template>
+                          <Button icon="sap-icon://navigation-right-arrow" type="Transparent" press=".onDocumentNavigate" />
+                        </ui:template>
+                      </ui:Column>
+                    </ui:columns>
+                  </ui:TreeTable>
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Documents 1 Tab (method 3: Modified On + Created By as second line in Description) -->
+              <IconTabFilter text="Documents 1" key="documents1">
+                <VBox class="detailTabContent">
+                  <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                    <Title text="Items ({= ${detail>/documents}.length})" level="H4" />
+                    <ToolbarSpacer />
+                    <SearchField placeholder="Search" width="16rem" />
+                    <Button icon="sap-icon://filter" type="Transparent" />
+                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                      <menu>
+                        <Menu>
+                          <items>
+                            <MenuItem text="Link Existing Document" press=".onLinkExistingDocument" />
+                            <MenuItem text="Link New Document" />
+                          </items>
+                        </Menu>
+                      </menu>
+                    </MenuButton>
+                    <Button id="unlinkBtn1" text="Unlink Document" type="Transparent" enabled="false" press=".onUnlinkDocument" />
+                    <Button icon="sap-icon://action-settings" type="Transparent" />
+                  </Toolbar>
+                  <ui:TreeTable
+                    id="documentsTreeTable1"
+                    rows="{path: 'detail>/documents', parameters: {arrayNames: ['children']}}"
+                    selectionMode="MultiToggle"
+                    visibleRowCountMode="Fixed"
+                    visibleRowCount="4"
+                    rowSelectionChange=".onDocSelectionChange1"
+                    toggleOpenState=".onDocTreeToggle1"
+                    class="sapUiSizeCompact detailTreeTable1">
+                    <ui:columns>
+                      <ui:Column width="20rem">
+                        <Label text="Document Info" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>docNumber} : ${detail>description} }"
+                            class="{= ${detail>isParent} === true ? 'detailDocNumber' : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column>
+                        <Label text="Description" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>docDescription} : (${detail>modifiedOn} ? ('Last modified on ' + ${detail>modifiedOn} + ' by ' + ${detail>createdBy}) : '') }"
+                            class="{= ${detail>isParent} === true ? '' : 'detailDocMeta' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Type" />
+                        <ui:template>
+                          <Text text="{detail>type}" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Part" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>part} : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Version" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="4rem" hAlign="End">
+                        <Label text="" />
+                        <ui:template>
+                          <Button icon="sap-icon://navigation-right-arrow" type="Transparent" press=".onDocumentNavigate" />
+                        </ui:template>
+                      </ui:Column>
+                    </ui:columns>
+                  </ui:TreeTable>
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Documents 2 Tab: Description merged into Document Info column as grey second line -->
+              <IconTabFilter text="Documents 2" key="documents2">
+                <VBox class="detailTabContent">
+                  <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                    <Title text="Items ({= ${detail>/documents}.length})" level="H4" />
+                    <ToolbarSpacer />
+                    <SearchField placeholder="Search" width="16rem" />
+                    <Button icon="sap-icon://filter" type="Transparent" />
+                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                      <menu>
+                        <Menu>
+                          <items>
+                            <MenuItem text="Link Existing Document" press=".onLinkExistingDocument" />
+                            <MenuItem text="Link New Document" />
+                          </items>
+                        </Menu>
+                      </menu>
+                    </MenuButton>
+                    <Button id="unlinkBtn2" text="Unlink Document" type="Transparent" enabled="false" press=".onUnlinkDocument" />
+                    <Button icon="sap-icon://action-settings" type="Transparent" />
+                  </Toolbar>
+                  <ui:TreeTable
+                    id="documentsTreeTable2"
+                    rows="{path: 'detail>/documents', parameters: {arrayNames: ['children']}}"
+                    selectionMode="MultiToggle"
+                    visibleRowCountMode="Fixed"
+                    visibleRowCount="4"
+                    columnHeaderHeight="32"
+                    rowHeight="56"
+                    rowSelectionChange=".onDocSelectionChange2"
+                    toggleOpenState=".onDocTreeToggle2"
+                    class="sapUiSizeCompact detailTreeTable2">
+                    <ui:columns>
+                      <ui:Column width="28rem">
+                        <Label text="Document Info" />
+                        <ui:template>
+                          <VBox class="detailDocInfoCell">
+                            <Text text="{= ${detail>isParent} === true ? ${detail>docNumber} : ${detail>description} }"
+                              class="{= ${detail>isParent} === true ? 'detailDocNumber' : '' }" />
+                            <Text text="{= ${detail>isParent} === true ? ${detail>docDescription} : (${detail>modifiedOn} ? ('Last modified on ' + ${detail>modifiedOn} + ' by ' + ${detail>createdBy}) : '') }"
+                              class="detailDocMeta" />
+                          </VBox>
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Type" />
+                        <ui:template>
+                          <Text text="{detail>type}" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Part" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>part} : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Version" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
                         </ui:template>
                       </ui:Column>
                       <ui:Column width="4rem" hAlign="End">
