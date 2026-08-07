@@ -301,6 +301,12 @@
                           <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
                         </ui:template>
                       </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Document Status" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>status} : '' }" />
+                        </ui:template>
+                      </ui:Column>
                       <ui:Column width="4rem" hAlign="End">
                         <Label text="" />
                         <ui:template>
@@ -374,6 +380,12 @@
                           <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
                         </ui:template>
                       </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Document Status" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>status} : '' }" />
+                        </ui:template>
+                      </ui:Column>
                       <ui:Column width="4rem" hAlign="End">
                         <Label text="" />
                         <ui:template>
@@ -444,6 +456,12 @@
                         <Label text="Version" />
                         <ui:template>
                           <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
+                        </ui:template>
+                      </ui:Column>
+                      <ui:Column width="8rem">
+                        <Label text="Document Status" />
+                        <ui:template>
+                          <Text text="{= ${detail>isParent} === true ? ${detail>status} : '' }" />
                         </ui:template>
                       </ui:Column>
                       <ui:Column width="4rem" hAlign="End">

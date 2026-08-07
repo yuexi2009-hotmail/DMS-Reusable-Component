@@ -88,6 +88,12 @@
                         <Text text="{= ${linkDoc>isParent} === true ? ${linkDoc>version} : '' }" />
                       </ui:template>
                     </ui:Column>
+                    <ui:Column width="8rem">
+                      <Label text="Document Status" />
+                      <ui:template>
+                        <Text text="{= ${linkDoc>isParent} === true ? ${linkDoc>status} : '' }" />
+                      </ui:template>
+                    </ui:Column>
                   </ui:columns>
                 </ui:TreeTable>
 
