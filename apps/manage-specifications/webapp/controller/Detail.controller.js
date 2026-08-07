@@ -1,7 +1,8 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
-  "sap/ui/model/json/JSONModel"
-], function (Controller, JSONModel) {
+  "sap/ui/model/json/JSONModel",
+  "sap/m/MessageToast"
+], function (Controller, JSONModel, MessageToast) {
   "use strict";
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
@@ -18,6 +19,21 @@ sap.ui.define([
           el.style.background = "var(--sapBackgroundColor, #ffffff)";
           el.style.padding = "0";
         });
+      }, 0);
+    },
+
+    onDocumentNavigate: function () {
+      MessageToast.show("Navigate to document");
+    },
+
+    onDocTreeToggle: function () {
+      var oTable = this.getView().byId("documentsTreeTable");
+      if (!oTable) { return; }
+      setTimeout(function () {
+        var oBinding = oTable.getBinding("rows");
+        if (oBinding) {
+          oTable.setVisibleRowCount(oBinding.getLength());
+        }
       }, 0);
     },
 
@@ -68,7 +84,31 @@ sap.ui.define([
         otherVersions: [],
         collaborations: [],
         documents: [
-          { name: "ObjectLinks-Overview-April2026.pptx", modifiedOn: "Aug 6, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "1.21 MB" }
+          {
+            docNumber: "100000003683", description: "ObjectLinks-Overview-April2026.pptx", docDescription: "Overview of object links for April 2026 release", type: "NEW", part: "Main", version: "1.0", isParent: true,
+            children: [
+              { docNumber: "100000003684", description: "Appendix-A.pdf", type: "PDF", part: "Appendix", version: "1.0" },
+              { docNumber: "100000003685", description: "Appendix-B.xlsx", type: "XLSX", part: "Appendix", version: "1.1" }
+            ]
+          },
+          {
+            docNumber: "100000003690", description: "Technical-Specification-v2.pdf", docDescription: "Technical specification document version 2", type: "IMU", part: "Spec", version: "2.0", isParent: true,
+            children: [
+              { docNumber: "100000003691", description: "Drawing-Front.dwg", type: "DWG", part: "Design", version: "1.0" },
+              { docNumber: "100000003692", description: "Drawing-Side.dwg", type: "DWG", part: "Design", version: "1.2" },
+              { docNumber: "100000003693", description: "BOM-List.xlsx", type: "XLSX", part: "BOM", version: "3.1" }
+            ]
+          },
+          {
+            docNumber: "100000003700", description: "Compliance-Report-2026.docx", docDescription: "Annual compliance report for 2026", type: "TES", part: "Compliance", version: "1.0", isParent: true,
+            children: [
+              { docNumber: "100000003701", description: "Test-Results.pdf", type: "PDF", part: "Testing", version: "1.0" }
+            ]
+          },
+          {
+            docNumber: "100000003710", description: "User-Manual-EN.pdf", docDescription: "English user manual for end users", type: "DRW", part: "Manual", version: "4.2", isParent: true,
+            children: []
+          }
         ]
       });
       this.getView().setModel(oDetailModel, "detail");
