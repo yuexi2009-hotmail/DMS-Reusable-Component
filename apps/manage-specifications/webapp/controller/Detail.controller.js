@@ -223,27 +223,27 @@ sap.ui.define([
           var oLinkDocModel = new JSONModel({
             documents: [
               {
-                docNumber: "200000001001", description: "Safety-Standards-2026.pdf", docDescription: "Global safety standards for 2026", type: "DFT", part: "Safety", version: "1.0", isParent: true,
+                docNumber: "200000001001", description: "Safety-Standards-2026.pdf", docDescription: "Global safety standards for 2026", type: "DFT", part: "000", version: "01", status: "New", isParent: true,
                 children: [
-                  { docNumber: "200000001002", description: "Annex-I.pdf", type: "PDF", part: "Annex", version: "1.0", modifiedOn: "Jul 10, 2026", createdBy: "anna.schmidt@sap.com" },
-                  { docNumber: "200000001003", description: "Annex-II.pdf", type: "PDF", part: "Annex", version: "1.1", modifiedOn: "Jul 15, 2026", createdBy: "anna.schmidt@sap.com" }
+                  { docNumber: "200000001002", description: "Annex-I.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Jul 10, 2026", createdBy: "anna.schmidt@sap.com" },
+                  { docNumber: "200000001003", description: "Annex-II.pdf", type: "PDF", part: "000", version: "02", modifiedOn: "Jul 15, 2026", createdBy: "anna.schmidt@sap.com" }
                 ]
               },
               {
-                docNumber: "200000001010", description: "Material-Spec-Sheet.xlsx", docDescription: "Material specification sheet", type: "WIN", part: "Material", version: "2.0", isParent: true,
+                docNumber: "200000001010", description: "Material-Spec-Sheet.xlsx", docDescription: "Material specification sheet", type: "WIN", part: "000", version: "02", status: "Created", isParent: true,
                 children: [
-                  { docNumber: "200000001011", description: "Raw-Material-A.xlsx", type: "XLSX", part: "Raw", version: "1.0", modifiedOn: "Jun 20, 2026", createdBy: "max.mueller@sap.com" }
+                  { docNumber: "200000001011", description: "Raw-Material-A.xlsx", type: "XLSX", part: "000", version: "01", modifiedOn: "Jun 20, 2026", createdBy: "max.mueller@sap.com" }
                 ]
               },
               {
-                docNumber: "200000001020", description: "Change-Request-CR042.docx", docDescription: "Change request CR-042 documentation", type: "IMU", part: "CR", version: "3.1", isParent: true,
+                docNumber: "200000001020", description: "Change-Request-CR042.docx", docDescription: "Change request CR-042 documentation", type: "IMU", part: "000", version: "03", status: "Update", isParent: true,
                 children: []
               },
               {
-                docNumber: "200000001030", description: "Validation-Protocol-VP7.pdf", docDescription: "Validation protocol VP-7", type: "TES", part: "Validation", version: "1.2", isParent: true,
+                docNumber: "200000001030", description: "Validation-Protocol-VP7.pdf", docDescription: "Validation protocol VP-7", type: "TES", part: "000", version: "01", status: "In Work", isParent: true,
                 children: [
-                  { docNumber: "200000001031", description: "Test-Plan-VP7.pdf", type: "PDF", part: "Test", version: "1.0", modifiedOn: "Aug 2, 2026", createdBy: "yue.xi01@sap.com" },
-                  { docNumber: "200000001032", description: "Results-VP7.xlsx", type: "XLSX", part: "Results", version: "2.0", modifiedOn: "Aug 4, 2026", createdBy: "yue.xi01@sap.com" }
+                  { docNumber: "200000001031", description: "Test-Plan-VP7.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Aug 2, 2026", createdBy: "yue.xi01@sap.com" },
+                  { docNumber: "200000001032", description: "Results-VP7.xlsx", type: "XLSX", part: "000", version: "02", modifiedOn: "Aug 4, 2026", createdBy: "yue.xi01@sap.com" }
                 ]
               }
             ]
@@ -416,28 +416,28 @@ sap.ui.define([
         collaborations: [],
         documents: [
           {
-            docNumber: "100000003683", description: "ObjectLinks-Overview-April2026.pptx", docDescription: "Overview of object links for April 2026 release", type: "NEW", part: "Main", version: "1.0", isParent: true,
+            docNumber: "100000003683", description: "ObjectLinks-Overview-April2026.pptx", docDescription: "Overview of object links for April 2026 release", type: "NEW", part: "000", version: "01", status: "New", isParent: true,
             children: [
-              { docNumber: "100000003684", description: "Appendix-A.pdf", type: "PDF", part: "Appendix", version: "1.0", modifiedOn: "Aug 6, 2026", createdBy: "yue.xi01@sap.com" },
-              { docNumber: "100000003685", description: "Appendix-B.xlsx", type: "XLSX", part: "Appendix", version: "1.1", modifiedOn: "Jul 12, 2026", createdBy: "yue.xi01@sap.com" }
+              { docNumber: "100000003684", description: "Appendix-A.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Aug 6, 2026", createdBy: "yue.xi01@sap.com" },
+              { docNumber: "100000003685", description: "Appendix-B.xlsx", type: "XLSX", part: "000", version: "02", modifiedOn: "Jul 12, 2026", createdBy: "yue.xi01@sap.com" }
             ]
           },
           {
-            docNumber: "100000003690", description: "Technical-Specification-v2.pdf", docDescription: "Technical specification document version 2", type: "IMU", part: "Spec", version: "2.0", isParent: true,
+            docNumber: "100000003690", description: "Technical-Specification-v2.pdf", docDescription: "Technical specification document version 2", type: "IMU", part: "000", version: "02", status: "In Work", isParent: true,
             children: [
-              { docNumber: "100000003691", description: "Drawing-Front.dwg", type: "DWG", part: "Design", version: "1.0", modifiedOn: "Aug 1, 2026", createdBy: "max.mueller@sap.com" },
-              { docNumber: "100000003692", description: "Drawing-Side.dwg", type: "DWG", part: "Design", version: "1.2", modifiedOn: "Aug 3, 2026", createdBy: "max.mueller@sap.com" },
-              { docNumber: "100000003693", description: "BOM-List.xlsx", type: "XLSX", part: "BOM", version: "3.1", modifiedOn: "Jul 28, 2026", createdBy: "yue.xi01@sap.com" }
+              { docNumber: "100000003691", description: "Drawing-Front.dwg", type: "DWG", part: "000", version: "01", modifiedOn: "Aug 1, 2026", createdBy: "max.mueller@sap.com" },
+              { docNumber: "100000003692", description: "Drawing-Side.dwg", type: "DWG", part: "000", version: "02", modifiedOn: "Aug 3, 2026", createdBy: "max.mueller@sap.com" },
+              { docNumber: "100000003693", description: "BOM-List.xlsx", type: "XLSX", part: "000", version: "03", modifiedOn: "Jul 28, 2026", createdBy: "yue.xi01@sap.com" }
             ]
           },
           {
-            docNumber: "100000003700", description: "Compliance-Report-2026.docx", docDescription: "Annual compliance report for 2026", type: "TES", part: "Compliance", version: "1.0", isParent: true,
+            docNumber: "100000003700", description: "Compliance-Report-2026.docx", docDescription: "Annual compliance report for 2026", type: "TES", part: "000", version: "01", status: "Locked", isParent: true,
             children: [
-              { docNumber: "100000003701", description: "Test-Results.pdf", type: "PDF", part: "Testing", version: "1.0", modifiedOn: "Aug 5, 2026", createdBy: "anna.schmidt@sap.com" }
+              { docNumber: "100000003701", description: "Test-Results.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Aug 5, 2026", createdBy: "anna.schmidt@sap.com" }
             ]
           },
           {
-            docNumber: "100000003710", description: "User-Manual-EN.pdf", docDescription: "English user manual for end users", type: "DRW", part: "Manual", version: "4.2", isParent: true,
+            docNumber: "100000003710", description: "User-Manual-EN.pdf", docDescription: "English user manual for end users", type: "DRW", part: "000", version: "04", status: "Created", isParent: true,
             children: []
           }
         ]
