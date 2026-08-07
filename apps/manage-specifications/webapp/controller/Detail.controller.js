@@ -63,12 +63,7 @@ sap.ui.define([
       var oBtn = this.getView().byId(sBtnId);
       if (!oTable || !oBtn) { return; }
       var aSelected = oTable.getSelectedIndices();
-      var oBinding = oTable.getBinding("rows");
-      var hasParent = aSelected.some(function (i) {
-        var oCtx = oBinding && oBinding.getContextByIndex(i);
-        return oCtx && oCtx.getObject() && oCtx.getObject().isParent;
-      });
-      oBtn.setEnabled(hasParent);
+      oBtn.setEnabled(aSelected.length > 0);
     },
 
     onDocSelectionChange: function (oEvent) {
@@ -131,11 +126,7 @@ sap.ui.define([
           var oBtn = oView.byId(sBtnId);
           if (!oBtn) { return; }
           var aSelected = oTable.getSelectedIndices();
-          var hasParent = aSelected.some(function (i) {
-            var ctx = oBinding.getContextByIndex(i);
-            return ctx && ctx.getObject() && ctx.getObject().isParent;
-          });
-          oBtn.setEnabled(hasParent);
+          oBtn.setEnabled(aSelected.length > 0);
         }
       }, 50);
     },
@@ -156,11 +147,22 @@ sap.ui.define([
       var oTable = oView.byId(sTableId);
       var aSelected = oTable ? oTable.getSelectedIndices() : [];
       var oBinding = oTable && oTable.getBinding("rows");
+      var aDocs = oView.getModel("detail") ? (oView.getModel("detail").getProperty("/documents") || []) : [];
       var aDocNumbers = [];
       aSelected.forEach(function (i) {
         var oCtx = oBinding && oBinding.getContextByIndex(i);
         var oDoc = oCtx && oCtx.getObject();
-        if (oDoc && oDoc.isParent) { aDocNumbers.push(oDoc.docNumber); }
+        if (!oDoc) { return; }
+        if (oDoc.isParent) {
+          if (aDocNumbers.indexOf(oDoc.docNumber) === -1) { aDocNumbers.push(oDoc.docNumber); }
+        } else {
+          // Child row — find its parent
+          aDocs.forEach(function (oParent) {
+            if (oParent.children && oParent.children.some(function (c) { return c.docNumber === oDoc.docNumber; })) {
+              if (aDocNumbers.indexOf(oParent.docNumber) === -1) { aDocNumbers.push(oParent.docNumber); }
+            }
+          });
+        }
       });
       if (!aDocNumbers.length) { return; }
 
