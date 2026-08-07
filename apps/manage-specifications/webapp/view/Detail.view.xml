@@ -171,8 +171,35 @@
               <!-- Properties Tab -->
               <IconTabFilter text="Properties" key="properties">
                 <VBox class="detailTabContent">
-                  <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
-                    title="No data" description="No properties have been defined yet." />
+                  <VBox>
+                    <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                      <Title text="Properties" level="H4" />
+                      <ToolbarSpacer />
+                      <SearchField placeholder="Search" width="14rem" />
+                      <Button icon="sap-icon://action-settings" type="Transparent" />
+                      <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
+                    </Toolbar>
+                    <Table items="{detail>/properties}" class="sapUiSizeCompact detailTable">
+                      <columns>
+                        <Column><Text text="Name" /></Column>
+                        <Column><Text text="Value" /></Column>
+                        <Column><Text text="Unit" /></Column>
+                      </columns>
+                      <items>
+                        <ColumnListItem>
+                          <cells>
+                            <Text text="{name}" />
+                            <Text text="{value}" />
+                            <Text text="{unit}" />
+                          </cells>
+                        </ColumnListItem>
+                      </items>
+                      <noData>
+                        <IllustratedMessage illustrationType="sapIllus-NoData" illustrationSize="Dot"
+                          title="No items available" description="When there are, you'll find them here." />
+                      </noData>
+                    </Table>
+                  </VBox>
                 </VBox>
               </IconTabFilter>
 
@@ -183,11 +210,11 @@
                     <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                       <Title text="Collaborations" level="H4" />
                       <ToolbarSpacer />
-                      <Button text="Add" type="Transparent" />
-                      <Button text="Remove" type="Transparent" enabled="false" />
+                      <SearchField placeholder="Search" width="14rem" />
+                      <Button icon="sap-icon://action-settings" type="Transparent" />
                       <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
                     </Toolbar>
-                    <Table items="{detail>/collaborations}" mode="MultiSelect" class="sapUiSizeCompact detailTable">
+                    <Table items="{detail>/collaborations}" class="sapUiSizeCompact detailTable">
                       <columns>
                         <Column><Text text="Name" /></Column>
                         <Column><Text text="Description" /></Column>
@@ -205,7 +232,7 @@
                         </ColumnListItem>
                       </items>
                       <noData>
-                        <IllustratedMessage illustrationType="sapIllus-EmptyList" illustrationSize="Scene"
+                        <IllustratedMessage illustrationType="sapIllus-NoData" illustrationSize="Dot"
                           title="No items available" description="When there are, you'll find them here." />
                       </noData>
                     </Table>
