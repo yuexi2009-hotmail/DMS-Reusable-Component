@@ -252,8 +252,16 @@ sap.ui.define([
           return oDialog;
         });
       }
+      var oView = this.getView();
       this._oLinkDocDialog.then(function (oDialog) {
         oDialog.open();
+        setTimeout(function () {
+          var oTable = oView.byId("linkDocResultTable");
+          if (!oTable) { return; }
+          oTable.expandToLevel(1);
+          var oBinding = oTable.getBinding("rows");
+          if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
+        }, 100);
       });
     },
 
@@ -443,6 +451,17 @@ sap.ui.define([
         ]
       });
       this.getView().setModel(oDetailModel, "detail");
+
+      var oView = this.getView();
+      setTimeout(function () {
+        ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
+          var oTable = oView.byId(sId);
+          if (!oTable) { return; }
+          oTable.expandToLevel(1);
+          var oBinding = oTable.getBinding("rows");
+          if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
+        });
+      }, 100);
 
       var oRootView = this.getOwnerComponent().getRootControl();
       var oShellBar = oRootView.byId("appShellBar");
