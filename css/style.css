@@ -256,7 +256,7 @@
 
 /* Tab content: single source of padding */
 .detailTabContent {
-  padding: 1rem 3rem 0 3rem;
+  padding: 1rem 3rem 2rem 3rem;
   background: var(--sapBackgroundColor, #fff);
 }
 
