@@ -243,37 +243,22 @@
               <!-- Documents Tab -->
               <IconTabFilter text="Documents" key="documents">
                 <VBox class="detailTabContent">
-                  <MessageStrip
-                    text="Documents are visible in all the versions of the specification."
-                    type="Warning"
-                    showCloseButton="true"
-                    class="sapUiSmallMarginBottom" />
-                  <Link text="09a212e0-65fa-4464-907d-d52c1b844027" class="sapUiTinyMarginBottom" />
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Button text="Standard" icon="sap-icon://slim-arrow-down" iconFirst="false" type="Transparent" class="detailDocStandardBtn" />
-                    <Text text="Items (1)" class="sapUiSmallMarginBegin" />
-                    <SearchField placeholder="Search" width="16rem" class="sapUiSmallMarginBegin" />
-                    <Button icon="sap-icon://attachment" type="Transparent" />
-                    <Button text="Create" type="Emphasized" iconFirst="false" icon="sap-icon://slim-arrow-down" />
-                    <Button text="Edit Link" type="Transparent" enabled="false" />
-                    <Button text="Download" type="Transparent" enabled="false" />
-                    <Button text="Delete" type="Transparent" enabled="false" />
-                    <Button text="Move" type="Transparent" enabled="false" />
-                    <Button text="Copy" type="Transparent" enabled="false" />
-                    <MenuButton text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                    <Title text="Items ({= ${detail>/documents}.length})" level="H4" />
+                    <ToolbarSpacer />
+                    <SearchField placeholder="Search" width="16rem" />
+                    <Button icon="sap-icon://filter" type="Transparent" />
+                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
                           <items>
-                            <MenuItem text="Check In" />
-                            <MenuItem text="Check Out" />
+                            <MenuItem text="Link Existing Document" />
+                            <MenuItem text="Link New Document" />
                           </items>
                         </Menu>
                       </menu>
                     </MenuButton>
-                    <ToolbarSpacer />
-                    <Button icon="sap-icon://collaborate" type="Transparent" />
-                    <Button icon="sap-icon://refresh" type="Transparent" />
-                    <Button icon="sap-icon://sort" type="Transparent" />
+                    <Button text="Unlink Document" type="Transparent" enabled="false" />
                     <Button icon="sap-icon://action-settings" type="Transparent" />
                   </Toolbar>
                   <Table items="{detail>/documents}" mode="MultiSelect" class="sapUiSizeCompact detailTable">
