@@ -80,14 +80,19 @@
   margin-right: 0;
 }
 
-/* Table navigation arrow: grey not blue */
-.sapMListTblNavigated .sapMListTblNavCol .sapMLIBType,
-.sapMListTblNavCol .sapUiIcon,
-.sapMLIBImgNav .sapUiIcon,
-.sapMListNavImg .sapUiIcon {
+/* Table navigation arrow: grey not blue (scoped to detail/main pages, not dialogs) */
+.detailPage .sapMListTblNavigated .sapMListTblNavCol .sapMLIBType,
+.detailPage .sapMListTblNavCol .sapUiIcon,
+.detailPage .sapMLIBImgNav .sapUiIcon,
+.detailPage .sapMListNavImg .sapUiIcon,
+.manageSpecPage .sapMListTblNavigated .sapMListTblNavCol .sapMLIBType,
+.manageSpecPage .sapMListTblNavCol .sapUiIcon,
+.manageSpecPage .sapMLIBImgNav .sapUiIcon,
+.manageSpecPage .sapMListNavImg .sapUiIcon {
   color: var(--sapContent_LabelColor) !important;
 }
-.sapMListTbl .sapMLIBType .sapMListNavImg {
+.detailPage .sapMListTbl .sapMLIBType .sapMListNavImg,
+.manageSpecPage .sapMListTbl .sapMLIBType .sapMListNavImg {
   color: var(--sapContent_LabelColor) !important;
 }
 .sapMListTbl .sapMListTblCell,
@@ -538,4 +543,132 @@
 .detailDocStandardBtn.sapMBtn .sapMBtnContent {
   color: var(--sapLinkColor) !important;
   font-weight: bold !important;
+}
+
+/* FacetFilter dialogs: compact search field + compact OK button + compact checkbox + 14px text */
+.docFacetFilterDialog .sapMSF,
+.docFacetFilterDialog .sapMSFI,
+.docFacetFilterDialog .sapMSearchFieldInner,
+#__dialog0 .sapMSF,
+#__dialog0 .sapMSFI,
+#__dialog0 .sapMSearchFieldInner,
+#__dialog1 .sapMSF,
+#__dialog1 .sapMSFI,
+#__dialog1 .sapMSearchFieldInner {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  font-size: var(--sapFontSize) !important;
+}
+.docFacetFilterDialog .sapMSFB,
+#__dialog0 .sapMSFB,
+#__dialog1 .sapMSFB {
+  height: 2rem !important;
+  width: 2rem !important;
+  min-height: 2rem !important;
+}
+.docFacetFilterDialog .sapMBtnInner,
+.docFacetFilterDialog .sapMBtn,
+#__dialog0 .sapMBtnInner,
+#__dialog0 .sapMBtn,
+#__dialog1 .sapMBtnInner,
+#__dialog1 .sapMBtn {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  line-height: 2rem !important;
+  font-size: var(--sapFontSize) !important;
+  padding: 0 0.75rem !important;
+}
+.docFacetFilterDialog .sapMCb,
+#__dialog0 .sapMCb,
+#__dialog1 .sapMCb {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  min-width: 1.5rem !important;
+  min-height: 1.5rem !important;
+}
+.docFacetFilterDialog .sapMCbBg,
+#__dialog0 .sapMCbBg,
+#__dialog1 .sapMCbBg {
+  width: 1rem !important;
+  height: 1rem !important;
+  border-radius: 0.125rem !important;
+}
+.docFacetFilterDialog .sapMCbMark,
+#__dialog0 .sapMCbMark,
+#__dialog1 .sapMCbMark {
+  width: 1rem !important;
+  height: 1rem !important;
+  font-size: 0.75rem !important;
+}
+.docFacetFilterDialog .sapMLIBContent .sapMText,
+.docFacetFilterDialog .sapMLIBContent,
+.docFacetFilterDialog .sapMLIB .sapMText,
+#__dialog0 .sapMLIBContent .sapMText,
+#__dialog0 .sapMLIBContent,
+#__dialog0 .sapMLIB .sapMText,
+#__dialog1 .sapMLIBContent .sapMText,
+#__dialog1 .sapMLIBContent,
+#__dialog1 .sapMLIB .sapMText {
+  font-size: 14px !important;
+}
+.docFacetFilterDialog .sapMLIB,
+#__dialog0 .sapMLIB,
+#__dialog1 .sapMLIB {
+  min-height: 2.5rem !important;
+}
+
+/* Documents 3: attachment cell */
+.doc3AttBox {
+  padding: 0.25rem 0;
+}
+.doc3AttList.sapMList {
+  border: none !important;
+  background: transparent !important;
+}
+.doc3AttList .sapMListUl,
+.doc3AttList .sapMLIB {
+  border: none !important;
+  background: transparent !important;
+  min-height: 1.5rem !important;
+  padding: 0 !important;
+}
+.doc3AttList .sapMCLI {
+  padding: 0.125rem 0 !important;
+  min-height: 1.5rem !important;
+}
+.doc3AttItem.sapMText {
+  font-size: var(--sapFontSize) !important;
+  color: var(--sapTextColor) !important;
+  line-height: 1.5rem !important;
+}
+/* Limit to 10 rows (~1.5rem each = 15rem) */
+.doc3AttList:not(.doc3AttListExpanded) {
+  max-height: 15rem;
+  overflow: hidden;
+}
+.doc3AttListExpanded {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Attachment row: icon + filename */
+.doc3AttList .sapMCLI {
+  padding: 0 !important;
+  min-height: auto !important;
+  border: none !important;
+}
+.doc3AttList .sapMHBox {
+  padding: 2px 0 !important;
+  min-height: 24px !important;
+  align-items: center;
+}
+.doc3AttList .sapMText {
+  line-height: 24px !important;
+}
+.doc3AttIcon.sapUiIcon {
+  font-size: 1rem !important;
+  color: var(--sapContent_IconColor) !important;
+  flex-shrink: 0;
+  margin-right: 4px !important;
+  line-height: 24px !important;
 }

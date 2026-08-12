@@ -1,0 +1,77 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="linkDoc3Dialog"
+    title="Link Documents"
+    contentWidth="52rem"
+    contentHeight="36rem"
+    resizable="true"
+    draggable="true"
+    class="sapUiSizeCompact">
+
+    <content>
+      <VBox fitContainer="true">
+
+        <!-- Search row -->
+        <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDocSearchBar">
+          <SearchField
+            id="linkDoc3SearchField"
+            placeholder="Search"
+            width="100%"
+            search=".onLinkDoc3Search" />
+        </Toolbar>
+
+        <!-- Results table -->
+        <Table
+          id="linkDoc3ResultTable"
+          items="{linkDoc3>/documents}"
+          mode="MultiSelect"
+          noDataText="No documents found"
+          growing="true"
+          growingThreshold="20"
+          class="sapUiSizeCompact">
+          <columns>
+            <Column width="14rem">
+              <Text text="File Name" />
+            </Column>
+            <Column width="12rem">
+              <Text text="Document Number" />
+            </Column>
+            <Column width="8rem">
+              <Text text="Document Type" />
+            </Column>
+            <Column width="8rem">
+              <Text text="Document Version" />
+            </Column>
+            <Column width="8rem">
+              <Text text="Document Part" />
+            </Column>
+          </columns>
+          <items>
+            <ColumnListItem type="Active">
+              <cells>
+                <Text text="{linkDoc3>fileName}" />
+                <Text text="{linkDoc3>docNumber}" />
+                <Text text="{linkDoc3>type}" />
+                <Text text="{linkDoc3>version}" />
+                <Text text="{linkDoc3>part}" />
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+
+      </VBox>
+    </content>
+
+    <beginButton>
+      <Button text="Select" type="Emphasized" press=".onLinkDoc3Confirm" class="sapUiSizeCompact" />
+    </beginButton>
+    <endButton>
+      <Button text="Cancel" press=".onLinkDoc3Cancel" class="sapUiSizeCompact" />
+    </endButton>
+
+  </Dialog>
+
+</core:FragmentDefinition>
