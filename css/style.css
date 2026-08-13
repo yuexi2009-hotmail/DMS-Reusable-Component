@@ -62,6 +62,14 @@
 .sapFDynamicPageTitleMainActions .sapMTB {
   gap: 0.5rem !important;
 }
+/* MenuButton: remove extra arrow padding so gap matches regular buttons */
+.sapFDynamicPageTitleMainActions .sapMMenuBtn .sapMBtnInner {
+  padding-right: 0.5rem !important;
+}
+.sapFDynamicPageTitleMainActions .sapMMenuBtnArrow {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
 .sapFDynamicPageHeader {
   padding-left: 3rem !important;
   padding-right: 3rem !important;
