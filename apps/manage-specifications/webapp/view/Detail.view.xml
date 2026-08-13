@@ -490,6 +490,7 @@
                     showRowCount="true"
                     class="sapUiSizeCompact"
                     selectionChange=".onDoc5SelectionChange"
+                    groupConditions='{"groupLevels": [{"name": "docName"}]}'
                     delegate='{"name": "com/sap/demo/managespec/delegate/Doc5TableDelegate"}'>
                     <mdc:actions>
                       <SearchField id="doc5SearchField" placeholder="Search" width="16rem" search=".onDoc5Search">
