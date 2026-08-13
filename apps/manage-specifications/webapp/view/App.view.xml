@@ -37,6 +37,18 @@
         </searchManager>
     </ShellBar>
 
-    <m:App id="app" class="manageSpecFCL"/>
+    <FlexibleColumnLayout
+        id="appFCL"
+        layout="{appView>/fclLayout}"
+        class="manageSpecFCL">
+        <beginColumnPages>
+            <m:App id="app" />
+        </beginColumnPages>
+        <midColumnPages>
+            <mvc:XMLView
+                id="doc4DetailView"
+                viewName="com.sap.demo.managespec.view.Doc4Detail" />
+        </midColumnPages>
+    </FlexibleColumnLayout>
 
 </mvc:View>

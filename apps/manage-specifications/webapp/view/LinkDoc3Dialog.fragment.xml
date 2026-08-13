@@ -1,72 +1,102 @@
 <core:FragmentDefinition
   xmlns="sap.m"
-  xmlns:core="sap.ui.core">
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:t="sap.ui.table">
 
   <Dialog
     id="linkDoc3Dialog"
     title="Link Documents"
-    contentWidth="52rem"
-    contentHeight="36rem"
+    contentWidth="76rem"
+    contentHeight="44rem"
     resizable="true"
     draggable="true"
-    class="sapUiSizeCompact">
+    class="sapUiSizeCompact linkDoc3VHDialog">
 
     <content>
       <VBox fitContainer="true">
 
-        <!-- Search row -->
-        <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDocSearchBar">
+        <!-- Search row: full-width search + Go + Show/Hide Filters on right -->
+        <Toolbar id="linkDoc3SearchRow" class="sapUiSizeCompact sapMTBTransparent linkDoc3VHSearchRow">
           <SearchField
             id="linkDoc3SearchField"
             placeholder="Search"
-            width="100%"
-            search=".onLinkDoc3Search" />
+            search=".onLinkDoc3Search"
+            class="linkDoc3VHSearchField" />
+          <ToolbarSpacer />
+          <Button
+            id="linkDoc3GoBtn"
+            text="Go"
+            type="Emphasized"
+            press=".onLinkDoc3GoSearch"
+            class="sapUiSizeCompact" />
+          <Button
+            id="linkDoc3ShowFiltersBtn"
+            text="Show Filters"
+            type="Transparent"
+            press=".onLinkDoc3ToggleFilters"
+            class="sapUiSizeCompact" />
         </Toolbar>
 
-        <!-- Results table -->
-        <Table
+        <!-- Collapsible filter panel -->
+        <VBox id="linkDoc3FilterPanel" visible="false" class="linkDoc3FilterPanel">
+          <l:Grid
+            defaultSpan="L3 M3 S6"
+            containerQuery="true"
+            class="linkDoc3FilterGrid">
+            <VBox class="linkDoc3FilterItem">
+              <Label text="Document Type:" class="linkDoc3FilterLabel" />
+              <Select id="linkDoc3TypeFilter" change=".onLinkDoc3Filter" width="100%">
+                <core:Item key="" text="All" />
+                <core:Item key="DFT" text="DFT" />
+                <core:Item key="DRW" text="DRW" />
+                <core:Item key="TST" text="TST" />
+                <core:Item key="IMU" text="IMU" />
+              </Select>
+            </VBox>
+            <VBox class="linkDoc3FilterItem">
+              <Label text="Status:" class="linkDoc3FilterLabel" />
+              <Select id="linkDoc3StatusFilter" change=".onLinkDoc3Filter" width="100%">
+                <core:Item key="" text="All" />
+                <core:Item key="New" text="New" />
+                <core:Item key="In Work" text="In Work" />
+                <core:Item key="Released" text="Released" />
+              </Select>
+            </VBox>
+          </l:Grid>
+        </VBox>
+
+        <!-- Items count -->
+        <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDoc3ItemsToolbar">
+          <Title id="linkDoc3ItemsTitle" text="Items (15)" level="H5" />
+        </Toolbar>
+
+        <!-- Grid Table -->
+        <t:Table
           id="linkDoc3ResultTable"
-          items="{linkDoc3>/documents}"
-          mode="MultiSelect"
-          noDataText="No documents found"
-          growing="true"
-          growingThreshold="20"
-          class="sapUiSizeCompact">
-          <columns>
-            <Column width="14rem">
-              <Text text="File Name" />
-            </Column>
-            <Column width="12rem">
-              <Text text="Document Number" />
-            </Column>
-            <Column width="8rem">
-              <Text text="Document Type" />
-            </Column>
-            <Column width="8rem">
-              <Text text="Document Version" />
-            </Column>
-            <Column width="8rem">
-              <Text text="Document Part" />
-            </Column>
-          </columns>
-          <items>
-            <ColumnListItem type="Active">
-              <cells>
-                <Text text="{linkDoc3>fileName}" />
-                <Text text="{linkDoc3>docNumber}" />
-                <Text text="{linkDoc3>type}" />
-                <Text text="{linkDoc3>version}" />
-                <Text text="{linkDoc3>part}" />
-              </cells>
-            </ColumnListItem>
-          </items>
-        </Table>
+          rows="{linkDoc3>/documents}"
+          selectionMode="MultiToggle"
+          selectionBehavior="Row"
+          visibleRowCountMode="Auto"
+          minAutoRowCount="5"
+          noData="No documents found"
+          class="sapUiSizeCompact linkDoc3GridTable">
+          <t:columns>
+            <t:Column width="17rem"><Label text="Attachment" /><t:template><HBox alignItems="Center"><core:Icon src="{linkDoc3>fileIcon}" color="var(--sapContent_LabelColor)" useIconTooltip="false" class="sapUiTinyMarginEnd" /><Text text="{linkDoc3>fileName}" wrapping="false" /></HBox></t:template></t:Column>
+            <t:Column width="15rem"><Label text="Document" /><t:template><Text text="{linkDoc3>docName}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="11rem"><Label text="Document No." /><t:template><Text text="{linkDoc3>docNumber}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="9rem"><Label text="Document Type" /><t:template><Text text="{linkDoc3>type}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="7rem"><Label text="Document Part" /><t:template><Text text="{linkDoc3>part}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="8rem"><Label text="Document Version" /><t:template><Text text="{linkDoc3>version}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="9rem"><Label text="Document Status" /><t:template><Text text="{linkDoc3>status}" wrapping="false" /></t:template></t:Column>
+          </t:columns>
+        </t:Table>
 
       </VBox>
     </content>
 
     <beginButton>
-      <Button text="Select" type="Emphasized" press=".onLinkDoc3Confirm" class="sapUiSizeCompact" />
+      <Button text="OK" type="Emphasized" press=".onLinkDoc3Confirm" class="sapUiSizeCompact" width="auto" />
     </beginButton>
     <endButton>
       <Button text="Cancel" press=".onLinkDoc3Cancel" class="sapUiSizeCompact" />

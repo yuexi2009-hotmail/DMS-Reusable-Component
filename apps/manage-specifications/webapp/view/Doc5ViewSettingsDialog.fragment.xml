@@ -1,0 +1,28 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <ViewSettingsDialog
+    id="doc5ViewSettingsDialog"
+    title="View Settings"
+    confirm=".onDoc5ViewSettingsConfirm"
+    reset=".onDoc5ViewSettingsReset">
+
+    <sortItems>
+      <ViewSettingsItem text="Attachment"  key="fileName" />
+      <ViewSettingsItem text="Document"    key="docName" />
+      <ViewSettingsItem text="Type"        key="type" />
+      <ViewSettingsItem text="Part"        key="part" />
+      <ViewSettingsItem text="Version"     key="version" />
+      <ViewSettingsItem text="Status"      key="status" />
+    </sortItems>
+
+    <groupItems>
+      <ViewSettingsItem text="Document"    key="docName" />
+      <ViewSettingsItem text="Type"        key="type" />
+      <ViewSettingsItem text="Status"      key="status" />
+    </groupItems>
+
+  </ViewSettingsDialog>
+
+</core:FragmentDefinition>
