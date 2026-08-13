@@ -63,6 +63,7 @@
           "viewLevel": 1
         },
         "detail": {
+          "viewId": "detailView",
           "viewName": "Detail",
           "viewLevel": 2
         }
@@ -76,7 +77,8 @@
         "sap.ui.layout": {},
         "sap.ui.table": {},
         "sap.uxap": {},
-        "sap.ui.mdc": {}
+        "sap.ui.mdc": {},
+        "sap.ui.fl": {}
       }
     },
     "contentDensities": {

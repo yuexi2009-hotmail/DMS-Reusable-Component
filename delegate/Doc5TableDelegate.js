@@ -8,14 +8,14 @@ sap.ui.define([
   "use strict";
 
   var aPropertyInfos = [
-    { key: "fileName",  label: "Attachment",   path: "fileName",  dataType: "sap.ui.model.type.String" },
-    { key: "docName",   label: "Document",     path: "docName",   dataType: "sap.ui.model.type.String", groupable: true },
-    { key: "docNumber", label: "Document No.", path: "docNumber", dataType: "sap.ui.model.type.String" },
-    { key: "type",      label: "Document Type",    path: "type",      dataType: "sap.ui.model.type.String", groupable: true },
-    { key: "part",      label: "Document Part",    path: "part",      dataType: "sap.ui.model.type.String" },
-    { key: "version",   label: "Document Version", path: "version",   dataType: "sap.ui.model.type.String" },
-    { key: "status",    label: "Document Status",  path: "status",    dataType: "sap.ui.model.type.String", groupable: true },
-    { key: "nav",       label: "",             path: "nav",       dataType: "sap.ui.model.type.String" }
+    { key: "fileName",  label: "Attachment",       path: "fileName",  dataType: "sap.ui.model.type.String", groupable: false },
+    { key: "docName",   label: "Document",          path: "docName",   dataType: "sap.ui.model.type.String", groupable: true  },
+    { key: "docNumber", label: "Document No.",      path: "docNumber", dataType: "sap.ui.model.type.String", groupable: true  },
+    { key: "type",      label: "Document Type",     path: "type",      dataType: "sap.ui.model.type.String", groupable: true  },
+    { key: "part",      label: "Document Part",     path: "part",      dataType: "sap.ui.model.type.String", groupable: true  },
+    { key: "version",   label: "Document Version",  path: "version",   dataType: "sap.ui.model.type.String", groupable: true  },
+    { key: "status",    label: "Document Status",   path: "status",    dataType: "sap.ui.model.type.String", groupable: true  },
+    { key: "nav",       label: "",                  path: "nav",       dataType: "sap.ui.model.type.String", groupable: false }
   ];
 
   var oDelegate = Object.assign({}, TableDelegate);
@@ -25,8 +25,8 @@ sap.ui.define([
   };
 
   oDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
-    TableDelegate.updateBindingInfo.call(oDelegate, oTable, oBindingInfo);
-    oBindingInfo.path = oTable.getPayload().bindingPath;
+    TableDelegate.updateBindingInfo.call(this, oTable, oBindingInfo);
+    oBindingInfo.path  = "/documentsAttFlat";
     oBindingInfo.model = "detail";
   };
 
@@ -39,9 +39,16 @@ sap.ui.define([
 
     if (sPropertyKey === "fileName") {
       oTemplate = new HBox({ alignItems: "Center", items: [
-        new Icon({ src: { path: "detail>fileName" }, color: "var(--sapContent_LabelColor)", useIconTooltip: false }),
+        new Icon({
+          src: "{detail>fileName}",
+          color: "var(--sapContent_LabelColor)",
+          useIconTooltip: false,
+          class: "doc3AttIcon"
+        }),
         new Text({ text: "{detail>fileName}", wrapping: false })
       ]});
+    } else if (sPropertyKey === "nav") {
+      oTemplate = new Icon({ src: "sap-icon://slim-arrow-right", class: "doc5NavIcon" });
     } else {
       oTemplate = new Text({ text: "{detail>" + oPI.path + "}", wrapping: false });
     }
