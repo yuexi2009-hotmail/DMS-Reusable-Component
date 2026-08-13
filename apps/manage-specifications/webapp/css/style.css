@@ -545,6 +545,11 @@
 .linkDoc3VHDialog .sapMDialogEndButton.sapMBarChild {
   margin-left: 8px !important;
 }
+.linkDoc3VHDialog .sapMDialogFooter,
+.linkDoc3VHDialog .sapMDialogFooter.sapMTBNoBorders,
+.linkDoc3VHDialog .sapMFooter-CTX.sapMTBNoBorders {
+  box-shadow: inset 0 1px 0 0 var(--sapList_BorderColor) !important;
+}
 
 /* Link Document Dialog: search toolbar padding + bottom border */
 .linkDocSearchBar.sapMTB {

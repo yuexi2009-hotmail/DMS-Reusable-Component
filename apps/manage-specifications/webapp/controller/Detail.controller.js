@@ -405,6 +405,10 @@ sap.ui.define([
 
     onLinkExistingDocument: function () {
       var oView = this.getView();
+      if (this._oLinkDocDialog) {
+        this._oLinkDocDialog.then(function (oDialog) { oDialog.destroy(); });
+        this._oLinkDocDialog = null;
+      }
       if (!this._oLinkDocDialog) {
         this._oLinkDocDialog = Fragment.load({
           id: oView.getId(),
