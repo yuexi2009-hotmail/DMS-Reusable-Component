@@ -661,6 +661,10 @@ button[id$="linkDoc3ShowFiltersBtn"],
   min-width: 20rem !important;
 }
 
+.unlinkDialogTable {
+  margin-top: 0.5rem;
+}
+
 .linkDocTabBar.sapMITB > .sapMITBHead {
   border-top: none !important;
 }
