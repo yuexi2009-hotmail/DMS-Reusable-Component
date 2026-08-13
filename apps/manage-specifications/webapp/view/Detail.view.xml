@@ -305,8 +305,12 @@
                         <Label text="Document Info" />
                         <ui:template>
                           <VBox justifyContent="Center">
-                            <FormattedText htmlText="{= ${detail>isParent} === true ? ('&lt;strong&gt;' + ${detail>docNumber} + '&lt;/strong&gt;') : ${detail>description} }" />
+                            <FormattedText htmlText="{= ${detail>isParent} === true ? ('&lt;strong&gt;' + ${detail>docNumber} + '&lt;/strong&gt;') : '' }" />
                             <Text text="{detail>docDescription}" class="detailDocDescription" visible="{= ${detail>isParent} === true }" />
+                            <HBox alignItems="Center" visible="{= ${detail>isParent} !== true }">
+                              <core:Icon src="{path: 'detail>description', formatter: '.formatAttachmentIcon'}" useIconTooltip="false" class="doc3AttIcon" />
+                              <Text text="{detail>description}" />
+                            </HBox>
                           </VBox>
                         </ui:template>
                       </ui:Column>
@@ -350,14 +354,15 @@
                   </ui:TreeTable>
                 </VBox>
               </IconTabFilter>
-              <!-- Documents 2 Tab: Description merged into Document Info column as grey second line -->
-              <IconTabFilter text="Documents 2" key="documents2">
+
+              <!-- Documents 3 Tab: flat sap.m.Table, SAP-standard style -->
+              <IconTabFilter text="Documents 3" key="documents3">
                 <VBox class="detailTabContent">
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Title text="Items ({= ${detail>/documents}.length})" level="H4" />
+                    <Title text="Items ({= ${detail>/documentsFlat}.length})" level="H4" />
                     <ToolbarSpacer />
                     <SearchField placeholder="Search" width="16rem" />
-                    <FacetFilter id="doc2FacetFilter" type="Simple" showReset="false" showPersonalization="true"
+                    <FacetFilter id="doc3FacetFilter" type="Simple" showReset="false" showPersonalization="true"
                       confirm=".onDocFilterDialogConfirm" reset=".onDocFilterDialogReset"
                       class="sapUiSizeCompact">
                       <lists>
@@ -367,6 +372,19 @@
                             <FacetFilterItem text="IMU" key="IMU" />
                             <FacetFilterItem text="TES" key="TES" />
                             <FacetFilterItem text="DRW" key="DRW" />
+                          </items>
+                        </FacetFilterList>
+                        <FacetFilterList title="Part" key="part" active="false">
+                          <items>
+                            <FacetFilterItem text="000" key="000" />
+                            <FacetFilterItem text="001" key="001" />
+                          </items>
+                        </FacetFilterList>
+                        <FacetFilterList title="Version" key="version" active="false">
+                          <items>
+                            <FacetFilterItem text="000001" key="000001" />
+                            <FacetFilterItem text="000002" key="000002" />
+                            <FacetFilterItem text="000003" key="000003" />
                           </items>
                         </FacetFilterList>
                         <FacetFilterList title="Document Status" key="status" active="false">
@@ -380,76 +398,6 @@
                         </FacetFilterList>
                       </lists>
                     </FacetFilter>
-                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
-                      <menu>
-                        <Menu>
-                          <items>
-                            <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
-                            <MenuItem text="Link New Document" />
-                          </items>
-                        </Menu>
-                      </menu>
-                    </MenuButton>
-                    <Button id="unlinkBtn2" text="Unlink Document" type="Transparent" enabled="false" press=".onUnlinkDocument" />
-                    <Button icon="sap-icon://action-settings" type="Transparent" />
-                  </Toolbar>
-                  <ui:TreeTable
-                    id="documentsTreeTable2"
-                    rows="{path: 'detail>/documents', parameters: {arrayNames: ['children']}}"
-                    selectionMode="MultiToggle"
-                    visibleRowCountMode="Fixed"
-                    visibleRowCount="4"
-                    columnHeaderHeight="32"
-                    rowSelectionChange=".onDocSelectionChange2"
-                    toggleOpenState=".onDocTreeToggle2"
-                    class="sapUiSizeCompact detailTreeTable2">
-                    <ui:columns>
-                      <ui:Column width="28rem">
-                        <Label text="Document Info" />
-                        <ui:template>
-                          <VBox class="detailDocInfoCell">
-                            <FormattedText htmlText="{= ${detail>isParent} === true ? ('&lt;strong&gt;' + ${detail>docNumber} + '&lt;/strong&gt;') : ${detail>description} }" />
-                            <Text text="{= ${detail>isParent} === true ? ${detail>docDescription} : '' }"
-                              class="detailDocMeta" />
-                          </VBox>
-                        </ui:template>
-                      </ui:Column>
-                      <ui:Column width="8rem">
-                        <Label text="Type" />
-                        <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>type} : '' }" />
-                        </ui:template>
-                      </ui:Column>
-                      <ui:Column width="8rem">
-                        <Label text="Part" />
-                        <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>part} : '' }" />
-                        </ui:template>
-                      </ui:Column>
-                      <ui:Column width="8rem">
-                        <Label text="Version" />
-                        <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>version} : '' }" />
-                        </ui:template>
-                      </ui:Column>
-                      <ui:Column width="8rem">
-                        <Label text="Document Status" />
-                        <ui:template>
-                          <Text text="{= ${detail>isParent} === true ? ${detail>status} : '' }" />
-                        </ui:template>
-                      </ui:Column>
-                    </ui:columns>
-                  </ui:TreeTable>
-                </VBox>
-              </IconTabFilter>
-
-              <!-- Documents 3 Tab: flat sap.m.Table, SAP-standard style -->
-              <IconTabFilter text="Documents 3" key="documents3">
-                <VBox class="detailTabContent">
-                  <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Title text="Items ({= ${detail>/documentsFlat}.length})" level="H4" />
-                    <ToolbarSpacer />
-                    <SearchField placeholder="Search" width="16rem" />
                     <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
@@ -496,8 +444,8 @@
                       <ColumnListItem type="Navigation" press=".onDoc3ItemPress">
                         <cells>
                           <VBox>
-                            <Text text="{detail>docName}" class="detailDocNumber" />
-                            <Text text="{detail>docNumber}" class="detailDocMeta" />
+                            <Text text="{detail>docNumber}" class="detailDocNumber" />
+                            <Text text="{detail>docName}" class="detailDocMeta" />
                           </VBox>
                           <VBox class="doc3AttBox">
                             <List
@@ -508,6 +456,7 @@
                                 <HBox alignItems="Center" renderType="Bare" class="doc3AttRow">
                                   <core:Icon
                                     src="{path: 'detail>', formatter: '.formatAttachmentIcon'}"
+                                    useIconTooltip="false"
                                     class="doc3AttIcon" />
                                   <Text text="{detail>}" class="doc3AttItem" />
                                 </HBox>
@@ -548,6 +497,43 @@
                       <SearchField id="doc5SearchField" placeholder="Search" width="16rem" search=".onDoc5Search">
                         <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
                       </SearchField>
+                      <FacetFilter id="doc5FacetFilter" type="Simple" showReset="false" showPersonalization="true"
+                        confirm=".onDocFilterDialogConfirm" reset=".onDocFilterDialogReset"
+                        class="sapUiSizeCompact">
+                        <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
+                        <lists>
+                          <FacetFilterList title="Type" key="type" active="false">
+                            <items>
+                              <FacetFilterItem text="NEW" key="NEW" />
+                              <FacetFilterItem text="IMU" key="IMU" />
+                              <FacetFilterItem text="TES" key="TES" />
+                              <FacetFilterItem text="DRW" key="DRW" />
+                            </items>
+                          </FacetFilterList>
+                          <FacetFilterList title="Part" key="part" active="false">
+                            <items>
+                              <FacetFilterItem text="000" key="000" />
+                              <FacetFilterItem text="001" key="001" />
+                            </items>
+                          </FacetFilterList>
+                          <FacetFilterList title="Version" key="version" active="false">
+                            <items>
+                              <FacetFilterItem text="000001" key="000001" />
+                              <FacetFilterItem text="000002" key="000002" />
+                              <FacetFilterItem text="000003" key="000003" />
+                            </items>
+                          </FacetFilterList>
+                          <FacetFilterList title="Document Status" key="status" active="false">
+                            <items>
+                              <FacetFilterItem text="New" key="New" />
+                              <FacetFilterItem text="In Work" key="In Work" />
+                              <FacetFilterItem text="Locked" key="Locked" />
+                              <FacetFilterItem text="Created" key="Created" />
+                              <FacetFilterItem text="Update" key="Update" />
+                            </items>
+                          </FacetFilterList>
+                        </lists>
+                      </FacetFilter>
                       <MenuButton id="doc5LinkMenuBtn" text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                         <menu>
                           <Menu>

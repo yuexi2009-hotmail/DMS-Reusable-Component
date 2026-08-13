@@ -485,7 +485,12 @@ sap.ui.define([
     },
 
     formatShowAllVisible: function (bShowAll, aAttachments) {
-      return Array.isArray(aAttachments) && aAttachments.length > 10;
+      return Array.isArray(aAttachments) && aAttachments.length > 5;
+    },
+
+    formatAttachmentSlice: function (bShowAll, aAttachments) {
+      if (!Array.isArray(aAttachments)) { return []; }
+      return bShowAll ? aAttachments : aAttachments.slice(0, 5);
     },
 
     formatShowAllText: function (bShowAll) {
