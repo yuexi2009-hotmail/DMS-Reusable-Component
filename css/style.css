@@ -731,13 +731,11 @@ button[id$="linkDoc3ShowFiltersBtn"],
   line-height: 1.5rem !important;
 }
 /* Limit to 10 rows exactly: 24px line-height + 4px padding per row = 28px × 10 = 280px */
-.doc3AttList:not(.doc3AttListExpanded) {
-  max-height: 280px;
-  overflow: hidden;
+.doc3AttList:not(.doc3AttListExpanded) .sapMListItems .sapMLIB:nth-child(n+6) {
+  display: none !important;
 }
-.doc3AttListExpanded {
-  max-height: none !important;
-  overflow: visible !important;
+.doc3AttListExpanded .sapMListItems .sapMLIB:nth-child(n+6) {
+  display: flex !important;
 }
 
 /* ===== Documents 6: expandable tree table ===== */
