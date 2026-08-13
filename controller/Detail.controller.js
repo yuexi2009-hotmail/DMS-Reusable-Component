@@ -331,7 +331,8 @@ sap.ui.define([
       var oTable = oView.byId(sTableId);
       var aSelected = oTable ? oTable.getSelectedIndices() : [];
       var oBinding = oTable && oTable.getBinding("rows");
-      var aDocs = oView.getModel("detail") ? (oView.getModel("detail").getProperty("/documents") || []) : [];
+      var oDetailModel = oView.getModel("detail");
+      var aDocs = oDetailModel ? (oDetailModel.getProperty("/documents") || []) : [];
       var aDocNumbers = [];
       aSelected.forEach(function (i) {
         var oCtx = oBinding && oBinding.getContextByIndex(i);
@@ -340,7 +341,6 @@ sap.ui.define([
         if (oDoc.isParent) {
           if (aDocNumbers.indexOf(oDoc.docNumber) === -1) { aDocNumbers.push(oDoc.docNumber); }
         } else {
-          // Child row — find its parent
           aDocs.forEach(function (oParent) {
             if (oParent.children && oParent.children.some(function (c) { return c.docNumber === oDoc.docNumber; })) {
               if (aDocNumbers.indexOf(oParent.docNumber) === -1) { aDocNumbers.push(oParent.docNumber); }
@@ -350,21 +350,33 @@ sap.ui.define([
       });
       if (!aDocNumbers.length) { return; }
 
+      // Collect matched parent docs with their children
+      var aMatchedDocs = aDocs.filter(function (d) { return aDocNumbers.indexOf(d.docNumber) !== -1; });
+
       var that = this;
       if (!this._oUnlinkDialog) {
+        this._oUnlinkMsgStripTree = new MessageStrip({ type: "Warning", showIcon: true, showCloseButton: false });
+        this._oUnlinkTreeTable = new MTable({
+          columns: [
+            new MColumn({ header: new Label({ text: "Document" }), width: "14rem" }),
+            new MColumn({ header: new Label({ text: "Attachments" }) })
+          ],
+          backgroundDesign: "Transparent"
+        });
+        this._oUnlinkTreeTable.addStyleClass("unlinkDialogTable");
         this._oUnlinkDialog = new Dialog({
           type: DialogType.Message,
-          title: "Unlink",
-          content: new Text({ text: "Do you want to unlink the selected document(s)? They will remain saved in the system." }),
+          title: "Unlink Document",
+          contentWidth: "34rem",
+          content: new VBox({ items: [ this._oUnlinkMsgStripTree, this._oUnlinkTreeTable ] }),
           beginButton: new Button({
             type: ButtonType.Emphasized,
             text: "Unlink",
             press: function () {
               that._oUnlinkDialog.close();
-              var oDetailModel = oView.getModel("detail");
-              var aDocs = oDetailModel.getProperty("/documents") || [];
-              aDocs = aDocs.filter(function (d) { return that._oUnlinkDocNumbers.indexOf(d.docNumber) === -1; });
-              oDetailModel.setProperty("/documents", aDocs);
+              var aAllDocs = oDetailModel.getProperty("/documents") || [];
+              aAllDocs = aAllDocs.filter(function (d) { return that._oUnlinkDocNumbers.indexOf(d.docNumber) === -1; });
+              oDetailModel.setProperty("/documents", aAllDocs);
               setTimeout(function () {
                 ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
                   var oT = oView.byId(sId);
@@ -383,17 +395,35 @@ sap.ui.define([
           }),
           endButton: new Button({
             text: "Cancel",
-            press: function () {
-              that._oUnlinkDialog.close();
-            }
+            press: function () { that._oUnlinkDialog.close(); }
           })
         });
         oView.addDependent(this._oUnlinkDialog);
         this._oUnlinkDialog.addStyleClass("sapUiSizeCompact");
       }
+
+      this._oUnlinkMsgStripTree.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked.");
+      this._oUnlinkTreeTable.removeAllItems();
+      aMatchedDocs.forEach(function (oDoc) {
+        var aChildren = oDoc.children || [];
+        // Document cell: docNumber bold + description below
+        var oDocCell = new VBox({ items: [
+          new Text({ text: oDoc.docNumber, wrapping: false }).addStyleClass("detailDocNumber"),
+          new Text({ text: oDoc.description || oDoc.docDescription || "", wrapping: true }).addStyleClass("detailDocMeta")
+        ]});
+        // Attachments cell: one Text per child
+        var oAttCell = new VBox({ items: aChildren.length
+          ? aChildren.map(function (c) { return new Text({ text: c.description, wrapping: false }); })
+          : [ new Text({ text: "–" }) ]
+        });
+        that._oUnlinkTreeTable.addItem(new ColumnListItem({
+          cells: [ oDocCell, oAttCell ]
+        }));
+      });
       this._oUnlinkDocNumbers = aDocNumbers;
       this._oUnlinkDialog.open();
     },
+
 
     onUnlinkDocument3: function () {
       var oView = this.getView();
@@ -411,39 +441,12 @@ sap.ui.define([
       });
 
       var oDetailModel = oView.getModel("detail");
-      var aAllFlat = oDetailModel.getProperty("/documentsFlat") || [];
-      var aMatchedDocs = aAllFlat.filter(function (d) { return aSelectedDocNumbers.indexOf(d.docNumber) !== -1; });
-
-      // Expand each matched doc into one row per attachment for the dialog table
-      var aAffected = [];
-      aMatchedDocs.forEach(function (oDoc) {
-        var aAtts = oDoc.attachments || [];
-        if (!aAtts.length) {
-          aAffected.push({ fileName: oDoc.fileName, docName: oDoc.docName, docNumber: oDoc.docNumber });
-        } else {
-          aAtts.forEach(function (sFile) {
-            aAffected.push({ fileName: sFile, docName: oDoc.docName, docNumber: oDoc.docNumber });
-          });
-        }
-      });
-
       var that = this;
       if (!this._oUnlinkDoc3Dialog) {
-        this._oUnlinkDoc3MsgStrip = new MessageStrip({ type: "Warning", showIcon: true, showCloseButton: false });
-        this._oUnlinkDoc3Table = new MTable({
-          columns: [
-            new MColumn({ header: new Label({ text: "Attachment" }) }),
-            new MColumn({ header: new Label({ text: "Document" }) }),
-            new MColumn({ header: new Label({ text: "Doc Number" }) })
-          ],
-          backgroundDesign: "Transparent"
-        });
-        this._oUnlinkDoc3Table.addStyleClass("unlinkDialogTable");
         this._oUnlinkDoc3Dialog = new Dialog({
           type: DialogType.Message,
-          title: "Unlink Document",
-          contentWidth: "32rem",
-          content: new VBox({ items: [ this._oUnlinkDoc3MsgStrip, this._oUnlinkDoc3Table ] }),
+          title: "Unlink",
+          content: new Text({ text: "Do you want to unlink the selected document(s)? They will remain saved in the system." }),
           beginButton: new Button({
             type: ButtonType.Emphasized,
             text: "Unlink",
@@ -466,18 +469,6 @@ sap.ui.define([
         oView.addDependent(this._oUnlinkDoc3Dialog);
         this._oUnlinkDoc3Dialog.addStyleClass("sapUiSizeCompact");
       }
-
-      this._oUnlinkDoc3MsgStrip.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked.");
-      this._oUnlinkDoc3Table.removeAllItems();
-      aAffected.forEach(function (d) {
-        that._oUnlinkDoc3Table.addItem(new ColumnListItem({
-          cells: [
-            new Text({ text: d.fileName }),
-            new Text({ text: d.docName }),
-            new Text({ text: d.docNumber })
-          ]
-        }));
-      });
       this._oUnlinkDoc3DocNumbers = aSelectedDocNumbers;
       this._oUnlinkDoc3Dialog.open();
     },
