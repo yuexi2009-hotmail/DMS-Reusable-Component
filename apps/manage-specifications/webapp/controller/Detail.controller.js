@@ -6,86 +6,27 @@ sap.ui.define([
   "sap/ui/core/Fragment",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/ui/model/Sorter"
-], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter) {
+  "sap/ui/model/Sorter",
+  "sap/m/Dialog",
+  "sap/m/Button",
+  "sap/m/Text",
+  "sap/m/library",
+  "sap/m/Table",
+  "sap/m/Column",
+  "sap/m/ColumnListItem",
+  "sap/m/Label",
+  "sap/m/VBox"
+], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter, Dialog, Button, Text, mobileLibrary, MTable, MColumn, ColumnListItem, Label, VBox) {
   "use strict";
+  var ButtonType = mobileLibrary.ButtonType;
+  var DialogType = mobileLibrary.DialogType;
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
 
     onInit: function () {
       var oRouter = this.getOwnerComponent().getRouter();
       oRouter.getRoute("detail").attachPatternMatched(this._onRouteMatched, this);
-      this._observeFacetFilterDialogs();
     },
-
-    _observeFacetFilterDialogs: function () {
-      var oStatic = document.getElementById("sap-ui-static");
-      if (!oStatic) { return; }
-
-      function applyDialogStyles(node) {
-        // Only add FacetFilter class for actual FacetFilter dialogs (not TreeTable dialogs)
-        if (node.querySelector(".sapMFFLI, .sapMFFPFLI")) {
-          node.classList.add("docFacetFilterDialog");
-        }
-        // p13n dialog buttons: force compact size
-        var oConfirm = node.querySelector("button[id$='-confirmBtn']");
-        var oCancel = node.querySelector("button[id$='-cancelBtn']");
-        if (oConfirm || oCancel) {
-          [oConfirm, oCancel].forEach(function (btn) {
-            if (!btn) { return; }
-            btn.style.height = "2rem";
-            btn.style.minHeight = "2rem";
-            btn.style.padding = "0.1875rem 0";
-            btn.style.marginLeft = "0";
-            var inner = btn.querySelector(".sapMBtnInner");
-            if (inner) {
-              inner.style.height = "1.625rem";
-              inner.style.minHeight = "1.625rem";
-              inner.style.lineHeight = "1.5rem";
-              inner.style.padding = "0 0.5rem";
-            }
-          });
-          if (oCancel) {
-            oCancel.style.marginLeft = "8px";
-            var oCancelInner = oCancel.querySelector(".sapMBtnInner");
-            if (oCancelInner) { oCancelInner.style.marginLeft = "8px"; }
-          }
-        }
-        // Dialog footer: add 12px gap before the Cancel/end button
-        var oEndBtn = node.querySelector("button.sapMDialogEndButton");
-        if (oEndBtn) {
-          oEndBtn.style.setProperty("margin-left", "8px", "important");
-        }
-        // Link Documents dialog: 8px gap between Go and Show Filters
-        var oShowFilters = node.querySelector("[id$='linkDoc3ShowFiltersBtn']");
-        if (oShowFilters) {
-          oShowFilters.style.setProperty("margin-left", "8px", "important");
-        }
-        // Link Documents dialog: search row 16px padding and margin
-        var oSearchRow = node.querySelector("[id$='linkDoc3SearchRow']");
-        if (oSearchRow) {
-          oSearchRow.style.setProperty("padding", "16px", "important");
-          oSearchRow.style.setProperty("margin-top", "16px", "important");
-          oSearchRow.style.setProperty("margin-bottom", "16px", "important");
-        }
-      }
-
-      var oObserver = new MutationObserver(function (mutations) {
-        mutations.forEach(function (m) {
-          m.addedNodes.forEach(function (node) {
-            if (node.nodeType !== 1) { return; }
-            if (node.classList && (node.classList.contains("sapMDialog") || node.classList.contains("sapMPopup-CTX"))) {
-              // Run immediately and at 100ms/300ms to catch async-rendered buttons
-              setTimeout(function () { applyDialogStyles(node); }, 0);
-              setTimeout(function () { applyDialogStyles(node); }, 100);
-              setTimeout(function () { applyDialogStyles(node); }, 300);
-            }
-          });
-        });
-      });
-      oObserver.observe(oStatic, { childList: true });
-    },
-
     onTabSelect: function (oEvent) {
       var sKey = oEvent && oEvent.getParameter && oEvent.getParameter("key");
       setTimeout(function () {
@@ -171,8 +112,112 @@ sap.ui.define([
       if (oBinding) { oBinding.sort([]); }
     },
 
-    onDoc5Link:   function () { MessageToast.show("Link document"); },
-    onDoc5Unlink: function () { MessageToast.show("Unlink document"); },
+    onDoc5SelectionChange: function () {
+      var oTable = this.getView().byId("documentsTable5");
+      var aSelected = oTable ? oTable.getSelectedContexts() : [];
+      var oBtn = this.getView().byId("doc5UnlinkBtn");
+      if (oBtn) { oBtn.setEnabled(aSelected.length > 0); }
+    },
+
+    onDoc5Unlink: function () {
+      var oView = this.getView();
+      var oTable = oView.byId("documentsTable5");
+      var aSelected = oTable ? oTable.getSelectedContexts() : [];
+      if (!aSelected.length) { return; }
+
+      // Collect unique docNumbers from selected rows
+      var aSelectedDocNumbers = [];
+      aSelected.forEach(function (oCtx) {
+        var oObj = oCtx.getObject();
+        if (oObj && oObj.docNumber && aSelectedDocNumbers.indexOf(oObj.docNumber) === -1) {
+          aSelectedDocNumbers.push(oObj.docNumber);
+        }
+      });
+
+      // Find ALL attachments belonging to those documents (unlink is document-level)
+      var oDetailModel = oView.getModel("detail");
+      var aAllFlat = oDetailModel.getProperty("/documentsFlat") || [];
+      var aAffected = aAllFlat.filter(function (d) { return aSelectedDocNumbers.indexOf(d.docNumber) !== -1; });
+      var aAffectedFileNames = aAffected.map(function (d) { return d.fileName; });
+
+      // Build message listing affected documents and their attachments
+      var aDocSummaries = [];
+      aSelectedDocNumbers.forEach(function (sDocNum) {
+        var aDocItems = aAllFlat.filter(function (d) { return d.docNumber === sDocNum; });
+        var sDocName = aDocItems.length ? aDocItems[0].docName : sDocNum;
+        var aOtherFiles = aDocItems.filter(function (d) {
+          return !aSelected.some(function (oCtx) {
+            var o = oCtx.getObject();
+            return o && o.fileName === d.fileName;
+          });
+        });
+        var sSummary = "\"" + sDocName + "\" (" + aDocItems.length + " attachment" + (aDocItems.length !== 1 ? "s" : "") + ")";
+        if (aOtherFiles.length) {
+          sSummary += " — including: " + aOtherFiles.map(function (d) { return d.fileName; }).join(", ");
+        }
+        aDocSummaries.push(sSummary);
+      });
+
+      var sMessage = "Unlinking applies at the document level. The following document(s) and all their attachments will be unlinked:\n\n" +
+        aDocSummaries.join("\n") +
+        "\n\nThey will remain saved in the system.";
+
+      var that = this;
+      if (!this._oDoc5UnlinkDialog) {
+        this._oUnlinkMsgText = new Text({ text: "", wrapping: true });
+        this._oUnlinkTable = new MTable({
+          columns: [
+            new MColumn({ header: new Label({ text: "Attachment" }) }),
+            new MColumn({ header: new Label({ text: "Document" }) }),
+            new MColumn({ header: new Label({ text: "Doc Number" }) })
+          ],
+          backgroundDesign: "Transparent"
+        });
+        this._oDoc5UnlinkDialog = new Dialog({
+          type: DialogType.Message,
+          title: "Unlink Document",
+          contentWidth: "32rem",
+          content: new VBox({
+            items: [ this._oUnlinkMsgText, this._oUnlinkTable ]
+          }),
+          beginButton: new Button({
+            type: ButtonType.Emphasized,
+            text: "Unlink",
+            press: function () {
+              that._oDoc5UnlinkDialog.close();
+              var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
+              aFlat = aFlat.filter(function (d) { return that._oDoc5UnlinkFileNames.indexOf(d.fileName) === -1; });
+              oDetailModel.setProperty("/documentsFlat", aFlat);
+              var oBtn = oView.byId("doc5UnlinkBtn");
+              if (oBtn) { oBtn.setEnabled(false); }
+              MessageToast.show(that._oDoc5UnlinkFileNames.length + " attachment(s) unlinked");
+            }
+          }),
+          endButton: new Button({
+            text: "Cancel",
+            press: function () {
+              that._oDoc5UnlinkDialog.close();
+            }
+          })
+        });
+        oView.addDependent(this._oDoc5UnlinkDialog);
+        this._oDoc5UnlinkDialog.addStyleClass("sapUiSizeCompact");
+      }
+      // Update message and table rows each time
+      this._oUnlinkMsgText.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked:");
+      this._oUnlinkTable.removeAllItems();
+      aAffected.forEach(function (d) {
+        that._oUnlinkTable.addItem(new ColumnListItem({
+          cells: [
+            new Text({ text: d.fileName }),
+            new Text({ text: d.docName }),
+            new Text({ text: d.docNumber })
+          ]
+        }));
+      });
+      this._oDoc5UnlinkFileNames = aAffectedFileNames;
+      this._oDoc5UnlinkDialog.open();
+    },
     onDoc5Search: function () {},
 
     _cascadeSelection: function (sTableId) {
@@ -314,48 +359,48 @@ sap.ui.define([
       if (!aDocNumbers.length) { return; }
 
       var that = this;
-      var oDialog = new sap.m.Dialog({
-        title: "Unlink",
-        type: "Message",
-        state: "Warning",
-        contentWidth: "auto",
-        content: new sap.m.Text({ text: "Unlinking removes the document from your current list, but it will remain saved in the system." }),
-        beginButton: new sap.m.Button({
-          text: "Unlink",
-          type: "Emphasized",
-          width: "auto",
-          press: function () {
-            oDialog.close();
-            var oDetailModel = oView.getModel("detail");
-            var aDocs = oDetailModel.getProperty("/documents") || [];
-            aDocs = aDocs.filter(function (d) { return aDocNumbers.indexOf(d.docNumber) === -1; });
-            oDetailModel.setProperty("/documents", aDocs);
-            setTimeout(function () {
-              ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
-                var oT = oView.byId(sId);
-                if (!oT) { return; }
-                oT.clearSelection();
-                var oB = oT.getBinding("rows");
-                if (oB) { oT.setVisibleRowCount(oB.getLength()); }
-              });
-              ["unlinkBtn", "unlinkBtn1", "unlinkBtn2"].forEach(function (sId) {
-                var oB = oView.byId(sId);
-                if (oB) { oB.setEnabled(false); }
-              });
-            }, 0);
-            MessageToast.show(aDocNumbers.length + " document(s) unlinked");
-          }
-        }),
-        endButton: new sap.m.Button({
-          text: "Cancel",
-          width: "auto",
-          press: function () { oDialog.close(); }
-        }),
-        afterClose: function () { oDialog.destroy(); }
-      });
-      oDialog.addStyleClass("sapUiSizeCompact unlinkDialog");
-      oView.addDependent(oDialog);
-      oDialog.open();
+      if (!this._oUnlinkDialog) {
+        this._oUnlinkDialog = new Dialog({
+          type: DialogType.Message,
+          title: "Unlink",
+          content: new Text({ text: "Do you want to unlink the selected document(s)? They will remain saved in the system." }),
+          beginButton: new Button({
+            type: ButtonType.Emphasized,
+            text: "Unlink",
+            press: function () {
+              that._oUnlinkDialog.close();
+              var oDetailModel = oView.getModel("detail");
+              var aDocs = oDetailModel.getProperty("/documents") || [];
+              aDocs = aDocs.filter(function (d) { return that._oUnlinkDocNumbers.indexOf(d.docNumber) === -1; });
+              oDetailModel.setProperty("/documents", aDocs);
+              setTimeout(function () {
+                ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
+                  var oT = oView.byId(sId);
+                  if (!oT) { return; }
+                  oT.clearSelection();
+                  var oB = oT.getBinding("rows");
+                  if (oB) { oT.setVisibleRowCount(oB.getLength()); }
+                });
+                ["unlinkBtn", "unlinkBtn1", "unlinkBtn2"].forEach(function (sId) {
+                  var oB = oView.byId(sId);
+                  if (oB) { oB.setEnabled(false); }
+                });
+              }, 0);
+              MessageToast.show(that._oUnlinkDocNumbers.length + " document(s) unlinked");
+            }
+          }),
+          endButton: new Button({
+            text: "Cancel",
+            press: function () {
+              that._oUnlinkDialog.close();
+            }
+          })
+        });
+        oView.addDependent(this._oUnlinkDialog);
+        this._oUnlinkDialog.addStyleClass("sapUiSizeCompact");
+      }
+      this._oUnlinkDocNumbers = aDocNumbers;
+      this._oUnlinkDialog.open();
     },
 
     onLinkExistingDocument: function () {
