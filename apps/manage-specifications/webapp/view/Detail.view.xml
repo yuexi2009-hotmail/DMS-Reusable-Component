@@ -1,4 +1,5 @@
 <mvc:View
+  id="detailView"
   controllerName="com.sap.demo.managespec.controller.Detail"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
@@ -489,10 +490,7 @@
                     showRowCount="true"
                     class="sapUiSizeCompact"
                     selectionChange=".onDoc5SelectionChange"
-                    delegate="{
-                      name: 'com/sap/demo/managespec/delegate/Doc5TableDelegate',
-                      payload: { bindingPath: 'detail>/documentsAttFlat' }
-                    }">
+                    delegate='{"name": "com/sap/demo/managespec/delegate/Doc5TableDelegate"}'>
                     <mdc:actions>
                       <SearchField id="doc5SearchField" placeholder="Search" width="16rem" search=".onDoc5Search">
                         <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
