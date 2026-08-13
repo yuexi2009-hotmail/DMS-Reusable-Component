@@ -395,6 +395,93 @@ sap.ui.define([
       this._oUnlinkDialog.open();
     },
 
+    onUnlinkDocument3: function () {
+      var oView = this.getView();
+      var oTable = oView.byId("documentsTable3");
+      var aSelected = oTable ? oTable.getSelectedItems() : [];
+      if (!aSelected.length) { return; }
+
+      var aSelectedDocNumbers = [];
+      aSelected.forEach(function (oItem) {
+        var oCtx = oItem.getBindingContext("detail");
+        var oObj = oCtx && oCtx.getObject();
+        if (oObj && oObj.docNumber && aSelectedDocNumbers.indexOf(oObj.docNumber) === -1) {
+          aSelectedDocNumbers.push(oObj.docNumber);
+        }
+      });
+
+      var oDetailModel = oView.getModel("detail");
+      var aAllFlat = oDetailModel.getProperty("/documentsFlat") || [];
+      var aMatchedDocs = aAllFlat.filter(function (d) { return aSelectedDocNumbers.indexOf(d.docNumber) !== -1; });
+
+      // Expand each matched doc into one row per attachment for the dialog table
+      var aAffected = [];
+      aMatchedDocs.forEach(function (oDoc) {
+        var aAtts = oDoc.attachments || [];
+        if (!aAtts.length) {
+          aAffected.push({ fileName: oDoc.fileName, docName: oDoc.docName, docNumber: oDoc.docNumber });
+        } else {
+          aAtts.forEach(function (sFile) {
+            aAffected.push({ fileName: sFile, docName: oDoc.docName, docNumber: oDoc.docNumber });
+          });
+        }
+      });
+
+      var that = this;
+      if (!this._oUnlinkDoc3Dialog) {
+        this._oUnlinkDoc3MsgStrip = new MessageStrip({ type: "Warning", showIcon: true, showCloseButton: false });
+        this._oUnlinkDoc3Table = new MTable({
+          columns: [
+            new MColumn({ header: new Label({ text: "Attachment" }) }),
+            new MColumn({ header: new Label({ text: "Document" }) }),
+            new MColumn({ header: new Label({ text: "Doc Number" }) })
+          ],
+          backgroundDesign: "Transparent"
+        });
+        this._oUnlinkDoc3Table.addStyleClass("unlinkDialogTable");
+        this._oUnlinkDoc3Dialog = new Dialog({
+          type: DialogType.Message,
+          title: "Unlink Document",
+          contentWidth: "32rem",
+          content: new VBox({ items: [ this._oUnlinkDoc3MsgStrip, this._oUnlinkDoc3Table ] }),
+          beginButton: new Button({
+            type: ButtonType.Emphasized,
+            text: "Unlink",
+            press: function () {
+              that._oUnlinkDoc3Dialog.close();
+              var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
+              aFlat = aFlat.filter(function (d) { return that._oUnlinkDoc3DocNumbers.indexOf(d.docNumber) === -1; });
+              oDetailModel.setProperty("/documentsFlat", aFlat);
+              oTable.removeSelections();
+              var oBtn = oView.byId("unlinkBtn3");
+              if (oBtn) { oBtn.setEnabled(false); }
+              MessageToast.show(that._oUnlinkDoc3DocNumbers.length + " document(s) unlinked");
+            }
+          }),
+          endButton: new Button({
+            text: "Cancel",
+            press: function () { that._oUnlinkDoc3Dialog.close(); }
+          })
+        });
+        oView.addDependent(this._oUnlinkDoc3Dialog);
+        this._oUnlinkDoc3Dialog.addStyleClass("sapUiSizeCompact");
+      }
+
+      this._oUnlinkDoc3MsgStrip.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked.");
+      this._oUnlinkDoc3Table.removeAllItems();
+      aAffected.forEach(function (d) {
+        that._oUnlinkDoc3Table.addItem(new ColumnListItem({
+          cells: [
+            new Text({ text: d.fileName }),
+            new Text({ text: d.docName }),
+            new Text({ text: d.docNumber })
+          ]
+        }));
+      });
+      this._oUnlinkDoc3DocNumbers = aSelectedDocNumbers;
+      this._oUnlinkDoc3Dialog.open();
+    },
+
     onLinkExistingDocument: function () {
       var oView = this.getView();
       if (this._oLinkDocDialog) {

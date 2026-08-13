@@ -409,7 +409,7 @@
                         </Menu>
                       </menu>
                     </MenuButton>
-                    <Button id="unlinkBtn3" text="Unlink Document" type="Transparent" enabled="false" press=".onUnlinkDocument" />
+                    <Button id="unlinkBtn3" text="Unlink Document" type="Transparent" enabled="false" press=".onUnlinkDocument3" />
                     <Button icon="sap-icon://action-settings" type="Transparent" />
                   </Toolbar>
                   <Table
