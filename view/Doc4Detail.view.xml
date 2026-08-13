@@ -1,0 +1,78 @@
+<mvc:View
+  controllerName="com.sap.demo.managespec.controller.Doc4Detail"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page showHeader="false" enableScrolling="true" class="doc4DetailPage">
+    <customHeader>
+      <Bar>
+        <contentLeft>
+          <Button icon="sap-icon://decline" type="Transparent" press=".onClose" tooltip="Close" />
+          <Title text="{doc4>/docName}" level="H5" />
+        </contentLeft>
+      </Bar>
+    </customHeader>
+    <subHeader>
+      <Bar class="doc4ActionBar sapUiSizeCompact">
+        <contentLeft>
+          <Button text="Create" type="Emphasized" icon="sap-icon://add" press=".onAttCreate" />
+          <Button text="Edit Link" type="Transparent" press=".onAttEditLink" />
+          <Button text="Download" type="Transparent" press=".onAttDownload" />
+          <Button text="Delete" type="Transparent" press=".onAttDelete" />
+          <Button text="Move" type="Transparent" press=".onAttMove" />
+          <Button text="Copy" type="Transparent" press=".onAttCopy" />
+        </contentLeft>
+        <contentRight>
+          <Button icon="sap-icon://refresh" type="Transparent" />
+          <Button icon="sap-icon://sort" type="Transparent" />
+          <Button icon="sap-icon://action-settings" type="Transparent" />
+        </contentRight>
+      </Bar>
+    </subHeader>
+    <content>
+      <Table
+        id="doc4AttTable"
+        items="{doc4>/attachments}"
+        mode="MultiSelect"
+        noDataText="No attachments"
+        class="sapUiSizeCompact doc4AttDetailTable">
+        <columns>
+          <Column width="3rem">
+            <Text text="Type" />
+          </Column>
+          <Column>
+            <Text text="Name" />
+          </Column>
+          <Column width="8rem">
+            <Text text="Modified On" />
+          </Column>
+          <Column width="11rem">
+            <Text text="Created By" />
+          </Column>
+          <Column width="11rem">
+            <Text text="Modified By" />
+          </Column>
+          <Column width="6rem">
+            <Text text="Size" />
+          </Column>
+        </columns>
+        <items>
+          <ColumnListItem type="Active">
+            <cells>
+              <core:Icon src="{path: 'doc4>fileName', formatter: '.formatAttachmentIcon'}" class="doc3AttIcon" />
+              <Text text="{doc4>fileName}" class="detailDocNumber" />
+              <Text text="{doc4>modifiedOn}" />
+              <Text text="{doc4>createdBy}" />
+              <Text text="{doc4>modifiedBy}" />
+              <Text text="{doc4>size}" />
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+
+</mvc:View>

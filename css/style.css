@@ -52,6 +52,16 @@
   padding-left: 3rem !important;
   padding-right: 3rem !important;
 }
+/* Spacing between action buttons in DynamicPageTitle toolbar */
+.sapFDynamicPageTitleMainActions .sapMBarChild {
+  margin-left: 0.5rem !important;
+}
+.sapFDynamicPageTitleMainActions .sapMBarChild:first-child {
+  margin-left: 0 !important;
+}
+.sapFDynamicPageTitleMainActions .sapMTB {
+  gap: 0.5rem !important;
+}
 .sapFDynamicPageHeader {
   padding-left: 3rem !important;
   padding-right: 3rem !important;
@@ -507,11 +517,115 @@
   vertical-align: middle !important;
 }
 
+/* Link Document dialog: 8px gap between Confirm and Cancel buttons */
+.sapMDialogEndButton.sapMBarChild {
+  margin-left: 8px !important;
+}
+
 /* Link Document Dialog: search toolbar padding + bottom border */
 .linkDocSearchBar.sapMTB {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding: 1rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
   border-bottom: none !important;
+}
+/* Link Doc3 grid table: 16px left/right margin */
+.linkDoc3VHDialog .linkDoc3GridTable,
+.linkDoc3VHDialog .linkDoc3ItemsToolbar.sapMTB {
+  margin-left: 16px !important;
+  margin-right: 16px !important;
+}
+
+/* ValueHelp-style dialog: search row */
+.linkDoc3VHDialog .linkDoc3VHSearchRow.sapMTB,
+.linkDoc3VHDialog .linkDoc3VHSearchRow.sapMTBStandard,
+.linkDoc3VHDialog .linkDoc3VHSearchRow.sapMTBNewFlex,
+.linkDoc3VHDialog [id$="linkDoc3SearchRow"].sapMTB,
+.linkDoc3VHDialog [id$="linkDoc3SearchRow"] {
+  padding: 16px 16px 12px 16px !important;
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+  background: var(--sapBaseColor, #fff) !important;
+  flex-shrink: 0 !important;
+}
+.linkDoc3VHDialog .sapMDialogSection,
+.linkDoc3VHDialog .sapMDialogScrollCont,
+.linkDoc3VHDialog .sapMScrollCont {
+  background: var(--sapBaseColor, #fff) !important;
+}
+.linkDoc3VHDialog .linkDoc3VHSearchField {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+.linkDoc3VHDialog .linkDoc3VHSearchField.sapMSF {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+/* 8px gap between Go and Show Filters */
+#linkDoc3ShowFiltersBtn,
+[id$="linkDoc3ShowFiltersBtn"],
+button[id$="linkDoc3ShowFiltersBtn"],
+.linkDoc3VHDialog [id$="linkDoc3ShowFiltersBtn"] {
+  margin-left: 8px !important;
+}
+/* Filter panel: 4-column grid layout matching ValueHelp target */
+.linkDoc3VHDialog .linkDoc3FilterPanel {
+  background: var(--sapBaseColor, #fff) !important;
+}
+.linkDoc3VHDialog .linkDoc3FilterGrid.sapUiRespGrid {
+  padding: 0.75rem 16px 0.75rem 16px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.linkDoc3VHDialog .linkDoc3FilterGrid [class*="sapUiRespGridSpan"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+.linkDoc3VHDialog .linkDoc3FilterGrid [class*="sapUiRespGridSpan"]:first-child {
+  margin-right: 16px !important;
+}
+.linkDoc3VHDialog .linkDoc3FilterItem {
+  padding-right: 0 !important;
+}
+.linkDoc3VHDialog .linkDoc3FilterLabel {
+  font-size: var(--sapFontSize) !important;
+  color: var(--sapContent_LabelColor) !important;
+  margin-bottom: 0.25rem !important;
+}
+/* Remove extra top padding from dialog content so search bar sits flush at top */
+.linkDoc3VHDialog .sapMDialogSection {
+  padding: 0 !important;
+  border-top: none !important;
+}
+.linkDoc3VHDialog .sapMDialogScrollCont {
+  padding: 0 !important;
+  border-top: none !important;
+}
+.linkDoc3VHDialog .sapMScrollCont,
+.linkDoc3VHDialog .sapMScrollContScroll {
+  border-top: none !important;
+}
+/* Remove SearchField bottom border and filter panel bottom border */
+.linkDoc3VHDialog .linkDoc3VHSearchField .sapMSFInner,
+.linkDoc3VHDialog .linkDoc3VHSearchField.sapMSF,
+.linkDoc3VHDialog [id$="linkDoc3SearchField"] .sapMSFInner,
+.linkDoc3VHDialog [id$="linkDoc3SearchField"].sapMSF,
+.linkDoc3VHDialog .linkDoc3FilterPanel,
+.linkDoc3VHDialog .linkDoc3FilterGrid,
+.linkDoc3VHDialog .linkDoc3VHSearchRow .sapMSFInner,
+.linkDoc3VHDialog .linkDoc3VHSearchRow .sapMSF,
+.linkDoc3VHDialog .linkDoc3VHSearchRow > *,
+.linkDoc3VHDialog .sapMDialogSection,
+.linkDoc3VHDialog .sapMDialogScrollCont,
+.linkDoc3VHDialog .sapUiRespGridHSpace1,
+.linkDoc3VHDialog .sapUiRespGridVSpace1,
+[id$="linkDoc3SearchRow"],
+.linkDoc3VHDialog .sapMTBStandard,
+.linkDoc3VHDialog .linkDoc3VHSearchRow.sapMTBStandard {
+  border-bottom: none !important;
+  border-top: none !important;
 }
 /* Unlink confirmation dialog: compact size */
 .unlinkDialog.sapMDialog {
@@ -548,7 +662,11 @@
 /* FacetFilter dialogs: compact search field + compact OK button + compact checkbox + 14px text */
 .docFacetFilterDialog .sapMSF,
 .docFacetFilterDialog .sapMSFI,
-.docFacetFilterDialog .sapMSearchFieldInner,
+.docFacetFilterDialog .sapMSearchFieldInner {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  font-size: var(--sapFontSize) !important;
+}
 #__dialog0 .sapMSF,
 #__dialog0 .sapMSFI,
 #__dialog0 .sapMSearchFieldInner,
@@ -578,24 +696,19 @@
   font-size: var(--sapFontSize) !important;
   padding: 0 0.75rem !important;
 }
-.docFacetFilterDialog .sapMCb,
-#__dialog0 .sapMCb,
-#__dialog1 .sapMCb {
+/* Compact checkboxes only in FacetFilter dialogs (not TreeTable dialogs) */
+.docFacetFilterDialog .sapMCb {
   width: 1.5rem !important;
   height: 1.5rem !important;
   min-width: 1.5rem !important;
   min-height: 1.5rem !important;
 }
-.docFacetFilterDialog .sapMCbBg,
-#__dialog0 .sapMCbBg,
-#__dialog1 .sapMCbBg {
+.docFacetFilterDialog .sapMCbBg {
   width: 1rem !important;
   height: 1rem !important;
   border-radius: 0.125rem !important;
 }
-.docFacetFilterDialog .sapMCbMark,
-#__dialog0 .sapMCbMark,
-#__dialog1 .sapMCbMark {
+.docFacetFilterDialog .sapMCbMark {
   width: 1rem !important;
   height: 1rem !important;
   font-size: 0.75rem !important;
@@ -617,7 +730,176 @@
   min-height: 2.5rem !important;
 }
 
-/* Documents 3: attachment cell */
+/* ===== Documents 4: CSS flex split layout ===== */
+.doc4TabContent.sapMVBox {
+  height: 100%;
+}
+.doc4Split.sapMHBox {
+  display: flex !important;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 32rem;
+}
+.doc4Left.sapMVBox {
+  flex: 1 1 0;
+  min-width: 200px;
+  overflow-x: auto;
+}
+/* Drag divider */
+.doc4Divider {
+  width: 4px;
+  background: var(--sapGroup_ContentBorderColor);
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  position: relative;
+}
+.doc4Divider:hover,
+.doc4Divider:active {
+  background: var(--sapBrandColor);
+}
+/* Wider invisible hit area */
+.doc4Divider::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -4px; right: -4px;
+  cursor: col-resize;
+}
+.doc4Right.sapMVBox {
+  flex: 0 0 44rem;
+  width: 44rem;
+  min-width: 0;
+  overflow: auto;
+  background: var(--sapBackgroundColor, #fff);
+}
+.doc4RightHeader.sapMTB {
+  background: var(--sapList_HeaderBackground) !important;
+  border-bottom: 1px solid var(--sapGroup_ContentBorderColor) !important;
+  padding-left: 1rem !important;
+}
+.doc4RightActions.sapMTB {
+  border-bottom: 1px solid var(--sapGroup_ContentBorderColor) !important;
+}
+.doc4AttDetailTable.sapMListTbl .sapMListTblCell,
+.doc4AttDetailTable.sapMListTbl .sapMListTblHeaderCell {
+  border-right: none !important;
+}
+.doc4LeftTable.sapMListTbl .sapMLIB.sapMListTblRow.sapMLIBSelected {
+  background: var(--sapList_SelectionBackgroundColor) !important;
+}
+
+/* MDC p13n dialog: vertically center search field placeholder/text */
+.sapMDCPanelWrapper .sapMSFI,
+.sapMDCP13nDialog .sapMSFI,
+.sapUiMdcP13n .sapMSFI,
+.sapUiMdcP13nDialog .sapMSFI {
+  line-height: normal !important;
+  padding-top: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+/* Search input overflowing its box — clamp height to match parent */
+[id$="-searchField-I"].sapMSFI,
+[id*="panel"][id$="-searchField-I"] {
+  height: 100% !important;
+  min-height: 1rem !important;
+  max-height: 100% !important;
+  box-sizing: border-box !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: normal !important;
+}
+
+/* MDC p13n dialog: align title + Reset button on same baseline */
+.sapUiMdcP13nDialog .sapMDialogTitleGroup,
+.sapMDCP13nDialog .sapMDialogTitleGroup {
+  display: flex !important;
+  align-items: center !important;
+}
+.sapUiMdcP13nDialog .sapMDialogTitle,
+.sapMDCP13nDialog .sapMDialogTitle {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 2.75rem !important;
+}
+/* Reset button — vertically center the span content */
+[id$="-resetBtn"] .sapMBtnContent,
+[id$="-resetBtn"].sapMBtn {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+[id$="-resetBtn"].sapMBtn {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  align-self: center !important;
+}
+[id$="-resetBtn"] .sapMBtnInner {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  line-height: 2rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* MDC p13n dialog: compact OK/Cancel buttons + tight gap */
+button[id$="-confirmBtn"],
+button[id$="-cancelBtn"],
+button.sapMBtnBase.sapMBtn.sapMBtnInverted.sapMBarChild,
+button.sapMBtnBase.sapMBtn.sapMBarChild:not(.sapMBtnEmphasized) {
+  height: 2rem !important;
+  min-height: 2rem !important;
+  padding: 0.1875rem 0 !important;
+  margin-left: 0 !important;
+}
+.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnEmphasized,
+.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnDefault {
+  height: 1.625rem !important;
+  min-height: 1.625rem !important;
+  line-height: 1.5rem !important;
+  padding: 0 0.5rem !important;
+  font-size: var(--sapFontSize) !important;
+}
+span[id$="-confirmBtn-inner"],
+span[id$="-cancelBtn-inner"] {
+  height: 1.625rem !important;
+  min-height: 1.625rem !important;
+  line-height: 1.5rem !important;
+  padding: 0 0.5rem !important;
+  font-size: var(--sapFontSize) !important;
+}
+button[id$="-cancelBtn"] {
+  margin-left: 0.75rem !important;
+}
+body button[id$="-confirmBtn"].sapMBarChild,
+body button[id$="-cancelBtn"].sapMBarChild {
+  margin-left: 0 !important;
+}
+body button[id$="-cancelBtn"].sapMBarChild {
+  margin-left: 0.75rem !important;
+}
+
+/* Documents 5: force compact checkboxes on MDC table */
+#documentsTable5 .doc5NavIcon.sapUiIcon,
+#documentsTable5 .sapMListTblCell .doc5NavIcon {
+  color: var(--sapContent_NonInteractiveIconColor, #89919a) !important;
+  font-size: 0.875rem !important;
+  display: block;
+  text-align: center;
+}
+#documentsTable5 .sapMCb {
+  width: 1.375rem !important;
+  height: 1.375rem !important;
+  min-width: 1.375rem !important;
+  min-height: 1.375rem !important;
+}
+#documentsTable5 .sapMCbBg {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
 .doc3AttBox {
   padding: 0.25rem 0;
 }
@@ -641,9 +923,9 @@
   color: var(--sapTextColor) !important;
   line-height: 1.5rem !important;
 }
-/* Limit to 10 rows (~1.5rem each = 15rem) */
+/* Limit to 10 rows exactly: 24px line-height + 4px padding per row = 28px × 10 = 280px */
 .doc3AttList:not(.doc3AttListExpanded) {
-  max-height: 15rem;
+  max-height: 280px;
   overflow: hidden;
 }
 .doc3AttListExpanded {
@@ -651,7 +933,86 @@
   overflow: visible !important;
 }
 
-/* Attachment row: icon + filename */
+/* ===== Documents 6: expandable tree table ===== */
+.detailTreeTable.sapUiTable {
+  width: 100%;
+}
+
+/* ===== Documents 7: ResponsiveSplitter layout ===== */
+/* Doc7 outer wrapper — 12px top gap, 32px left/right inset */
+.doc7TabContent.sapMVBox {
+  padding-top: 0.75rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+}
+/* Info banner */
+.doc7InfoStrip.sapMMessageStrip {
+  border-radius: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* UUID subtitle */
+.doc7Uuid.sapMText {
+  font-size: var(--sapFontSmallSize) !important;
+  color: var(--sapLinkColor) !important;
+  padding: 0.25rem 0;
+  cursor: pointer;
+}
+/* Splitter height */
+.doc7Splitter.sapUiLoSplitter {
+  height: 32rem;
+  min-height: 24rem;
+}
+/* Toolbar */
+.doc7AttToolbar.sapMTB {
+  background: transparent !important;
+  padding-left: 0 !important;
+  border-bottom: 1px solid var(--sapGroup_ContentBorderColor) !important;
+}
+.doc7VariantBtn.sapMMenuBtn .sapMBtnContent {
+  font-weight: bold !important;
+  color: var(--sapLinkColor) !important;
+}
+.doc7ItemCount.sapMText {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+  margin-left: 0.25rem;
+}
+/* Attachment table */
+.doc7AttTable.sapMListTbl .sapMListTblCell,
+.doc7AttTable.sapMListTbl .sapMListTblHeaderCell {
+  border-right: none !important;
+}
+.doc7TypeIcon.sapUiIcon {
+  font-size: 1.25rem !important;
+  color: var(--sapContent_LabelColor) !important;
+  display: block;
+  text-align: center;
+}
+.doc7SizeCell.sapMText {
+  color: var(--sapContent_LabelColor) !important;
+}
+.doc7OverflowBtn.sapMBtn { opacity: 0; }
+.sapMLIB:hover .doc7OverflowBtn.sapMBtn { opacity: 1; }
+/* Document table — compact rows */
+.doc7DocTable.sapMListTbl .sapMLIB.sapMListTblRow.sapMLIBSelected {
+  background: var(--sapList_SelectionBackgroundColor) !important;
+}
+.doc7DocTable.sapMListTbl .sapMLIB {
+  min-height: 2.25rem !important;
+}
+.doc7DocTable.sapMListTbl .sapMListTblCell {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+.doc7DocCell.sapMVBox { gap: 0 !important; }
+.doc7DocCell .detailDocNumber.sapMText { line-height: 1.25rem !important; }
+.doc7DocCell .detailDocMeta.sapMText {
+  line-height: 1rem !important;
+  font-size: var(--sapFontSmallSize) !important;
+}
+
 .doc3AttList .sapMCLI {
   padding: 0 !important;
   min-height: auto !important;
@@ -667,7 +1028,7 @@
 }
 .doc3AttIcon.sapUiIcon {
   font-size: 1rem !important;
-  color: var(--sapContent_IconColor) !important;
+  color: var(--sapContent_LabelColor) !important;
   flex-shrink: 0;
   margin-right: 4px !important;
   line-height: 24px !important;

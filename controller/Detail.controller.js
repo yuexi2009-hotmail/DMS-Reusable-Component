@@ -5,8 +5,9 @@ sap.ui.define([
   "sap/m/MessageBox",
   "sap/ui/core/Fragment",
   "sap/ui/model/Filter",
-  "sap/ui/model/FilterOperator"
-], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator) {
+  "sap/ui/model/FilterOperator",
+  "sap/ui/model/Sorter"
+], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter) {
   "use strict";
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
@@ -20,18 +21,64 @@ sap.ui.define([
     _observeFacetFilterDialogs: function () {
       var oStatic = document.getElementById("sap-ui-static");
       if (!oStatic) { return; }
+
+      function applyDialogStyles(node) {
+        // Only add FacetFilter class for actual FacetFilter dialogs (not TreeTable dialogs)
+        if (node.querySelector(".sapMFFLI, .sapMFFPFLI")) {
+          node.classList.add("docFacetFilterDialog");
+        }
+        // p13n dialog buttons: force compact size
+        var oConfirm = node.querySelector("button[id$='-confirmBtn']");
+        var oCancel = node.querySelector("button[id$='-cancelBtn']");
+        if (oConfirm || oCancel) {
+          [oConfirm, oCancel].forEach(function (btn) {
+            if (!btn) { return; }
+            btn.style.height = "2rem";
+            btn.style.minHeight = "2rem";
+            btn.style.padding = "0.1875rem 0";
+            btn.style.marginLeft = "0";
+            var inner = btn.querySelector(".sapMBtnInner");
+            if (inner) {
+              inner.style.height = "1.625rem";
+              inner.style.minHeight = "1.625rem";
+              inner.style.lineHeight = "1.5rem";
+              inner.style.padding = "0 0.5rem";
+            }
+          });
+          if (oCancel) {
+            oCancel.style.marginLeft = "8px";
+            var oCancelInner = oCancel.querySelector(".sapMBtnInner");
+            if (oCancelInner) { oCancelInner.style.marginLeft = "8px"; }
+          }
+        }
+        // Dialog footer: add 12px gap before the Cancel/end button
+        var oEndBtn = node.querySelector("button.sapMDialogEndButton");
+        if (oEndBtn) {
+          oEndBtn.style.setProperty("margin-left", "8px", "important");
+        }
+        // Link Documents dialog: 8px gap between Go and Show Filters
+        var oShowFilters = node.querySelector("[id$='linkDoc3ShowFiltersBtn']");
+        if (oShowFilters) {
+          oShowFilters.style.setProperty("margin-left", "8px", "important");
+        }
+        // Link Documents dialog: search row 16px padding and margin
+        var oSearchRow = node.querySelector("[id$='linkDoc3SearchRow']");
+        if (oSearchRow) {
+          oSearchRow.style.setProperty("padding", "16px", "important");
+          oSearchRow.style.setProperty("margin-top", "16px", "important");
+          oSearchRow.style.setProperty("margin-bottom", "16px", "important");
+        }
+      }
+
       var oObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (m) {
           m.addedNodes.forEach(function (node) {
             if (node.nodeType !== 1) { return; }
-            // FacetFilter dialogs contain sapMFFLI items or sapMFFDialog-inner
             if (node.classList && (node.classList.contains("sapMDialog") || node.classList.contains("sapMPopup-CTX"))) {
-              // small delay to let SAP finish rendering
-              setTimeout(function () {
-                if (node.querySelector(".sapMFFLI, .sapMFFPFLI, .sapMListTbl")) {
-                  node.classList.add("docFacetFilterDialog");
-                }
-              }, 0);
+              // Run immediately and at 100ms/300ms to catch async-rendered buttons
+              setTimeout(function () { applyDialogStyles(node); }, 0);
+              setTimeout(function () { applyDialogStyles(node); }, 100);
+              setTimeout(function () { applyDialogStyles(node); }, 300);
             }
           });
         });
@@ -39,7 +86,8 @@ sap.ui.define([
       oObserver.observe(oStatic, { childList: true });
     },
 
-    onTabSelect: function () {
+    onTabSelect: function (oEvent) {
+      var sKey = oEvent && oEvent.getParameter && oEvent.getParameter("key");
       setTimeout(function () {
         var aContents = document.querySelectorAll(".detailPage .sapMITBContent, .detailPage .sapMITBContainerContent");
         aContents.forEach(function (el) {
@@ -47,11 +95,85 @@ sap.ui.define([
           el.style.padding = "0";
         });
       }, 0);
+      if (sKey === "documents4") {
+        this._doc4AutoSelect();
+      }
+    },
+
+    _doc4AutoSelect: function () {
+      var oTable = this.getView().byId("documentsTable4");
+      if (!oTable) { return; }
+      var aItems = oTable.getItems();
+      if (!aItems.length) { return; }
+      var oFirst = aItems[0];
+      oTable.setSelectedItem(oFirst, true);
+      var oCtx = oFirst.getBindingContext("detail");
+      if (oCtx) {
+        var aFlat = this.getView().getModel("detail").getProperty("/documentsFlat") || [];
+        this._doc4ShowRow(oCtx.getObject(), aFlat.indexOf(oCtx.getObject()));
+      }
     },
 
     onDocumentNavigate: function () {
       MessageToast.show("Navigate to document");
     },
+
+    onDoc5ViewSettings: function () {
+      var oView = this.getView();
+      if (!this._oDoc5VSD) {
+        sap.ui.require([
+          "sap/m/ViewSettingsDialog",
+          "sap/m/ViewSettingsItem"
+        ], function (ViewSettingsDialog, ViewSettingsItem) {
+          this._oDoc5VSD = new ViewSettingsDialog({
+            sortItems: [
+              new ViewSettingsItem({ key: "fileName", text: "Attachment", selected: true }),
+              new ViewSettingsItem({ key: "docName",  text: "Document" }),
+              new ViewSettingsItem({ key: "type",     text: "Type" }),
+              new ViewSettingsItem({ key: "version",  text: "Version" }),
+              new ViewSettingsItem({ key: "status",   text: "Status" })
+            ],
+            groupItems: [
+              new ViewSettingsItem({ key: "type",   text: "Type" }),
+              new ViewSettingsItem({ key: "status", text: "Status" }),
+              new ViewSettingsItem({ key: "docName",text: "Document" })
+            ],
+            confirm: this._onDoc5VSDConfirm.bind(this),
+            reset:   this._onDoc5VSDReset.bind(this)
+          });
+          oView.addDependent(this._oDoc5VSD);
+          this._oDoc5VSD.open();
+        }.bind(this));
+      } else {
+        this._oDoc5VSD.open();
+      }
+    },
+
+    _onDoc5VSDConfirm: function (oEvent) {
+      var mParams   = oEvent.getParameters();
+      var oTable    = this.getView().byId("documentsTable5");
+      if (!oTable) { return; }
+      var oBinding  = oTable.getBinding("items");
+      if (!oBinding) { return; }
+
+      var aSorters  = [];
+      if (mParams.sortItem) {
+        var sSortPath = mParams.sortItem.getKey();
+        aSorters.push(new Sorter(sSortPath, mParams.sortDescending));
+      }
+      oBinding.sort(aSorters);
+    },
+
+    _onDoc5VSDReset: function () {
+      var oTable   = this.getView().byId("documentsTable5");
+      if (!oTable) { return; }
+      var oBinding = oTable.getBinding("items");
+      if (oBinding) { oBinding.sort([]); }
+    },
+
+    onDoc5Link:   function () { MessageToast.show("Link document"); },
+    onDoc5Unlink: function () { MessageToast.show("Unlink document"); },
+    onDoc5Search: function () {},
 
     _cascadeSelection: function (sTableId) {
       var oTable = this.getView().byId(sTableId);
@@ -247,30 +369,21 @@ sap.ui.define([
           oView.addDependent(oDialog);
           var oLinkDocModel = new JSONModel({
             documents: [
-              {
-                docNumber: "200000001001", description: "Safety-Standards-2026.pdf", docDescription: "Global safety standards for 2026", type: "DFT", part: "000", version: "01", status: "New", isParent: true,
-                children: [
-                  { docNumber: "200000001002", description: "Annex-I.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Jul 10, 2026", createdBy: "anna.schmidt@sap.com" },
-                  { docNumber: "200000001003", description: "Annex-II.pdf", type: "PDF", part: "000", version: "02", modifiedOn: "Jul 15, 2026", createdBy: "anna.schmidt@sap.com" }
-                ]
-              },
-              {
-                docNumber: "200000001010", description: "Material-Spec-Sheet.xlsx", docDescription: "Material specification sheet", type: "WIN", part: "000", version: "02", status: "Created", isParent: true,
-                children: [
-                  { docNumber: "200000001011", description: "Raw-Material-A.xlsx", type: "XLSX", part: "000", version: "01", modifiedOn: "Jun 20, 2026", createdBy: "max.mueller@sap.com" }
-                ]
-              },
-              {
-                docNumber: "200000001020", description: "Change-Request-CR042.docx", docDescription: "Change request CR-042 documentation", type: "IMU", part: "000", version: "03", status: "Update", isParent: true,
-                children: []
-              },
-              {
-                docNumber: "200000001030", description: "Validation-Protocol-VP7.pdf", docDescription: "Validation protocol VP-7", type: "TES", part: "000", version: "01", status: "In Work", isParent: true,
-                children: [
-                  { docNumber: "200000001031", description: "Test-Plan-VP7.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Aug 2, 2026", createdBy: "yue.xi01@sap.com" },
-                  { docNumber: "200000001032", description: "Results-VP7.xlsx", type: "XLSX", part: "000", version: "02", modifiedOn: "Aug 4, 2026", createdBy: "yue.xi01@sap.com" }
-                ]
-              }
+              { fileName: "Body-material-steel.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
+              { fileName: "Body-color-arctic-white.pdf",  fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
+              { fileName: "Body-structure-frame.dwg",     fileIcon: "sap-icon://document",         docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
+              { fileName: "Raw-material-A.xlsx",          fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Raw-material-B.xlsx",          fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Supplier-cert.pdf",            fileIcon: "sap-icon://pdf-attachment",   docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Test-report.pdf",              fileIcon: "sap-icon://pdf-attachment",   docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Composition-table.xlsx",       fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Wheel-geometry.pdf",           fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Wheel-Design",     docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
+              { fileName: "Wheel-material-spec.xlsx",     fileIcon: "sap-icon://excel-attachment",  docName: "Car-Wheel-Design",     docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
+              { fileName: "Engine-assembly.pdf",          fileIcon: "sap-icon://pdf-attachment",   docName: "Engine-Design-v2",     docNumber: "100000000195", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Engine-block-spec.xlsx",       fileIcon: "sap-icon://excel-attachment",  docName: "Engine-Block-Spec",    docNumber: "100000000197", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { fileName: "Cylinder-head-drawing.dwg",    fileIcon: "sap-icon://document",         docName: "Cylinder-Head-Drawing",docNumber: "100000000198", type: "DFT", part: "000", version: "00", status: "New" },
+              { fileName: "Chassis-design.pdf",           fileIcon: "sap-icon://pdf-attachment",   docName: "Chassis-Design",       docNumber: "100000000200", type: "TST", part: "000", version: "00", status: "New" },
+              { fileName: "Frame-material-spec.xlsx",     fileIcon: "sap-icon://excel-attachment",  docName: "Frame-Material-Spec",  docNumber: "100000000202", type: "TST", part: "000", version: "00", status: "New" }
             ]
           });
           oDialog.setModel(oLinkDocModel, "linkDoc");
@@ -280,13 +393,6 @@ sap.ui.define([
       var oView = this.getView();
       this._oLinkDocDialog.then(function (oDialog) {
         oDialog.open();
-        setTimeout(function () {
-          var oTable = oView.byId("linkDocResultTable");
-          if (!oTable) { return; }
-          oTable.expandToLevel(1);
-          var oBinding = oTable.getBinding("rows");
-          if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-        }, 100);
       });
     },
 
@@ -351,7 +457,7 @@ sap.ui.define([
         "png":  "sap-icon://attachment-photo",
         "jpg":  "sap-icon://attachment-photo",
         "jpeg": "sap-icon://attachment-photo",
-        "dwg":  "sap-icon://drawing",
+        "dwg":  "sap-icon://document",
         "txt":  "sap-icon://document-text"
       };
       return mIcons[sExt] || "sap-icon://document";
@@ -378,8 +484,86 @@ sap.ui.define([
       }
     },
 
+    _doc4ShowRow: function (oDoc, iIndex) {
+      var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.2 MB"];
+      var aAttachments = (oDoc.attachments || []).map(function (sFile, i) {
+        return {
+          fileName: sFile,
+          modifiedOn: "Aug 6, 2026",
+          createdBy: "yue.xi01@sap.com",
+          modifiedBy: "yue.xi01@sap.com",
+          size: aSizes[i % aSizes.length]
+        };
+      });
+      // Store data in component-level model so Doc4Detail view can read it
+      var oComp = this.getOwnerComponent();
+      var oDoc4Model = oComp.getModel("doc4");
+      if (!oDoc4Model) {
+        oDoc4Model = new JSONModel();
+        oComp.setModel(oDoc4Model, "doc4");
+      }
+      oDoc4Model.setData({ docName: oDoc.docName || "Attachments", attachments: aAttachments });
+
+      // Switch FCL to TwoColumnsBeginExpanded — midColumn already embedded statically
+      var oAppCtrl = oComp.getRootControl().getController();
+      if (oAppCtrl && oAppCtrl.setFCLLayout) {
+        oAppCtrl.setFCLLayout("TwoColumnsBeginExpanded");
+      }
+    },
+
+    onDoc4RowSelect: function (oEvent) {
+      var oItem = oEvent.getSource();
+      if (oItem.isA("sap.m.Table")) {
+        oItem = oEvent.getParameter("listItem");
+      }
+      if (!oItem) { return; }
+      var oCtx = oItem.getBindingContext("detail");
+      if (!oCtx) { return; }
+      var aFlat = this.getView().getModel("detail").getProperty("/documentsFlat") || [];
+      var iIndex = aFlat.indexOf(oCtx.getObject());
+      this._doc4ShowRow(oCtx.getObject(), iIndex);
+
+      var oTable = this.getView().byId("documentsTable4");
+      var oBtn = this.getView().byId("unlinkBtn4");
+      if (oBtn && oTable) { oBtn.setEnabled(oTable.getSelectedItems().length > 0); }
+    },
+
+    onDoc4CloseDetail: function () {
+      var oAppCtrl = this.getOwnerComponent().getRootControl().getController();
+      if (oAppCtrl && oAppCtrl.setFCLLayout) {
+        oAppCtrl.setFCLLayout("OneColumn");
+      }
+      var oTable = this.getView().byId("documentsTable4");
+      if (oTable) { oTable.removeSelections(true); }
+    },
+
+    onDoc4AttCreate:    function () { MessageToast.show("Create attachment"); },
+    onDoc4AttEditLink:  function () { MessageToast.show("Edit Link"); },
+    onDoc4AttDownload:  function () { MessageToast.show("Download"); },
+    onDoc4AttDelete:    function () { MessageToast.show("Delete"); },
+    onDoc4AttMove:      function () { MessageToast.show("Move"); },
+    onDoc4AttCopy:      function () { MessageToast.show("Copy"); },
+
     onLinkExistingDoc3: function () {
       var oView = this.getView();
+      var aDocuments = [
+        { fileName: "Safety-valve-drawing.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Valve-Assembly-2026",      docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
+        { fileName: "Pressure-test-report.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Valve-Assembly-2026",      docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
+        { fileName: "Material-datasheet.xlsx",       fileIcon: "sap-icon://excel-attachment", docName: "Valve-Assembly-2026",      docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
+        { fileName: "Coating-specification.pdf",     fileIcon: "sap-icon://pdf-attachment",   docName: "Surface-Treatment-Spec",   docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
+        { fileName: "Chemical-resistance.xlsx",      fileIcon: "sap-icon://excel-attachment", docName: "Surface-Treatment-Spec",   docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
+        { fileName: "Adhesion-test-results.pdf",     fileIcon: "sap-icon://pdf-attachment",   docName: "Surface-Treatment-Spec",   docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
+        { fileName: "Tolerance-analysis.xlsx",       fileIcon: "sap-icon://excel-attachment", docName: "Gearbox-Housing-Design",   docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
+        { fileName: "Gearbox-assembly-drawing.dwg",  fileIcon: "sap-icon://document",         docName: "Gearbox-Housing-Design",   docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
+        { fileName: "Inspection-checklist.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Gearbox-Housing-Design",   docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
+        { fileName: "Weld-procedure-spec.pdf",       fileIcon: "sap-icon://pdf-attachment",   docName: "Frame-Welding-Procedure",  docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
+        { fileName: "Weld-inspection-record.xlsx",   fileIcon: "sap-icon://excel-attachment", docName: "Frame-Welding-Procedure",  docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
+        { fileName: "NDT-report.pdf",                fileIcon: "sap-icon://pdf-attachment",   docName: "Frame-Welding-Procedure",  docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
+        { fileName: "Torque-spec-table.xlsx",        fileIcon: "sap-icon://excel-attachment", docName: "Fastener-Torque-Spec",     docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
+        { fileName: "Bolt-pattern-drawing.dwg",      fileIcon: "sap-icon://document",         docName: "Fastener-Torque-Spec",     docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
+        { fileName: "Assembly-sequence.pdf",         fileIcon: "sap-icon://pdf-attachment",   docName: "Final-Assembly-Guide",     docNumber: "200000002050", type: "DFT", part: "000", version: "02", status: "Released" }
+      ];
+
       if (!this._oLinkDoc3Dialog) {
         Fragment.load({
           id: "linkDoc3Fragment",
@@ -387,27 +571,9 @@ sap.ui.define([
           controller: this
         }).then(function (oDialog) {
           this._oLinkDoc3Dialog = oDialog;
+          this._oLinkDoc3AllDocs = aDocuments;
           oView.addDependent(oDialog);
-          var oModel = new JSONModel({
-            documents: [
-              { fileName: "Car-Body-Design.pdf",       docNumber: "100000000181", type: "TST", version: "00", part: "000" },
-              { fileName: "Body-Material-Spec.xlsx",    docNumber: "100000000184", type: "TST", version: "00", part: "000" },
-              { fileName: "Body-Color-Spec.pdf",        docNumber: "100000000185", type: "TST", version: "00", part: "000" },
-              { fileName: "Body-Structure-Drawing.dwg", docNumber: "100000000187", type: "TST", version: "00", part: "000" },
-              { fileName: "Car-Wheel-Design.pdf",       docNumber: "100000000189", type: "DRW", version: "00", part: "000" },
-              { fileName: "Wheel-Material-Spec.xlsx",   docNumber: "100000000192", type: "DRW", version: "00", part: "000" },
-              { fileName: "Wheel-Color-Spec.pdf",       docNumber: "100000000193", type: "TST", version: "00", part: "000" },
-              { fileName: "Engine-Design-v2.pdf",       docNumber: "100000000195", type: "DFT", version: "00", part: "000" },
-              { fileName: "Engine-Block-Spec.xlsx",     docNumber: "100000000197", type: "DFT", version: "00", part: "000" },
-              { fileName: "Cylinder-Head-Drawing.dwg",  docNumber: "100000000198", type: "DFT", version: "00", part: "000" },
-              { fileName: "Chassis-Design.pdf",         docNumber: "100000000200", type: "TST", version: "00", part: "000" },
-              { fileName: "Frame-Material-Spec.xlsx",   docNumber: "100000000202", type: "TST", version: "00", part: "000" },
-              { fileName: "Suspension-Geometry.pdf",    docNumber: "100000000204", type: "TST", version: "00", part: "000" },
-              { fileName: "Brake-Disc-Spec.pdf",        docNumber: "100000000205", type: "TST", version: "00", part: "000" },
-              { fileName: "Wiring-Harness-Diagram.pdf", docNumber: "100000000207", type: "TST", version: "00", part: "000" }
-            ]
-          });
-          oDialog.setModel(oModel, "linkDoc3");
+          oDialog.setModel(new JSONModel({ documents: aDocuments }), "linkDoc3");
           oDialog.open();
         }.bind(this));
       } else {
@@ -415,34 +581,72 @@ sap.ui.define([
       }
     },
 
+    onLinkDoc3GoSearch: function () {
+      var oSearch = Fragment.byId("linkDoc3Fragment", "linkDoc3SearchField");
+      this._applyLinkDoc3Filters(oSearch ? oSearch.getValue() : "");
+    },
+
+    onLinkDoc3Filter: function () {
+      this._applyLinkDoc3Filters();
+    },
+
     onLinkDoc3Search: function (oEvent) {
-      var sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue") || "";
+      this._applyLinkDoc3Filters(oEvent.getParameter("query") || oEvent.getParameter("newValue") || "");
+    },
+
+    onLinkDoc3ToggleFilters: function () {
+      var oPanel = Fragment.byId("linkDoc3Fragment", "linkDoc3FilterPanel");
+      var oBtn   = Fragment.byId("linkDoc3Fragment", "linkDoc3ShowFiltersBtn");
+      if (!oPanel || !oBtn) { return; }
+      var bVisible = oPanel.getVisible();
+      oPanel.setVisible(!bVisible);
+      oBtn.setText(bVisible ? "Show Filters" : "Hide Filters");
+      // Re-apply 8px gap after setText triggers DOM re-render
+      setTimeout(function () {
+        var oDomBtn = oBtn.getDomRef ? oBtn.getDomRef() : document.querySelector("[id$='linkDoc3ShowFiltersBtn']");
+        if (oDomBtn) { oDomBtn.style.setProperty("margin-left", "8px", "important"); }
+      }, 0);
+    },
+
+    _applyLinkDoc3Filters: function (sQuery) {
       var oTable = Fragment.byId("linkDoc3Fragment", "linkDoc3ResultTable");
       if (!oTable) { return; }
-      var oBinding = oTable.getBinding("items");
+      var oBinding = oTable.getBinding("rows");
       if (!oBinding) { return; }
-      if (sQuery) {
-        var oFilter = new Filter([
-          new Filter("fileName", FilterOperator.Contains, sQuery),
-          new Filter("docNumber", FilterOperator.Contains, sQuery)
-        ], false);
-        oBinding.filter([oFilter]);
-      } else {
-        oBinding.filter([]);
+
+      var oTypeSelect   = Fragment.byId("linkDoc3Fragment", "linkDoc3TypeFilter");
+      var oStatusSelect = Fragment.byId("linkDoc3Fragment", "linkDoc3StatusFilter");
+      var sType   = oTypeSelect   ? oTypeSelect.getSelectedKey()   : "";
+      var sStatus = oStatusSelect ? oStatusSelect.getSelectedKey() : "";
+      if (sQuery === undefined) {
+        var oSearch = Fragment.byId("linkDoc3Fragment", "linkDoc3SearchField");
+        sQuery = oSearch ? oSearch.getValue() : "";
       }
+
+      var aFilters = [];
+      if (sType)   { aFilters.push(new Filter("type",   FilterOperator.EQ, sType)); }
+      if (sStatus) { aFilters.push(new Filter("status", FilterOperator.EQ, sStatus)); }
+      if (sQuery)  {
+        aFilters.push(new Filter([
+          new Filter("fileName",  FilterOperator.Contains, sQuery),
+          new Filter("docName",   FilterOperator.Contains, sQuery),
+          new Filter("docNumber", FilterOperator.Contains, sQuery)
+        ], false));
+      }
+      oBinding.filter(aFilters.length ? [new Filter(aFilters, true)] : []);
     },
 
     onLinkDoc3Confirm: function () {
       var oTable = Fragment.byId("linkDoc3Fragment", "linkDoc3ResultTable");
       if (oTable) {
-        var aSelected = oTable.getSelectedItems();
-        if (aSelected.length > 0) {
+        var aIndices = oTable.getSelectedIndices();
+        if (aIndices.length > 0) {
           var oDetailModel = this.getView().getModel("detail");
           var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
-          aSelected.forEach(function (oItem) {
-            var oCtx = oItem.getBindingContext("linkDoc3");
-            var oDoc = oCtx.getObject();
-            if (!aFlat.some(function (d) { return d.docNumber === oDoc.docNumber; })) {
+          aIndices.forEach(function (iIndex) {
+            var oCtx = oTable.getContextByIndex(iIndex);
+            var oDoc = oCtx ? oCtx.getObject() : null;
+            if (oDoc && !aFlat.some(function (d) { return d.fileName === oDoc.fileName; })) {
               aFlat.push(Object.assign({}, oDoc, { status: "New", showAll: false, attachments: [] }));
             }
           });
@@ -566,8 +770,57 @@ sap.ui.define([
       }, 0);
     },
 
+        // ---- Documents 7 ----
+    onDoc7DocSelect: function (oEvent) {
+      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+      if (!oItem || oItem.isA("sap.m.Table")) { return; }
+      var oCtx = oItem.getBindingContext("detail");
+      if (!oCtx) { return; }
+      var oDoc = oCtx.getObject();
+      var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.21 MB"];
+      var aAtts = (oDoc.attachments || []).map(function (sFile, i) {
+        return {
+          fileName: sFile,
+          modifiedOn: "Aug 6, 2026",
+          createdBy: "yue.xi01@sap.com",
+          modifiedBy: "yue.xi01@sap.com",
+          size: aSizes[i % aSizes.length]
+        };
+      });
+      var oDetailModel = this.getView().getModel("detail");
+      oDetailModel.setProperty("/doc7Attachments", aAtts);
+      oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
+      oDetailModel.setProperty("/doc7StripVisible", true);
+      // Reset action buttons
+      var oView = this.getView();
+      ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
+        var oBtn = oView.byId(sId);
+        if (oBtn) { oBtn.setEnabled(false); }
+      });
+    },
+
+    onDoc7AttSelect: function () {
+      var oTable = this.getView().byId("doc7AttTable");
+      var bHas = oTable && oTable.getSelectedItems().length > 0;
+      var oView = this.getView();
+      ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
+        var oBtn = oView.byId(sId);
+        if (oBtn) { oBtn.setEnabled(bHas); }
+      });
+    },
+
+    onDoc7Create:   function () { MessageToast.show("Create attachment"); },
+    onDoc7EditLink: function () { MessageToast.show("Edit Link"); },
+    onDoc7Download: function () { MessageToast.show("Download"); },
+    onDoc7Delete:   function () { MessageToast.show("Delete"); },
+    onDoc7Move:     function () { MessageToast.show("Move"); },
+    onDoc7Upload:   function () { MessageToast.show("Upload"); },
+    onDoc7Refresh:  function () { MessageToast.show("Refreshed"); },
+    onDoc7Search:   function () {},
+
     _onRouteMatched: function (oEvent) {
       var sSpecId = oEvent.getParameter("arguments").specId;
+      this._sCurrentSpecId = sSpecId;
       this._loadDetail(sSpecId);
       this._fixObjectPageScroll();
     },
@@ -599,6 +852,40 @@ sap.ui.define([
       var aSpecs = oAppModel.getProperty("/specifications");
       var oSpec = aSpecs.find(function (s) { return s.id === sSpecId; });
       if (!oSpec) { return; }
+
+      var aDocumentsFlat = [
+          { fileName: "Car-Body-Design.pdf",        docName: "Car-Body-Design",        docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New",
+            attachments: ["Body-material-steel.pdf", "Body-color-arctic-white.pdf", "Body-structure-frame.dwg"], showAll: false },
+          { fileName: "Body-Material-Spec.xlsx",     docName: "Body-Material-Spec",     docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work",
+            attachments: ["Raw-material-A.xlsx", "Raw-material-B.xlsx", "Supplier-cert.pdf", "Test-report.pdf", "Composition-table.xlsx", "REACH-compliance.pdf", "Thickness-spec.pdf", "Surface-treatment.pdf", "Grade-classification.xlsx", "Approval-letter.pdf", "Revision-notes.txt"], showAll: false },
+          { fileName: "Body-Color-Spec.pdf",         docName: "Body-Color-Spec",        docNumber: "100000000206", type: "TST", part: "000", version: "00", status: "In Work",
+            attachments: ["Color-chart-RAL.pdf", "Paint-sample-A.png", "Paint-sample-B.png"], showAll: false },
+          { fileName: "Body-Structure-Drawing.dwg",  docName: "Body-Structure-Drawing",  docNumber: "100000000201", type: "DRW", part: "000", version: "00", status: "Locked",
+            attachments: ["Frame-assembly.dwg", "Welding-specs.pdf"], showAll: false },
+          { fileName: "Car-Wheel-Design.pdf",        docName: "Car-Wheel-Design",        docNumber: "100000000196", type: "DFT", part: "000", version: "00", status: "New",
+            attachments: ["Wheel-geometry.pdf", "Rim-material.xlsx", "Hub-design.dwg", "Bearing-spec.pdf"], showAll: false },
+          { fileName: "Wheel-Material-Spec.xlsx",    docName: "Wheel-Material-Spec",    docNumber: "100000000203", type: "TST", part: "000", version: "00", status: "In Work",
+            attachments: ["Alloy-composition.xlsx"], showAll: false },
+          { fileName: "Wheel-Color-Spec.pdf",        docName: "Wheel-Color-Spec",        docNumber: "100000000191", type: "DFT", part: "000", version: "00", status: "New",
+            attachments: ["Finish-gloss.pdf", "Finish-matte.pdf", "Color-sample.png"], showAll: false },
+          { fileName: "Engine-Design-v2.pdf",        docName: "Engine-Design-v2",        docNumber: "100000000847", type: "DRW", part: "000", version: "00", status: "Created",
+            attachments: ["Engine-block.dwg", "Cylinder-head.dwg", "Fuel-system.pdf", "Cooling-circuit.pdf", "Exhaust-manifold.dwg"], showAll: false }
+      ];
+
+      var aDocumentsAttFlat = [];
+      aDocumentsFlat.forEach(function (oDoc) {
+        (oDoc.attachments || []).forEach(function (sFile) {
+          aDocumentsAttFlat.push({
+            fileName: sFile,
+            docName: oDoc.docName,
+            docNumber: oDoc.docNumber,
+            type: oDoc.type,
+            part: oDoc.part,
+            version: oDoc.version,
+            status: oDoc.status
+          });
+        });
+      });
 
       var oDetailModel = new JSONModel({
         id: oSpec.id,
@@ -639,25 +926,13 @@ sap.ui.define([
             children: []
           }
         ],
-        documentsFlat: [
-          { fileName: "Car-Body-Design.pdf",        docName: "Car-Body-Design",        docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New",
-            attachments: ["Body-material-steel.pdf", "Body-color-arctic-white.pdf", "Body-structure-frame.dwg"], showAll: false },
-          { fileName: "Body-Material-Spec.xlsx",     docName: "Body-Material-Spec",     docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work",
-            attachments: ["Raw-material-A.xlsx", "Raw-material-B.xlsx", "Supplier-cert.pdf", "Test-report.pdf", "Composition-table.xlsx", "REACH-compliance.pdf", "Thickness-spec.pdf", "Surface-treatment.pdf", "Grade-classification.xlsx", "Approval-letter.pdf", "Revision-notes.txt"], showAll: false },
-          { fileName: "Body-Color-Spec.pdf",         docName: "Body-Color-Spec",        docNumber: "100000000206", type: "TST", part: "000", version: "00", status: "In Work",
-            attachments: ["Color-chart-RAL.pdf", "Paint-sample-A.png", "Paint-sample-B.png"], showAll: false },
-          { fileName: "Body-Structure-Drawing.dwg",  docName: "Body-Structure-Drawing",  docNumber: "100000000201", type: "DRW", part: "000", version: "00", status: "Locked",
-            attachments: ["Frame-assembly.dwg", "Welding-specs.pdf"], showAll: false },
-          { fileName: "Car-Wheel-Design.pdf",        docName: "Car-Wheel-Design",        docNumber: "100000000196", type: "DFT", part: "000", version: "00", status: "New",
-            attachments: ["Wheel-geometry.pdf", "Rim-material.xlsx", "Hub-design.dwg", "Bearing-spec.pdf"], showAll: false },
-          { fileName: "Wheel-Material-Spec.xlsx",    docName: "Wheel-Material-Spec",    docNumber: "100000000203", type: "TST", part: "000", version: "00", status: "In Work",
-            attachments: ["Alloy-composition.xlsx"], showAll: false },
-          { fileName: "Wheel-Color-Spec.pdf",        docName: "Wheel-Color-Spec",        docNumber: "100000000191", type: "DFT", part: "000", version: "00", status: "New",
-            attachments: ["Finish-gloss.pdf", "Finish-matte.pdf", "Color-sample.png"], showAll: false },
-          { fileName: "Engine-Design-v2.pdf",        docName: "Engine-Design-v2",        docNumber: "100000000847", type: "DRW", part: "000", version: "00", status: "Created",
-            attachments: ["Engine-block.dwg", "Cylinder-head.dwg", "Fuel-system.pdf", "Cooling-circuit.pdf", "Exhaust-manifold.dwg"], showAll: false }
-        ]
+        documentsFlat: aDocumentsFlat,
+        documentsAttFlat: aDocumentsAttFlat,
+        doc7Attachments: [],
+        doc7StripVisible: true,
+        doc7Uuid: "09a212e0-65fa-4464-907d-d52c1b844027"
       });
+
       this.getView().setModel(oDetailModel, "detail");
 
       var oView = this.getView();

@@ -5,7 +5,7 @@
   <Dialog
     id="linkDocumentDialog"
     title="Search document"
-    contentWidth="62rem"
+    contentWidth="72rem"
     contentHeight="42rem"
     resizable="true"
     draggable="true"
@@ -22,9 +22,9 @@
           class="sapUiNoContentPadding linkDocTabBar">
           <items>
             <IconTabFilter text="Search and Select" key="search">
-              <VBox class="sapUiMediumMarginBeginEnd sapUiSmallMarginTop sapUiSmallMarginBottom">
+              <VBox>
 
-                <!-- Search row: field stretches, Go + Show Filters pinned right -->
+                <!-- Search toolbar -->
                 <Toolbar id="linkDocSearchToolbar" class="sapUiSizeCompact sapMTBTransparent linkDocSearchBar">
                   <SearchField
                     id="linkDocSearchField"
@@ -34,68 +34,49 @@
                   <Button text="Go" type="Emphasized" press=".onLinkDocSearch" />
                   <Button text="Show Filters" type="Transparent" press=".onLinkDocShowFilters" />
                 </Toolbar>
-                <VBox height="1rem" />
 
-                <!-- Results table with headerToolbar: title left, icon right -->
-                <ui:TreeTable
-                  xmlns:ui="sap.ui.table"
+                <!-- Results table -->
+                <Table
                   id="linkDocResultTable"
-                  rows="{path: 'linkDoc>/documents', parameters: {arrayNames: ['children']}}"
-                  selectionMode="MultiToggle"
-                  visibleRowCountMode="Fixed"
-                  visibleRowCount="9"
-                  rowHeight="48"
-                  columnHeaderHeight="32"
-                  rowSelectionChange=".onLinkDocSelectionChange"
-                  toggleOpenState=".onLinkDocTreeToggle"
-                  class="sapUiSizeCompact detailTreeTable1">
-                  <ui:extension>
+                  items="{linkDoc>/documents}"
+                  mode="MultiSelect"
+                  sticky="ColumnHeaders,HeaderToolbar"
+                  growing="true"
+                  growingThreshold="20"
+                  class="sapUiSizeCompact">
+                  <headerToolbar>
                     <Toolbar class="sapUiSizeCompact sapMTBTransparent">
                       <Title text="Items ({= ${linkDoc>/documents}.length})" level="H5" />
                       <ToolbarSpacer />
                       <Button icon="sap-icon://copy" type="Transparent" />
                     </Toolbar>
-                  </ui:extension>
-                  <ui:columns>
-                    <ui:Column width="20rem">
-                      <Label text="Document Info" />
-                      <ui:template>
-                        <FormattedText htmlText="{= ${linkDoc>isParent} === true ? ('&lt;strong&gt;' + ${linkDoc>docNumber} + '&lt;/strong&gt;') : ${linkDoc>description} }" />
-                      </ui:template>
-                    </ui:Column>
-                    <ui:Column>
-                      <Label text="Description" />
-                      <ui:template>
-                        <Text text="{= ${linkDoc>isParent} === true ? ${linkDoc>docDescription} : (${linkDoc>modifiedOn} ? ('Last modified on ' + ${linkDoc>modifiedOn} + ' by ' + ${linkDoc>createdBy}) : '') }"
-                          class="{= ${linkDoc>isParent} === true ? '' : 'detailDocMeta' }" />
-                      </ui:template>
-                    </ui:Column>
-                    <ui:Column width="8rem">
-                      <Label text="Type" />
-                      <ui:template>
-                        <Text text="{linkDoc>type}" />
-                      </ui:template>
-                    </ui:Column>
-                    <ui:Column width="8rem">
-                      <Label text="Part" />
-                      <ui:template>
-                        <Text text="{= ${linkDoc>isParent} === true ? ${linkDoc>part} : '' }" />
-                      </ui:template>
-                    </ui:Column>
-                    <ui:Column width="8rem">
-                      <Label text="Version" />
-                      <ui:template>
-                        <Text text="{= ${linkDoc>isParent} === true ? ${linkDoc>version} : '' }" />
-                      </ui:template>
-                    </ui:Column>
-                    <ui:Column width="8rem">
-                      <Label text="Document Status" />
-                      <ui:template>
-                        <Text text="{= ${linkDoc>isParent} === true ? ${linkDoc>status} : '' }" />
-                      </ui:template>
-                    </ui:Column>
-                  </ui:columns>
-                </ui:TreeTable>
+                  </headerToolbar>
+                  <columns>
+                    <Column width="16rem"><Text text="Attachment" /></Column>
+                    <Column width="14rem"><Text text="Document" /></Column>
+                    <Column width="10rem"><Text text="Document No." /></Column>
+                    <Column width="8rem"><Text text="Document Type" /></Column>
+                    <Column width="7rem"><Text text="Document Part" /></Column>
+                    <Column width="7rem"><Text text="Document Version" /></Column>
+                    <Column width="8rem"><Text text="Document Status" /></Column>
+                  </columns>
+                  <items>
+                    <ColumnListItem>
+                      <cells>
+                        <HBox alignItems="Center">
+                          <core:Icon src="{linkDoc>fileIcon}" color="var(--sapContent_LabelColor)" useIconTooltip="false" class="sapUiTinyMarginEnd" />
+                          <Text text="{linkDoc>fileName}" wrapping="false" />
+                        </HBox>
+                        <Text text="{linkDoc>docName}" wrapping="false" />
+                        <Text text="{linkDoc>docNumber}" wrapping="false" />
+                        <Text text="{linkDoc>type}" wrapping="false" />
+                        <Text text="{linkDoc>part}" wrapping="false" />
+                        <Text text="{linkDoc>version}" wrapping="false" />
+                        <Text text="{linkDoc>status}" wrapping="false" />
+                      </cells>
+                    </ColumnListItem>
+                  </items>
+                </Table>
 
               </VBox>
             </IconTabFilter>
@@ -112,7 +93,7 @@
     </content>
 
     <beginButton>
-      <Button text="OK" type="Emphasized" press=".onLinkDocConfirm" class="sapUiSizeCompact" width="auto" />
+      <Button text="Select" type="Emphasized" press=".onLinkDocConfirm" class="sapUiSizeCompact" width="auto" />
     </beginButton>
     <endButton>
       <Button text="Cancel" press=".onLinkDocCancel" class="sapUiSizeCompact" width="auto" />
