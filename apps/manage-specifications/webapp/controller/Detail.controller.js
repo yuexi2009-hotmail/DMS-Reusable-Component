@@ -261,22 +261,21 @@ sap.ui.define([
         try { oBinding.expand(iRow); } catch (e) {}
       }
 
-      // If a parent row was just selected, deselect its child rows
-      if (isParentRow && isSelected) {
-        var iTotal = oBinding.getLength();
-        for (var i = iRow + 1; i < iTotal; i++) {
-          var ctx = oBinding.getContextByIndex(i);
-          var obj = ctx ? ctx.getObject() : null;
-          if (!obj || obj.isParent) { break; }
-          oTable.removeSelectionInterval(i, i);
-        }
-      }
-
       setTimeout(function () {
         var iNewTotal = oBinding.getLength();
         oTable.setVisibleRowCount(iNewTotal);
 
-        // Update unlink button — only count parent rows
+        // If a parent row was just selected, deselect its child rows
+        if (isParentRow && isSelected) {
+          for (var i = iRow + 1; i < iNewTotal; i++) {
+            var ctx = oBinding.getContextByIndex(i);
+            var obj = ctx ? ctx.getObject() : null;
+            if (!obj || obj.isParent) { break; }
+            oTable.removeSelectionInterval(i, i);
+          }
+        }
+
+        // Update unlink button
         if (sTableId && sBtnId) {
           var oBtn = oView.byId(sBtnId);
           if (!oBtn) { return; }
