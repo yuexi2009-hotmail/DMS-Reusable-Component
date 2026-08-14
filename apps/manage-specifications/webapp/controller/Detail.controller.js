@@ -261,12 +261,13 @@ sap.ui.define([
         try { oBinding.expand(iRow); } catch (e) {}
       }
 
-      // Immediately deselect all child rows (non-parent rows)
-      var iTotal = oBinding.getLength();
-      for (var i = 0; i < iTotal; i++) {
-        var ctx = oBinding.getContextByIndex(i);
-        var obj = ctx ? ctx.getObject() : null;
-        if (obj && !obj.isParent && oTable.isIndexSelected(i)) {
+      // If a parent row was just selected, deselect its child rows
+      if (isParentRow && isSelected) {
+        var iTotal = oBinding.getLength();
+        for (var i = iRow + 1; i < iTotal; i++) {
+          var ctx = oBinding.getContextByIndex(i);
+          var obj = ctx ? ctx.getObject() : null;
+          if (!obj || obj.isParent) { break; }
           oTable.removeSelectionInterval(i, i);
         }
       }
