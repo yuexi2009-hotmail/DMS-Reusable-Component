@@ -213,33 +213,7 @@ sap.ui.define([
     onDoc5Search: function () {},
 
     _cascadeSelection: function (sTableId) {
-      var oTable = this.getView().byId(sTableId);
-      if (!oTable) { return; }
-      var oBinding = oTable.getBinding("rows");
-      if (!oBinding) { return; }
-      var iTotal = oBinding.getLength();
-
-      // Build a snapshot: for each index, get isParent + selected state
-      var aRows = [];
-      for (var i = 0; i < iTotal; i++) {
-        var oCtx = oBinding.getContextByIndex(i);
-        var oObj = oCtx ? oCtx.getObject() : null;
-        aRows.push({ index: i, isParent: !!(oObj && oObj.isParent), selected: oTable.isIndexSelected(i) });
-      }
-
-      // For each parent, cascade selection to its children
-      for (var p = 0; p < aRows.length; p++) {
-        if (!aRows[p].isParent) { continue; }
-        var parentSelected = aRows[p].selected;
-        for (var c = p + 1; c < aRows.length; c++) {
-          if (aRows[c].isParent) { break; } // next parent — stop
-          if (parentSelected) {
-            oTable.addSelectionInterval(aRows[c].index, aRows[c].index);
-          } else {
-            oTable.removeSelectionInterval(aRows[c].index, aRows[c].index);
-          }
-        }
-      }
+      // intentionally empty — cascade selection disabled
     },
 
     _updateUnlinkBtn: function (sTableId, sBtnId) {
@@ -282,30 +256,26 @@ sap.ui.define([
       var isParentRow = !!(oObj && oObj.isParent);
       var isSelected = (iRow >= 0) && oTable.isIndexSelected(iRow);
 
-      // Only expand+cascade when a parent row is clicked
+      // Expand parent row when selected
       if (isParentRow && isSelected) {
         try { oBinding.expand(iRow); } catch (e) {}
+      }
+
+      // Immediately deselect all child rows (non-parent rows)
+      var iTotal = oBinding.getLength();
+      for (var i = 0; i < iTotal; i++) {
+        var ctx = oBinding.getContextByIndex(i);
+        var obj = ctx ? ctx.getObject() : null;
+        if (obj && !obj.isParent && oTable.isIndexSelected(i)) {
+          oTable.removeSelectionInterval(i, i);
+        }
       }
 
       setTimeout(function () {
         var iNewTotal = oBinding.getLength();
         oTable.setVisibleRowCount(iNewTotal);
 
-        // Cascade only from the clicked parent row to its immediate children
-        if (isParentRow && iRow >= 0) {
-          for (var c = iRow + 1; c < iNewTotal; c++) {
-            var cCtx = oBinding.getContextByIndex(c);
-            var cObj = cCtx ? cCtx.getObject() : null;
-            if (!cObj || cObj.isParent) { break; }
-            if (isSelected) {
-              oTable.addSelectionInterval(c, c);
-            } else {
-              oTable.removeSelectionInterval(c, c);
-            }
-          }
-        }
-
-        // Update unlink button
+        // Update unlink button — only count parent rows
         if (sTableId && sBtnId) {
           var oBtn = oView.byId(sBtnId);
           if (!oBtn) { return; }

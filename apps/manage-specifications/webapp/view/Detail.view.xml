@@ -235,7 +235,7 @@
               </IconTabFilter>
 
               <!-- Documents Tab -->
-              <IconTabFilter text="Documents" key="documents">
+              <IconTabFilter text="Document Option 1" key="documents">
                 <VBox class="detailTabContent">
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Items ({= ${detail>/documents}.length})" level="H4" />
@@ -357,7 +357,7 @@
               </IconTabFilter>
 
               <!-- Documents 3 Tab: flat sap.m.Table, SAP-standard style -->
-              <IconTabFilter text="Documents 3" key="documents3">
+              <IconTabFilter text="Document Option 2" key="documents3">
                 <VBox class="detailTabContent">
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Items ({= ${detail>/documentsFlat}.length})" level="H4" />
@@ -480,7 +480,7 @@
               </IconTabFilter>
 
               <!-- Documents 4 Tab: left-side list; clicking a row opens FCL midColumn -->
-              <IconTabFilter text="Documents 5" key="documents5">
+              <IconTabFilter text="Document Option 3" key="documents5">
                 <VBox class="detailTabContent">
                   <mdc:Table
                     id="documentsTable5"
@@ -490,7 +490,7 @@
                     showRowCount="true"
                     class="sapUiSizeCompact"
                     selectionChange=".onDoc5SelectionChange"
-                    groupConditions='{"groupLevels": [{"name": "docName"}]}'
+                    groupConditions='{"groupLevels": [{"name": "docNumber"}]}'
                     delegate='{"name": "com/sap/demo/managespec/delegate/Doc5TableDelegate"}'>
                     <mdc:actions>
                       <SearchField id="doc5SearchField" placeholder="Search" width="16rem" search=".onDoc5Search">
