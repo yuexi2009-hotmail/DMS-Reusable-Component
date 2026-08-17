@@ -485,7 +485,7 @@
                   <mdc:Table
                     id="documentsTable5"
                     header="Items"
-                    p13nMode="Column,Sort,Group"
+                    p13nMode="Column,Sort,Filter,Group"
                     selectionMode="Multi"
                     showRowCount="true"
                     class="sapUiSizeCompact"
