@@ -282,7 +282,7 @@
                         <Menu>
                           <items>
                             <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
-                            <MenuItem text="Link New Document" />
+                            <MenuItem text="Link New Document" press=".onLinkNewDocument" />
                           </items>
                         </Menu>
                       </menu>
@@ -404,7 +404,7 @@
                         <Menu>
                           <items>
                             <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
-                            <MenuItem text="Link New Document" />
+                            <MenuItem text="Link New Document" press=".onLinkNewDocument" />
                           </items>
                         </Menu>
                       </menu>
@@ -538,7 +538,7 @@
                           <Menu>
                             <items>
                               <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
-                              <MenuItem text="Link New Document" />
+                              <MenuItem text="Link New Document" press=".onLinkNewDocument" />
                             </items>
                           </Menu>
                         </menu>

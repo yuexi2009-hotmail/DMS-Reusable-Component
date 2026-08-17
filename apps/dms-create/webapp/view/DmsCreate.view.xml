@@ -1,0 +1,340 @@
+<mvc:View
+    controllerName="com.sap.demo.dmscreate.controller.DmsCreate"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns:uxap="sap.uxap"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+
+    <Page
+        id="dmsCreatePage"
+        showHeader="false"
+        enableScrolling="true"
+        floatingFooter="true"
+        class="dmsCreatePage">
+
+        <content>
+            <!-- Page title area: ObjectPageLayout without header -->
+            <uxap:ObjectPageLayout
+                id="dmsObjectPage"
+                useIconTabBar="true"
+                upperCaseAnchorBar="false"
+                showTitleInHeaderContent="false"
+                alwaysShowContentHeader="false"
+                preserveHeaderStateOnScroll="false"
+                class="dmsObjectPageLayout">
+
+                <uxap:headerTitle>
+                    <uxap:ObjectPageDynamicHeaderTitle>
+                        <uxap:heading>
+                            <VBox>
+                                <Title text="{i18n>pageTitle}" level="H2"/>
+                                <Text text="{view>/docNumber}" class="dmsDocNumberSubtitle"/>
+                            </VBox>
+                        </uxap:heading>
+                        <uxap:snappedTitleOnMobile>
+                            <Title text="{i18n>pageTitle}" level="H3"/>
+                        </uxap:snappedTitleOnMobile>
+                        <uxap:expandedContent>
+                            <HBox>
+                                <Label text="{i18n>labelStatus}" class="sapUiTinyMarginEnd"/>
+                                <Text text="–"/>
+                                <core:Icon src="sap-icon://sys-minus" class="sapUiTinyMarginBegin sapUiTinyMarginEnd" visible="false"/>
+                                <Label text="{i18n>labelVersion}" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
+                                <Text text="00"/>
+                            </HBox>
+                        </uxap:expandedContent>
+                    </uxap:ObjectPageDynamicHeaderTitle>
+                </uxap:headerTitle>
+
+                <uxap:sections>
+
+                    <!-- ── General Tab ───────────────────────────────── -->
+                    <uxap:ObjectPageSection
+                        id="sectionGeneral"
+                        title="{i18n>tabGeneral}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+
+                            <!-- Key data form -->
+                            <uxap:ObjectPageSubSection title=" ">
+                                <uxap:blocks>
+                                    <form:Form
+                                        id="generalForm"
+                                        layout="ColumnLayout"
+                                        editable="true"
+                                        class="sapUxAPObjectPageSubSectionAlignContent">
+                                        <form:layout>
+                                            <form:ColumnLayout
+                                                columnsM="2"
+                                                columnsL="4"
+                                                columnsXL="4"/>
+                                        </form:layout>
+                                        <form:formContainers>
+                                            <form:FormContainer>
+                                                <form:formElements>
+                                                    <!-- Number -->
+                                                    <form:FormElement label="{i18n>labelNumber}">
+                                                        <form:fields>
+                                                            <Input
+                                                                id="inputNumber"
+                                                                value="{view>/docNumber}"
+                                                                required="true"
+                                                                valueLiveUpdate="true"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                    <!-- Type -->
+                                                    <form:FormElement label="{i18n>labelType}">
+                                                        <form:fields>
+                                                            <Input
+                                                                id="inputType"
+                                                                value="{view>/docType}"
+                                                                required="true"
+                                                                showValueHelp="true"
+                                                                valueHelpRequest=".onTypeValueHelp"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                    <!-- Part -->
+                                                    <form:FormElement label="{i18n>labelPart}">
+                                                        <form:fields>
+                                                            <Text text="{view>/docPart}"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                    <!-- Description -->
+                                                    <form:FormElement label="{i18n>labelDescription}">
+                                                        <form:fields>
+                                                            <Input
+                                                                id="inputDescription"
+                                                                value="{view>/docDescription}"
+                                                                required="true"
+                                                                maxLength="40"
+                                                                placeholder="{i18n>placeholderDescription}"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                </form:formElements>
+                                            </form:FormContainer>
+                                        </form:formContainers>
+                                    </form:Form>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+
+                            <!-- Attachments empty state -->
+                            <uxap:ObjectPageSubSection title="{i18n>sectionAttachments}">
+                                <uxap:blocks>
+                                    <IllustratedMessage
+                                        illustrationType="sapIllus-NoData"
+                                        illustrationSize="Scene"
+                                        title=""
+                                        description=""/>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <!-- ── Attachments Tab ───────────────────────────── -->
+                    <uxap:ObjectPageSection
+                        id="sectionAttachments"
+                        title="{i18n>tabAttachments}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title=" ">
+                                <uxap:blocks>
+                                    <IllustratedMessage
+                                        illustrationType="sapIllus-NoData"
+                                        illustrationSize="Scene"
+                                        title=""
+                                        description=""/>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <!-- ── Linked Objects Tab ────────────────────────── -->
+                    <uxap:ObjectPageSection
+                        id="sectionLinkedObjects"
+                        title="{i18n>tabLinkedObjects}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+
+                            <!-- Items table -->
+                            <uxap:ObjectPageSubSection title="{i18n>sectionItems}">
+                                <uxap:blocks>
+                                    <Table
+                                        id="linkedItemsTable"
+                                        items="{view>/linkedItems}"
+                                        noDataText="{i18n>noDataText}"
+                                        width="100%"
+                                        class="sapUiSizeCompact">
+                                        <headerToolbar>
+                                            <OverflowToolbar>
+                                                <Title text="{i18n>sectionItems}" level="H4"/>
+                                                <ToolbarSpacer/>
+                                                <Button icon="sap-icon://copy" type="Transparent" tooltip="Copy"/>
+                                                <Button icon="sap-icon://paste" type="Transparent" tooltip="Paste"/>
+                                            </OverflowToolbar>
+                                        </headerToolbar>
+                                        <columns>
+                                            <Column><Text text="{i18n>colKey}"/></Column>
+                                            <Column><Text text="{i18n>colType}"/></Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text text="{view>key}"/>
+                                                    <Text text="{view>type}"/>
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <!-- ── Translation Tab ───────────────────────────── -->
+                    <uxap:ObjectPageSection
+                        id="sectionTranslation"
+                        title="{i18n>tabTranslation}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title=" ">
+                                <uxap:blocks>
+                                    <Table
+                                        id="translationTable"
+                                        items="{view>/translations}"
+                                        noDataText="{i18n>noDataText}"
+                                        mode="MultiSelect"
+                                        width="100%"
+                                        class="sapUiSizeCompact">
+                                        <headerToolbar>
+                                            <OverflowToolbar>
+                                                <ToolbarSpacer/>
+                                                <SearchField placeholder="{i18n>search}" width="14rem"/>
+                                                <Button text="{i18n>btnCreate}" type="Transparent"/>
+                                                <Button text="{i18n>btnDelete}" type="Transparent" enabled="false"/>
+                                                <Button icon="sap-icon://copy" type="Transparent"/>
+                                                <Button icon="sap-icon://paste" type="Transparent"/>
+                                                <Button icon="sap-icon://action-settings" type="Transparent"/>
+                                            </OverflowToolbar>
+                                        </headerToolbar>
+                                        <columns>
+                                            <Column><Text text="{i18n>colLanguage}"/></Column>
+                                            <Column><Text text="{i18n>colDescription}"/></Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text text="{view>language}"/>
+                                                    <Text text="{view>description}"/>
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <!-- ── History Tab ───────────────────────────────── -->
+                    <uxap:ObjectPageSection
+                        id="sectionHistory"
+                        title="{i18n>tabHistory}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title=" ">
+                                <uxap:blocks>
+                                    <VBox width="100%">
+                                        <Toolbar class="sapUiSizeCompact">
+                                            <ToolbarSpacer/>
+                                            <SearchField placeholder="{i18n>search}" width="14rem"/>
+                                            <Button icon="sap-icon://sort" type="Transparent"/>
+                                            <Button icon="sap-icon://filter" type="Transparent"/>
+                                        </Toolbar>
+                                        <IllustratedMessage
+                                            illustrationType="sapIllus-NoData"
+                                            illustrationSize="Spot"
+                                            title=""
+                                            description="{i18n>noItemsAvailable}"/>
+                                    </VBox>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                    <!-- ── Administration Tab ────────────────────────── -->
+                    <uxap:ObjectPageSection
+                        id="sectionAdministration"
+                        title="{i18n>tabAdministration}"
+                        titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title=" ">
+                                <uxap:blocks>
+                                    <form:Form
+                                        layout="ColumnLayout"
+                                        class="sapUxAPObjectPageSubSectionAlignContent">
+                                        <form:layout>
+                                            <form:ColumnLayout
+                                                columnsM="2"
+                                                columnsL="4"
+                                                columnsXL="4"/>
+                                        </form:layout>
+                                        <form:formContainers>
+                                            <form:FormContainer>
+                                                <form:formElements>
+                                                    <form:FormElement label="{i18n>labelCreatedBy}">
+                                                        <form:fields>
+                                                            <Text text="{view>/adminCreatedBy}"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                    <form:FormElement label="{i18n>labelCreatedOn}">
+                                                        <form:fields>
+                                                            <Text text="{view>/adminCreatedOn}"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                    <form:FormElement label="{i18n>labelChangedBy}">
+                                                        <form:fields>
+                                                            <Text text="{view>/adminChangedBy}"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                    <form:FormElement label="{i18n>labelChangedOn}">
+                                                        <form:fields>
+                                                            <Text text="{view>/adminChangedOn}"/>
+                                                        </form:fields>
+                                                    </form:FormElement>
+                                                </form:formElements>
+                                            </form:FormContainer>
+                                        </form:formContainers>
+                                    </form:Form>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
+                </uxap:sections>
+            </uxap:ObjectPageLayout>
+        </content>
+
+        <!-- Fixed footer with Create + Discard Draft -->
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button
+                    id="btnCreate"
+                    text="{i18n>btnCreate}"
+                    type="Emphasized"
+                    press=".onCreate"/>
+                <Button
+                    id="btnDiscard"
+                    text="{i18n>btnDiscardDraft}"
+                    type="Default"
+                    press=".onDiscardDraft"/>
+            </OverflowToolbar>
+        </footer>
+
+    </Page>
+
+</mvc:View>

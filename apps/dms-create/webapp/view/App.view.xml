@@ -1,0 +1,32 @@
+<mvc:View
+    controllerName="com.sap.demo.dmscreate.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.f"
+    xmlns:m="sap.m"
+    displayBlock="true"
+    class="dmsApp">
+
+    <ShellBar
+        id="shellBar"
+        title="{i18n>shellBarTitle}"
+        homeIcon="./SAP.svg"
+        homeIconPressed=".onHomePressed">
+        <menu>
+            <m:Menu>
+                <m:MenuItem text="{i18n>shellBarTitle}" icon="sap-icon://document"/>
+            </m:Menu>
+        </menu>
+        <profile>
+            <m:Avatar
+                id="userAvatar"
+                initials="YX"
+                displaySize="XS"/>
+        </profile>
+        <searchManager>
+            <SearchManager id="searchManager" placeholder="Search..."/>
+        </searchManager>
+    </ShellBar>
+
+    <m:App id="app" class="dmsFCL"/>
+
+</mvc:View>

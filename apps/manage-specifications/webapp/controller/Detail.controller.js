@@ -443,6 +443,21 @@ sap.ui.define([
       this._oUnlinkDoc3Dialog.open();
     },
 
+    onLinkNewDocument: function () {
+      var sBase = window.location.href.replace(/\/apps\/manage-specifications\/.*$/, "");
+      var sDmsUrl = sBase + "/apps/dms-create/webapp/index.html";
+      window.open(sDmsUrl, "_blank");
+      var fnMessage = function (oEvent) {
+        if (oEvent.data && oEvent.data.action === "documentCreated") {
+          window.removeEventListener("message", fnMessage);
+          MessageToast.show(
+            "Document " + oEvent.data.document.number + " linked successfully"
+          );
+        }
+      };
+      window.addEventListener("message", fnMessage);
+    },
+
     onLinkExistingDocument: function () {
       var oView = this.getView();
       if (this._oLinkDocDialog) {

@@ -1,0 +1,19 @@
+html, body { height: 100%; margin: 0; padding: 0; }
+.sapUiComponentContainer,
+.sapUiComponentContainer > div { height: 100%; }
+.dmsApp { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+.dmsFCL { flex: 1; min-height: 0; }
+
+.dmsDocNumberSubtitle {
+    color: var(--sapContent_LabelColor);
+    font-size: var(--sapFontSmallSize);
+    margin-top: 0.25rem;
+}
+
+.dmsObjectPageLayout {
+    height: 100%;
+}
+
+.dmsCreatePage {
+    height: 100%;
+}
