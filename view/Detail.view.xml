@@ -496,43 +496,6 @@
                       <SearchField id="doc5SearchField" placeholder="Search" width="16rem" search=".onDoc5Search">
                         <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
                       </SearchField>
-                      <FacetFilter id="doc5FacetFilter" type="Simple" showReset="false" showPersonalization="true"
-                        confirm=".onDocFilterDialogConfirm" reset=".onDocFilterDialogReset"
-                        class="sapUiSizeCompact">
-                        <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
-                        <lists>
-                          <FacetFilterList title="Type" key="type" active="false">
-                            <items>
-                              <FacetFilterItem text="NEW" key="NEW" />
-                              <FacetFilterItem text="IMU" key="IMU" />
-                              <FacetFilterItem text="TES" key="TES" />
-                              <FacetFilterItem text="DRW" key="DRW" />
-                            </items>
-                          </FacetFilterList>
-                          <FacetFilterList title="Part" key="part" active="false">
-                            <items>
-                              <FacetFilterItem text="000" key="000" />
-                              <FacetFilterItem text="001" key="001" />
-                            </items>
-                          </FacetFilterList>
-                          <FacetFilterList title="Version" key="version" active="false">
-                            <items>
-                              <FacetFilterItem text="000001" key="000001" />
-                              <FacetFilterItem text="000002" key="000002" />
-                              <FacetFilterItem text="000003" key="000003" />
-                            </items>
-                          </FacetFilterList>
-                          <FacetFilterList title="Document Status" key="status" active="false">
-                            <items>
-                              <FacetFilterItem text="New" key="New" />
-                              <FacetFilterItem text="In Work" key="In Work" />
-                              <FacetFilterItem text="Locked" key="Locked" />
-                              <FacetFilterItem text="Created" key="Created" />
-                              <FacetFilterItem text="Update" key="Update" />
-                            </items>
-                          </FacetFilterList>
-                        </lists>
-                      </FacetFilter>
                       <MenuButton id="doc5LinkMenuBtn" text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                         <menu>
                           <Menu>
@@ -581,6 +544,166 @@
                       <core:Icon src="sap-icon://slim-arrow-right" class="doc5NavIcon" />
                     </mdct:Column>
                   </mdc:Table>
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Document Tab: copy of Document Option 3 -->
+              <IconTabFilter text="Document" key="documents6">
+                <VBox class="detailTabContent">
+
+                  <!-- Local Attachments section -->
+                  <Title text="Local Attachment" level="H3" class="sapUiSmallMarginBottom sapUiSmallMarginTop" />
+                  <Panel class="sapUiNoContentPadding sapUiMediumMarginBottom docAttPanel" backgroundDesign="Solid">
+
+                  <!-- Attachments / Object Store table -->
+                  <Table id="docAttachmentsTable"
+                    items="{detail>/docAttachments}"
+                    mode="MultiSelect"
+                    noDataText="No items"
+                    growing="true"
+                    growingThreshold="10"
+                    class="sapUiSizeCompact"
+                    updateFinished=".onDocAttTableUpdated">
+                    <headerToolbar>
+                      <OverflowToolbar>
+                        <VariantManagement id="docAttVM" selectedKey="standard">
+                          <VariantItem key="standard" text="Standard" />
+                        </VariantManagement>
+                        <Text id="docAttCount" text="Items ({= ${detail>/docAttachments}.length})" class="sapMText sapUiSmallMarginBegin" />
+                        <ToolbarSpacer />
+                        <SearchField id="docAttSearch" width="15rem" placeholder="Search" search=".onDocAttSearch" />
+                        <MenuButton id="docAttCreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
+                          <menu>
+                            <Menu>
+                              <items>
+                                <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDocAttCreateFolder" />
+                                <MenuItem text="Document" icon="sap-icon://document" >
+                                  <items>
+                                    <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDocAttUpload" />
+                                  </items>
+                                </MenuItem>
+                                <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDocAttCreateLink" />
+                              </items>
+                            </Menu>
+                          </menu>
+                        </MenuButton>
+                        <Button text="Edit Link"        type="Transparent" enabled="false" press=".onDocAttEditLink"   id="docAttEditLinkBtn" />
+                        <Button text="Download"         type="Transparent" enabled="false" press=".onDocAttDownload"   id="docAttDownloadBtn" />
+                        <Button text="Delete"           type="Transparent" enabled="false" press=".onDocAttDelete"     id="docAttDeleteBtn" />
+                        <Button text="Move"             type="Transparent" enabled="false" press=".onDocAttMove"       id="docAttMoveBtn" />
+                        <Button text="Copy"             type="Transparent" enabled="false" press=".onDocAttCopy"       id="docAttCopyBtn" />
+                        <MenuButton id="docAttManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                          <menu>
+                            <Menu>
+                              <items>
+                                <MenuItem text="Check Out"  press=".onDocAttCheckOut" />
+                                <MenuItem text="Check In"   press=".onDocAttCheckIn" />
+                                <MenuItem text="Properties" press=".onDocAttProperties" />
+                              </items>
+                            </Menu>
+                          </menu>
+                        </MenuButton>
+                        <Button icon="sap-icon://delete"         type="Transparent" tooltip="Delete"       press=".onDocAttNavUp" />
+                        <Button icon="sap-icon://refresh"       type="Transparent" tooltip="Refresh"      press=".onDocAttRefresh" />
+                        <Button icon="sap-icon://sort"          type="Transparent" tooltip="Sort"         press=".onDocAttSort" />
+                        <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings"  press=".onDocAttSettings" />
+                      </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                      <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
+                      <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Name" /></Column>
+                      <Column minScreenWidth="Tablet" demandPopin="true" width="10rem"><Text text="Document No." /></Column>
+                      <Column minScreenWidth="Tablet" demandPopin="true" width="10rem"><Text text="Modified On" /></Column>
+                      <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Created By" /></Column>
+                      <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Modified By" /></Column>
+                      <Column minScreenWidth="Desktop" demandPopin="true" width="6rem"><Text text="Size" /></Column>
+                      <Column width="16rem"><Text text="" /></Column>
+                    </columns>
+                    <items>
+                      <ColumnListItem>
+                        <cells>
+                          <core:Icon src="{detail>typeIcon}" class="docAttTypeIcon" />
+                          <Text text="{detail>name}" wrapping="false" style="font-weight: bold;" />
+                          <Text text="{detail>docNumber}" wrapping="false" />
+                          <Text text="{detail>modifiedOn}" wrapping="false" />
+                          <Text text="{detail>createdBy}" wrapping="false" />
+                          <Text text="{detail>modifiedBy}" wrapping="false" />
+                          <Text text="{detail>size}" wrapping="false" />
+                          <Button icon="sap-icon://overflow" type="Transparent" press=".onDocAttRowMore" tooltip="More" />
+                        </cells>
+                      </ColumnListItem>
+                    </items>
+                  </Table>
+                  </Panel>
+
+                  <Title text="Linked Documents" level="H3" class="sapUiSmallMarginBottom sapUiSmallMarginTop" />
+                  <Panel class="sapUiNoContentPadding docAttPanel" backgroundDesign="Solid">
+                  <mdc:Table
+                    id="documentsTable6"
+                    header="Items"
+                    p13nMode="Column,Sort,Filter,Group"
+                    selectionMode="Multi"
+                    showRowCount="true"
+                    class="sapUiSizeCompact"
+                    selectionChange=".onDoc6SelectionChange"
+                    groupConditions='{"groupLevels": [{"name": "docNumber"}]}'
+                    delegate='{"name": "com/sap/demo/managespec/delegate/Doc6TableDelegate"}'>
+                    <mdc:actions>
+                      <Text id="doc6LastSyncedText" text="Last synced: —" class="doc6SyncLabel" wrapping="false">
+                        <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
+                      </Text>
+                      <Button id="doc6SyncBtn" text="Sync" type="Transparent" press=".onDoc6Sync">
+                        <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
+                      </Button>
+                      <MenuButton id="doc6LinkMenuBtn" text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                        <menu>
+                          <Menu>
+                            <items>
+                              <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
+                              <MenuItem text="Link New Document" press=".onLinkNewDocument" />
+                            </items>
+                          </Menu>
+                        </menu>
+                        <layoutData><mdct:ActionLayoutData priority="NeverOverflow" /></layoutData>
+                      </MenuButton>
+                      <Button id="doc6UnlinkBtn" text="Unlink Document" type="Transparent" enabled="false" press=".onDoc6Unlink">
+                        <layoutData>
+                          <mdct:ActionLayoutData priority="NeverOverflow" />
+                        </layoutData>
+                      </Button>
+                    </mdc:actions>
+                    <mdc:type>
+                      <mdct:ResponsiveTableType showDetailsButton="true" />
+                    </mdc:type>
+                    <mdct:Column propertyKey="fileName" header="Attachment">
+                      <HBox alignItems="Center">
+                        <core:Icon src="{path: 'detail>fileName', formatter: '.formatAttachmentIcon'}" class="doc3AttIcon" />
+                        <Text text="{detail>fileName}" wrapping="false" />
+                      </HBox>
+                    </mdct:Column>
+                    <mdct:Column propertyKey="docName" header="Document">
+                      <Text text="{detail>docName}" wrapping="false" />
+                    </mdct:Column>
+                    <mdct:Column propertyKey="docNumber" header="Document No." width="10rem">
+                      <Link text="{detail>docNumber}" wrapping="false" press=".onDoc6DocNumberPress" />
+                    </mdct:Column>
+                    <mdct:Column propertyKey="type" header="Document Type" width="7rem">
+                      <Text text="{detail>type}" />
+                    </mdct:Column>
+                    <mdct:Column propertyKey="part" header="Document Part" width="7rem">
+                      <Text text="{detail>part}" />
+                    </mdct:Column>
+                    <mdct:Column propertyKey="version" header="Document Version" width="7rem">
+                      <Text text="{detail>version}" />
+                    </mdct:Column>
+                    <mdct:Column propertyKey="status" header="Document Status" width="7rem">
+                      <Text text="{detail>status}" />
+                    </mdct:Column>
+                    <mdct:Column propertyKey="source" header="Document Source" width="8rem">
+                      <Text text="{detail>source}" />
+                    </mdct:Column>
+                  </mdc:Table>
+                  </Panel>
                 </VBox>
               </IconTabFilter>
 
