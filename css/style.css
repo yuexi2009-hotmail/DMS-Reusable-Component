@@ -701,6 +701,24 @@ button[id$="linkDoc3ShowFiltersBtn"],
 .docAttPanel > .sapMPanelContent {
   padding: 16px !important;
 }
+/* Linked Documents: VariantManagement toolbar above mdc:Table */
+.doc6VMToolbar.sapMTB {
+  padding: 0 1rem !important;
+  min-height: 3rem !important;
+  background: #fff !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+/* Remove bottom border of mdc:Table inside Linked Documents panel */
+.docAttPanel .sapUiMdcTable > .sapMListBorderTop,
+.docAttPanel .sapUiMdcTable .sapMLIBBorderBottom {
+  border-bottom: none !important;
+}
+[id$="documentsTable6-innerTable-trigger"],
+[id$="documentsTable6-innerTable-trigger"] td {
+  border-top: none !important;
+  border-bottom: none !important;
+}
 /* Doc6: Last synced label in toolbar */
 .doc6SyncLabel.sapMText,
 .doc6SyncLabel.sapMText .sapMTextMaxLine,
