@@ -693,6 +693,42 @@ button[id$="linkDoc3ShowFiltersBtn"],
   padding: 0 0.75rem !important;
 }
 /* Documents 5: force compact checkboxes on MDC table */
+#documentsTable5 .sapUiMdcTableP13nFilterButton,
+#documentsTable6 .sapUiMdcTableP13nFilterButton {
+  display: none !important;
+}
+/* Local Attachment panel padding */
+.docAttPanel > .sapMPanelContent {
+  padding: 16px !important;
+}
+/* Doc6: Last synced label in toolbar */
+.doc6SyncLabel.sapMText,
+.doc6SyncLabel.sapMText .sapMTextMaxLine,
+#doc6LastSyncedText.sapMText,
+[id$="doc6LastSyncedText"].sapMText {
+  font-size: 0.75rem !important;
+  color: #6a6d70 !important;
+  align-self: center;
+  white-space: nowrap;
+  padding: 0 0.25rem;
+}
+/* Attachments table: type icon box */
+.docAttTypeIcon.sapUiIcon,
+.docAttTypeIcon.sapUiIconMirrorInRTL {
+  color: #506D84 !important;
+  font-size: 1.375rem !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  line-height: 2.5rem !important;
+  text-align: center !important;
+  border: 1px solid rgba(80,109,132,0.4) !important;
+  border-radius: 0.5rem !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
 #documentsTable5 .doc5NavIcon.sapUiIcon,
 #documentsTable5 .sapMListTblCell .doc5NavIcon {
   color: var(--sapContent_NonInteractiveIconColor, #89919a) !important;
