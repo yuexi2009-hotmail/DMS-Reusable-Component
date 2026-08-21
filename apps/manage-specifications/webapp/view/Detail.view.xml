@@ -552,7 +552,7 @@
                 <VBox class="detailTabContent">
 
                   <!-- Local Attachments section -->
-                  <Title text="Local Attachment" level="H3" class="sapUiSmallMarginBottom sapUiSmallMarginTop" />
+                  <Title text="Attachment" level="H3" class="sapUiSmallMarginBottom sapUiSmallMarginTop" />
                   <Panel class="sapUiNoContentPadding sapUiMediumMarginBottom docAttPanel" backgroundDesign="Solid">
 
                   <!-- Attachments / Object Store table -->
@@ -638,6 +638,12 @@
 
                   <Title text="Linked Documents" level="H3" class="sapUiSmallMarginBottom sapUiSmallMarginTop" />
                   <Panel class="sapUiNoContentPadding docAttPanel" backgroundDesign="Solid">
+                  <OverflowToolbar class="doc6VMToolbar">
+                    <VariantManagement id="doc6VM" selectedKey="standard">
+                      <VariantItem key="standard" text="Standard" />
+                    </VariantManagement>
+                    <ToolbarSpacer />
+                  </OverflowToolbar>
                   <mdc:Table
                     id="documentsTable6"
                     header="Items"
