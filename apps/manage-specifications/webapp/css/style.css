@@ -1041,3 +1041,55 @@ body button[id$="-cancelBtn"].sapMBarChild {
   margin-right: 4px !important;
   line-height: 24px !important;
 }
+
+/* Doc7 right pane — type icon box */
+.docAttTypeIcon.sapUiIcon,
+.docAttTypeIcon.sapUiIconMirrorInRTL {
+  color: #506D84 !important;
+  font-size: 1.375rem !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  line-height: 2.5rem !important;
+  text-align: center !important;
+  border: 1px solid rgba(80,109,132,0.4) !important;
+  border-radius: 0.5rem !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Doc7 right pane — bold name */
+.docAttNameBold.sapMText,
+.docAttNameBold.sapMText .sapMTextMaxLine {
+  font-weight: bold !important;
+}
+
+/* Doc7 drop zone */
+.doc7DropZone {
+  flex: 1;
+}
+.doc7DropZone.doc7DropActive {
+  outline: 2px dashed var(--sapInformationBorderColor, #0070f2);
+  outline-offset: -4px;
+  background: rgba(0, 112, 242, 0.04);
+  border-radius: 0.5rem;
+}
+
+/* Doc7 tab layout: fill remaining height */
+.doc7TabContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.doc7Splitter {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Doc7 empty state toolbar — white background */
+.doc7EmptyToolbar.sapMTB,
+.doc7EmptyToolbar.sapMOTB {
+  background: #fff !important;
+}

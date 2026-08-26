@@ -98,6 +98,9 @@ sap.ui.define([
       if (sKey === "documents4") {
         this._doc4AutoSelect();
       }
+      if (sKey === "documents7") {
+        setTimeout(this.onDoc7SetupDragDrop.bind(this), 100);
+      }
     },
 
     _doc4AutoSelect: function () {
@@ -777,21 +780,24 @@ sap.ui.define([
       var oCtx = oItem.getBindingContext("detail");
       if (!oCtx) { return; }
       var oDoc = oCtx.getObject();
+      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document", "default": "sap-icon://document" };
       var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.21 MB"];
       var aAtts = (oDoc.attachments || []).map(function (sFile, i) {
+        var sExt = sFile.split(".").pop().toLowerCase();
         return {
-          fileName: sFile,
+          typeIcon:   aIconMap[sExt] || aIconMap["default"],
+          name:       sFile,
+          docNumber:  "10000000" + (191 + i),
           modifiedOn: "Aug 6, 2026",
-          createdBy: "yue.xi01@sap.com",
+          createdBy:  "yue.xi01@sap.com",
           modifiedBy: "yue.xi01@sap.com",
-          size: aSizes[i % aSizes.length]
+          size:       aSizes[i % aSizes.length]
         };
       });
       var oDetailModel = this.getView().getModel("detail");
       oDetailModel.setProperty("/doc7Attachments", aAtts);
       oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
       oDetailModel.setProperty("/doc7StripVisible", true);
-      // Reset action buttons
       var oView = this.getView();
       ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
@@ -809,14 +815,118 @@ sap.ui.define([
       });
     },
 
-    onDoc7Create:   function () { MessageToast.show("Create attachment"); },
-    onDoc7EditLink: function () { MessageToast.show("Edit Link"); },
-    onDoc7Download: function () { MessageToast.show("Download"); },
-    onDoc7Delete:   function () { MessageToast.show("Delete"); },
-    onDoc7Move:     function () { MessageToast.show("Move"); },
-    onDoc7Upload:   function () { MessageToast.show("Upload"); },
-    onDoc7Refresh:  function () { MessageToast.show("Refreshed"); },
-    onDoc7Search:   function () {},
+    onDoc7AttTableUpdated: function () {
+      var oTable = this.byId("doc7AttTable");
+      if (!oTable) { return; }
+      oTable.$().find(".docAttTypeIcon").each(function () {
+        this.style.setProperty("color", "#506D84", "important");
+        this.style.setProperty("font-size", "1.25rem", "important");
+        this.style.setProperty("width", "2.5rem", "important");
+        this.style.setProperty("height", "2.5rem", "important");
+        this.style.setProperty("line-height", "2.5rem", "important");
+        this.style.setProperty("border", "1px solid rgba(80,109,132,0.4)", "important");
+        this.style.setProperty("border-radius", "0.5rem", "important");
+        this.style.setProperty("background", "#fff", "important");
+        this.style.setProperty("box-sizing", "border-box", "important");
+        this.style.setProperty("display", "inline-flex", "important");
+        this.style.setProperty("align-items", "center", "important");
+        this.style.setProperty("justify-content", "center", "important");
+      });
+    },
+
+    onDoc7Create:         function () { MessageToast.show("Create attachment"); },
+    onDoc7CreateFolder:   function () {},
+    onDoc7Upload:         function () {},
+    onDoc7CreateLink:     function () {},
+    onDoc7EditLink:       function () { MessageToast.show("Edit Link"); },
+    onDoc7Download:       function () { MessageToast.show("Download"); },
+    onDoc7Delete:         function () { MessageToast.show("Delete"); },
+    onDoc7Move:           function () { MessageToast.show("Move"); },
+    onDoc7Copy:           function () {},
+    onDoc7CheckOut:       function () {},
+    onDoc7CheckIn:        function () {},
+    onDoc7Properties:     function () {},
+    onDoc7NavUp:          function () {},
+
+    onDoc7UploadNew: function () {
+      var oModel = this.getView().getModel("detail");
+      var oView  = this.getView();
+
+      // Mock: simulate file picker → pick first document from left table and populate attachments
+      var aFlat = oModel.getProperty("/documentsFlat") || [];
+      var oFirstDoc = aFlat[0];
+      if (!oFirstDoc) {
+        MessageToast.show("No documents available");
+        return;
+      }
+
+      // Build mock attachments for the first document
+      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document" };
+      var aSizes = ["18 KB", "43 KB", "96 KB"];
+      var aFiles = (oFirstDoc.attachments && oFirstDoc.attachments.length)
+        ? oFirstDoc.attachments
+        : ["Body-material-steel.pdf", "Body-color-arctic-white.pdf", "Body-structure-frame.dwg"];
+
+      var aAtts = aFiles.map(function (sFile, i) {
+        var sExt = sFile.split(".").pop().toLowerCase();
+        return {
+          typeIcon:   aIconMap[sExt] || "sap-icon://document",
+          name:       sFile,
+          modifiedOn: "Aug 6, 2026",
+          createdBy:  "yue.xi01@sap.com",
+          modifiedBy: "yue.xi01@sap.com",
+          size:       aSizes[i % aSizes.length]
+        };
+      });
+
+      oModel.setProperty("/doc7Attachments", aAtts);
+      oModel.setProperty("/doc7HasData", true);
+
+      // Select first row in left table
+      var oDocTable = oView.byId("doc7DocTable");
+      if (oDocTable) {
+        oDocTable.setSelectedItem(oDocTable.getItems()[0], true);
+      }
+
+      MessageToast.show("File uploaded successfully");
+    },
+    onDoc7Refresh:        function () { MessageToast.show("Refreshed"); },
+    onDoc7Sort:           function () {},
+    onDoc7Settings:       function () {},
+    onDoc7Search:         function () {},
+    onDoc7DocNumberPress: function () {},
+    onDoc7RowMore:        function () {},
+
+    _onDoc7DragOver: function (oEvent) {
+      oEvent.preventDefault();
+      oEvent.stopPropagation();
+      var oDom = this.getView().byId("doc7DropZone");
+      if (oDom) { oDom.getDomRef().classList.add("doc7DropActive"); }
+    },
+
+    _onDoc7DragLeave: function (oEvent) {
+      var oDom = this.getView().byId("doc7DropZone");
+      if (oDom) { oDom.getDomRef().classList.remove("doc7DropActive"); }
+    },
+
+    _onDoc7Drop: function (oEvent) {
+      oEvent.preventDefault();
+      oEvent.stopPropagation();
+      var oDom = this.getView().byId("doc7DropZone");
+      if (oDom) { oDom.getDomRef().classList.remove("doc7DropActive"); }
+      // Treat any drop as "upload" — same logic as Upload new button
+      this.onDoc7UploadNew();
+    },
+
+    onDoc7SetupDragDrop: function () {
+      var oView = this.getView();
+      var oDropZone = oView.byId("doc7DropZone");
+      if (!oDropZone || !oDropZone.getDomRef()) { return; }
+      var oDom = oDropZone.getDomRef();
+      oDom.addEventListener("dragover",  this._onDoc7DragOver.bind(this));
+      oDom.addEventListener("dragleave", this._onDoc7DragLeave.bind(this));
+      oDom.addEventListener("drop",      this._onDoc7Drop.bind(this));
+    },
 
     _onRouteMatched: function (oEvent) {
       var sSpecId = oEvent.getParameter("arguments").specId;
@@ -929,8 +1039,9 @@ sap.ui.define([
         documentsFlat: aDocumentsFlat,
         documentsAttFlat: aDocumentsAttFlat,
         doc7Attachments: [],
-        doc7StripVisible: true,
-        doc7Uuid: "09a212e0-65fa-4464-907d-d52c1b844027"
+        doc7HasData: false,
+        doc7StripVisible: false,
+        doc7Uuid: ""
       });
 
       this.getView().setModel(oDetailModel, "detail");
