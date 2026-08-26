@@ -757,20 +757,7 @@
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Documents ({= ${detail>/documentsFlat}.length})" level="H4" />
                     <ToolbarSpacer />
-                    <MenuButton text="Create new" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
-                      <menu>
-                        <Menu>
-                          <items>
-                            <MenuItem text="Document" icon="sap-icon://document">
-                              <items>
-                                <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7UploadNew" />
-                              </items>
-                            </MenuItem>
-                            <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
-                          </items>
-                        </Menu>
-                      </menu>
-                    </MenuButton>
+                    <Button id="doc7SwitchTypeBtn" text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
                     <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
@@ -796,7 +783,8 @@
                           <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
                           <ToolbarSpacer />
                           <SearchField width="15rem" placeholder="Search" />
-                          <MenuButton text="Add" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                          <MenuButton id="doc7CreateEmpty" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
+                            <layoutData><OverflowToolbarLayoutData priority="NeverOverflow" /></layoutData>
                             <menu>
                               <Menu>
                                 <items>
@@ -810,9 +798,9 @@
                               </Menu>
                             </menu>
                           </MenuButton>
-                          <Button id="doc7EditBtnE"   text="Edit Link"        type="Transparent" enabled="false" />
-                          <Button id="doc7DownBtnE"   text="Download"         type="Transparent" enabled="false" />
-                          <Button id="doc7DeleteBtnE" text="Delete"           type="Transparent" enabled="false" />
+                          <Button id="doc7EditBtnE" text="Edit Link" type="Transparent" enabled="false" />
+                          <Button id="doc7DownBtnE" text="Download" type="Transparent" enabled="false" />
+                          <Button id="doc7DeleteBtnE" text="Delete" type="Transparent" enabled="false" />
                           <MenuButton text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
                             <menu><Menu><items>
                               <MenuItem text="Check Out" />
@@ -852,35 +840,66 @@
                         <l:layoutData>
                           <l:SplitterLayoutData size="30%" minSize="160" />
                         </l:layoutData>
-                        <VBox height="100%">
-                          <Table
-                            id="doc7DocTable"
-                            items="{detail>/doc7LeftRows}"
-                            mode="SingleSelectMaster"
-                            noDataText="No documents"
-                            selectionChange=".onDoc7DocSelect"
-                            class="sapUiSizeCompact detailTable doc7DocTable"
-                            fixedLayout="false">
-                            <columns>
-                              <Column><Text text="Document" /></Column>
-                              <Column width="4rem"><Text text="Type" /></Column>
-                              <Column width="4rem"><Text text="Part" /></Column>
-                              <Column width="4rem"><Text text="Ver." /></Column>
-                              <Column width="5.5rem"><Text text="Status" /></Column>
-                            </columns>
-                            <items>
-                              <ColumnListItem type="Inactive">
-                                <cells>
-                                  <Text text="{detail>docId}" class="doc7DocIdBold" wrapping="false" />
-                                  <Text text="{detail>type}" wrapping="false" />
-                                  <Text text="{detail>part}" wrapping="false" />
-                                  <Text text="{detail>version}" wrapping="false" />
-                                  <Text text="{detail>status}" wrapping="false" />
-                                </cells>
-                              </ColumnListItem>
-                            </items>
-                          </Table>
-                        </VBox>
+                        <Table
+                          id="doc7DocTable"
+                          items="{detail>/doc7LeftRows}"
+                          mode="SingleSelectMaster"
+                          noDataText="No documents"
+                          selectionChange=".onDoc7DocSelect"
+                          class="sapUiSizeCompact detailTable doc7DocTable"
+                          fixedLayout="false">
+                          <headerToolbar>
+                            <OverflowToolbar class="doc7LeftToolbar">
+                              <Title text="Items" level="H4" class="doc7LeftTitle" />
+                              <Text id="doc7LeftCount" text="({= ${detail>/doc7LeftRows}.length})" class="doc7LeftCount" />
+                              <ToolbarSpacer />
+                              <SearchField width="12rem" placeholder="Search" class="doc7LeftSearch" />
+                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7LeftTableSettings" />
+                            </OverflowToolbar>
+                          </headerToolbar>
+                          <columns>
+                            <Column id="doc7ColDocument"><Text text="Document" /></Column>
+                            <Column id="doc7ColType" width="4rem"><Text text="Type" /></Column>
+                            <Column id="doc7ColPart" width="4rem"><Text text="Part" /></Column>
+                            <Column id="doc7ColVer" width="4rem"><Text text="Ver." /></Column>
+                            <Column id="doc7ColStatus" width="5.5rem"><Text text="Status" /></Column>
+                            <Column id="doc7ColCategory" width="7rem" visible="false"><Text text="S4HANA Info" /></Column>
+                            <Column id="doc7ColDescription" width="12rem" visible="false"><Text text="Description" /></Column>
+                            <Column id="doc7ColCreatedBy" width="10rem" visible="false"><Text text="Created By" /></Column>
+                            <Column id="doc7ColChangedBy" width="10rem" visible="false"><Text text="Changed By" /></Column>
+                            <Column id="doc7ColChangedOn" width="7rem" visible="false"><Text text="Changed On" /></Column>
+                            <Column id="doc7ColLab" width="6rem" visible="false"><Text text="Lab/Office" /></Column>
+                            <Column id="doc7ColChangeNo" width="8rem" visible="false"><Text text="Change Number" /></Column>
+                          </columns>
+                          <items>
+                            <ColumnListItem type="Inactive">
+                              <cells>
+                                <HBox>
+                                  <Text text="{detail>docId}"
+                                        visible="{= !${detail>isLinked} }"
+                                        class="doc7DocIdBold"
+                                        wrapping="false" />
+                                  <Link text="{detail>docNumber}"
+                                        visible="{detail>isLinked}"
+                                        press=".onDoc7LinkedDocPress"
+                                        class="doc7DocIdLinked"
+                                        wrapping="false" />
+                                </HBox>
+                                <Text text="{detail>type}" wrapping="false" />
+                                <Text text="{detail>part}" wrapping="false" />
+                                <Text text="{detail>version}" wrapping="false" />
+                                <Text text="{detail>status}" wrapping="false" />
+                                <Text text="{detail>category}" wrapping="false" />
+                                <Text text="{detail>description}" wrapping="false" />
+                                <Text text="{detail>createdBy}" wrapping="false" />
+                                <Text text="{detail>changedBy}" wrapping="false" />
+                                <Text text="{detail>changedOn}" wrapping="false" />
+                                <Text text="{detail>lab}" wrapping="false" />
+                                <Text text="{detail>changeNumber}" wrapping="false" />
+                              </cells>
+                            </ColumnListItem>
+                          </items>
+                        </Table>
                       </l:SplitPane>
                       <l:SplitPane id="doc7PaneRight" requiredParentWidth="300">
                         <Table id="doc7AttTable"
@@ -899,7 +918,7 @@
                               <Text id="doc7ItemCount" text="Items ({= ${detail>/doc7Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc7Search" width="15rem" placeholder="Search" search=".onDoc7Search" />
-                              <MenuButton id="doc7CreateBtn" text="Add" type="Emphasized" buttonMode="Split" menuPosition="BeginBottom">
+                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
                                 <menu>
                                   <Menu>
                                     <items>
@@ -959,6 +978,223 @@
                                 <Text text="{detail>modifiedBy}" wrapping="false" />
                                 <Text text="{detail>size}" wrapping="false" />
                                 <Button icon="sap-icon://overflow" type="Transparent" press=".onDoc7RowMore" tooltip="More" />
+                              </cells>
+                            </ColumnListItem>
+                          </items>
+                        </Table>
+                      </l:SplitPane>
+                    </l:PaneContainer>
+                  </l:ResponsiveSplitter>
+                </VBox>
+              </IconTabFilter>
+
+              <IconTabFilter text="Documents 8" key="documents8">
+                <VBox class="doc7TabContent">
+                  <!-- Title toolbar always visible -->
+                  <Toolbar class="sapUiSizeCompact detailSectionToolbar">
+                    <Title text="Documents ({= ${detail>/documentsFlat}.length})" level="H4" />
+                    <ToolbarSpacer />
+                    <MenuButton text="Create new" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                      <menu>
+                        <Menu>
+                          <items>
+                            <MenuItem text="Document" icon="sap-icon://document">
+                              <items>
+                                <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc8UploadNew" />
+                              </items>
+                            </MenuItem>
+                            <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc8CreateLink" />
+                          </items>
+                        </Menu>
+                      </menu>
+                    </MenuButton>
+                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                      <menu>
+                        <Menu>
+                          <items>
+                            <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
+                            <MenuItem text="Link New Document" />
+                          </items>
+                        </Menu>
+                      </menu>
+                    </MenuButton>
+                    <Button id="unlinkBtn8" text="Unlink" type="Transparent" enabled="false" />
+                  </Toolbar>
+
+                  <!-- Empty state -->
+                  <VBox id="doc8DropZone" visible="{= !${detail>/doc8HasData} }" class="doc7DropZone">
+                    <Table id="doc8AttTableEmpty" class="sapUiSizeCompact doc7AttTableEmpty">
+                      <headerToolbar>
+                        <OverflowToolbar class="doc7EmptyToolbar">
+                          <VariantManagement id="doc8AttVMEmpty" selectedKey="standard">
+                            <VariantItem key="standard" text="Standard" />
+                          </VariantManagement>
+                          <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
+                          <ToolbarSpacer />
+                          <SearchField width="15rem" placeholder="Search" />
+                          <MenuButton text="Add" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                            <menu>
+                              <Menu>
+                                <items>
+                                  <MenuItem text="Document" icon="sap-icon://document">
+                                    <items>
+                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc8UploadNew" />
+                                    </items>
+                                  </MenuItem>
+                                  <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc8CreateLink" />
+                                </items>
+                              </Menu>
+                            </menu>
+                          </MenuButton>
+                          <Button id="doc8EditBtnE"   text="Edit Link"  type="Transparent" enabled="false" />
+                          <Button id="doc8DownBtnE"   text="Download"   type="Transparent" enabled="false" />
+                          <Button id="doc8DeleteBtnE" text="Delete"     type="Transparent" enabled="false" />
+                          <MenuButton text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                            <menu><Menu><items>
+                              <MenuItem text="Check Out" />
+                              <MenuItem text="Check In" />
+                              <MenuItem text="Properties" />
+                            </items></Menu></menu>
+                          </MenuButton>
+                          <Button icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" />
+                          <Button icon="sap-icon://refresh"            type="Transparent" tooltip="Refresh" press=".onDoc8Refresh" />
+                          <Button icon="sap-icon://sort"               type="Transparent" tooltip="Sort" />
+                          <Button icon="sap-icon://action-settings"    type="Transparent" tooltip="Settings" />
+                        </OverflowToolbar>
+                      </headerToolbar>
+                      <columns>
+                        <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
+                        <Column><Text text="Name" /></Column>
+                        <Column width="10rem"><Text text="Modified On" /></Column>
+                        <Column width="12rem"><Text text="Created By" /></Column>
+                        <Column width="12rem"><Text text="Modified By" /></Column>
+                        <Column width="6rem"><Text text="Size" /></Column>
+                        <Column width="4rem"><Text text="" /></Column>
+                      </columns>
+                      <noData>
+                        <IllustratedMessage
+                          illustrationType="sapIllus-UploadCollection"
+                          illustrationSize="Scene"
+                          title='Click "Upload new" and then drag and drop documents here to upload them.'
+                          description="Drag and drop documents here to upload." />
+                      </noData>
+                    </Table>
+                  </VBox>
+
+                  <!-- Data state: left/right splitter -->
+                  <l:ResponsiveSplitter id="doc8Splitter" class="doc7Splitter doc7SplitterPanel" visible="{detail>/doc8HasData}">
+                    <l:PaneContainer>
+                      <l:SplitPane id="doc8PaneLeft" requiredParentWidth="300">
+                        <l:layoutData>
+                          <l:SplitterLayoutData size="30%" minSize="160" />
+                        </l:layoutData>
+                        <VBox height="100%">
+                          <Table
+                            id="doc8DocTable"
+                            items="{detail>/doc8LeftRows}"
+                            mode="SingleSelectMaster"
+                            noDataText="No documents"
+                            selectionChange=".onDoc8DocSelect"
+                            class="sapUiSizeCompact detailTable doc7DocTable"
+                            fixedLayout="false">
+                            <columns>
+                              <Column><Text text="Document" /></Column>
+                              <Column width="4rem"><Text text="Type" /></Column>
+                              <Column width="4rem"><Text text="Part" /></Column>
+                              <Column width="4rem"><Text text="Ver." /></Column>
+                              <Column width="5.5rem"><Text text="Status" /></Column>
+                            </columns>
+                            <items>
+                              <ColumnListItem type="Inactive">
+                                <cells>
+                                  <Text text="{detail>docId}" class="doc7DocIdBold" wrapping="false" />
+                                  <Text text="{detail>type}" wrapping="false" />
+                                  <Text text="{detail>part}" wrapping="false" />
+                                  <Text text="{detail>version}" wrapping="false" />
+                                  <Text text="{detail>status}" wrapping="false" />
+                                </cells>
+                              </ColumnListItem>
+                            </items>
+                          </Table>
+                        </VBox>
+                      </l:SplitPane>
+                      <l:SplitPane id="doc8PaneRight" requiredParentWidth="300">
+                        <Table id="doc8AttTable"
+                          items="{detail>/doc8Attachments}"
+                          mode="MultiSelect"
+                          noDataText="No items"
+                          growing="true"
+                          growingThreshold="10"
+                          class="sapUiSizeCompact"
+                          updateFinished=".onDoc8AttTableUpdated">
+                          <headerToolbar>
+                            <OverflowToolbar class="doc7RightToolbar">
+                              <VariantManagement id="doc8AttVM" selectedKey="standard">
+                                <VariantItem key="standard" text="Standard" />
+                              </VariantManagement>
+                              <Text id="doc8ItemCount" text="Items ({= ${detail>/doc8Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
+                              <ToolbarSpacer />
+                              <SearchField id="doc8Search" width="15rem" placeholder="Search" search=".onDoc8Search" />
+                              <MenuButton id="doc8CreateBtn" text="Add" type="Emphasized" buttonMode="Split" menuPosition="BeginBottom">
+                                <menu>
+                                  <Menu>
+                                    <items>
+                                      <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc8CreateFolder" />
+                                      <MenuItem text="Document" icon="sap-icon://document">
+                                        <items>
+                                          <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc8Upload" />
+                                        </items>
+                                      </MenuItem>
+                                      <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc8CreateLink" />
+                                    </items>
+                                  </Menu>
+                                </menu>
+                              </MenuButton>
+                              <Button id="doc8EditBtn"   text="Edit Link"  type="Transparent" enabled="false" press=".onDoc8EditLink" />
+                              <Button id="doc8DownBtn"   text="Download"   type="Transparent" enabled="false" press=".onDoc8Download" />
+                              <Button id="doc8DeleteBtn" text="Delete"     type="Transparent" enabled="false" press=".onDoc8Delete" />
+                              <Button id="doc8MoveBtn"   text="Move"       type="Transparent" enabled="false" press=".onDoc8Move">
+                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
+                              </Button>
+                              <Button id="doc8CopyBtn"   text="Copy"       type="Transparent" enabled="false" press=".onDoc8Copy">
+                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
+                              </Button>
+                              <MenuButton id="doc8ManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                                <menu>
+                                  <Menu>
+                                    <items>
+                                      <MenuItem text="Check Out"  press=".onDoc8CheckOut" />
+                                      <MenuItem text="Check In"   press=".onDoc8CheckIn" />
+                                      <MenuItem text="Properties" press=".onDoc8Properties" />
+                                    </items>
+                                  </Menu>
+                                </menu>
+                              </MenuButton>
+                              <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   press=".onDoc8NavUp" />
+                              <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onDoc8Refresh" />
+                              <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     press=".onDoc8Sort" />
+                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc8Settings" />
+                            </OverflowToolbar>
+                          </headerToolbar>
+                          <columns>
+                            <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
+                            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Name" /></Column>
+                            <Column minScreenWidth="Tablet" demandPopin="true" width="10rem"><Text text="Modified On" /></Column>
+                            <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Created By" /></Column>
+                            <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Modified By" /></Column>
+                            <Column minScreenWidth="Desktop" demandPopin="true" width="6rem"><Text text="Size" /></Column>
+                            <Column width="4rem"><Text text="" /></Column>
+                          </columns>
+                          <items>
+                            <ColumnListItem>
+                              <cells>
+                                <core:Icon src="{detail>typeIcon}" class="docAttTypeIcon" />
+                                <Text text="{detail>name}" wrapping="false" class="docAttNameBold" />
+                                <Text text="{detail>modifiedOn}" wrapping="false" />
+                                <Text text="{detail>createdBy}" wrapping="false" />
+                                <Text text="{detail>modifiedBy}" wrapping="false" />
+                                <Text text="{detail>size}" wrapping="false" />
+                                <Button icon="sap-icon://overflow" type="Transparent" press=".onDoc8RowMore" tooltip="More" />
                               </cells>
                             </ColumnListItem>
                           </items>

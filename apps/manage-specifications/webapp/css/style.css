@@ -1094,9 +1094,29 @@ body button[id$="-cancelBtn"].sapMBarChild {
   background: #fff !important;
 }
 
-/* Doc7 left table — bold document ID */
+/* Doc7 left table — ATT row: black bold text */
 .doc7DocIdBold.sapMText {
   font-weight: bold !important;
+  color: var(--sapTextColor) !important;
+}
+/* Doc7 left table — ATT row: black bold, no link styling */
+.doc7DocIdPlain.sapMLnk,
+.doc7DocIdPlain.sapMLnk.sapMLnkDsbl {
+  color: var(--sapTextColor) !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}
+/* Doc7 left table — linked row: blue bold, clickable */
+.doc7DocIdLinked.sapMLnk {
+  color: var(--sapLinkColor) !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+.doc7DocIdLinked.sapMLnk:hover {
+  text-decoration: underline !important;
+  color: var(--sapLink_Hover_Color) !important;
 }
 
 /* Doc7 right pane toolbar — white background */
@@ -1108,16 +1128,40 @@ body button[id$="-cancelBtn"].sapMBarChild {
 /* Doc7 splitter panel: fixed height + white background for both panes */
 .doc7SplitterPanel {
   height: 320px !important;
-  background: #fff;
+  background: var(--sapShell_Background);
 }
 .doc7SplitterPanel .sapUiLoSplitter,
-.doc7SplitterPanel .sapUiLoSplitterBar,
 .doc7SplitterPanel .sapUiLoSplitterContent {
-  background: #fff !important;
+  background: var(--sapShell_Background) !important;
+  background-color: var(--sapShell_Background) !important;
 }
+.doc7SplitterPanel .sapUiLoSplitterBar,
+.doc7SplitterPanel .sapUiLoSplitterBar .sapUiLoSplitterBarGrip,
+.doc7SplitterPanel > .sapUiLoSplitter > .sapUiLoSplitterBar,
+.doc7SplitterPanel > .sapUiLoSplitter > .sapUiLoSplitterBar .sapUiLoSplitterBarGrip {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+/* Doc8 same */
+.doc8SplitterPanel .sapUiLoSplitter,
+.doc8SplitterPanel .sapUiLoSplitterContent {
+  background: var(--sapShell_Background) !important;
+  background-color: var(--sapShell_Background) !important;
+}
+.doc8SplitterPanel .sapUiLoSplitterBar,
+.doc8SplitterPanel .sapUiLoSplitterBar .sapUiLoSplitterBarGrip,
+.doc8SplitterPanel > .sapUiLoSplitter > .sapUiLoSplitterBar,
+.doc8SplitterPanel > .sapUiLoSplitter > .sapUiLoSplitterBar .sapUiLoSplitterBarGrip {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.doc7SplitterPanel .sapUiLoSplitterContent,
+.doc7SplitterPanel .sapUiLoSplitterContent > *,
 .doc7SplitterPanel .sapMList,
-.doc7SplitterPanel .sapMListTbl {
+.doc7SplitterPanel .sapMListTbl,
+.doc7SplitterPanel .sapMListBGSolid {
   background: #fff !important;
+  background-color: #fff !important;
 }
 /* unselected rows white, selected rows keep SAP blue highlight */
 .doc7SplitterPanel .sapMLIB:not(.sapMLIBSelected),
@@ -1151,4 +1195,35 @@ body button[id$="-cancelBtn"].sapMBarChild {
   height: 100% !important;
   display: inline-flex !important;
   align-items: center !important;
+}
+
+/* Doc7 Add button — remove extra border on text part */
+#doc7CreateBtn .sapMMenuBtnSplit > button:first-child {
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+#doc7CreateBtn .sapMMenuBtnSplit .sapMBtnInner {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Doc7 left pane toolbar */
+.doc7LeftToolbar.sapMTB,
+.doc7LeftToolbar.sapMOTB {
+  background: #fff !important;
+}
+.doc7LeftTitle.sapMTitle .sapMTitleStyleH4 {
+  font-weight: bold !important;
+}
+.doc7LeftCount.sapMText {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+  margin-left: 0.25rem;
+}
+
+/* Doc7 empty state Create button — fix text/arrow overlap */
+#doc7CreateEmpty .sapMBtnInner {
+  min-width: 5rem !important;
+  white-space: nowrap !important;
 }

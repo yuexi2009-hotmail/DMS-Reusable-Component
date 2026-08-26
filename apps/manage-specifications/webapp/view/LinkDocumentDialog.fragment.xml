@@ -52,23 +52,18 @@
                     </Toolbar>
                   </headerToolbar>
                   <columns>
-                    <Column width="16rem"><Text text="Attachment" /></Column>
-                    <Column width="14rem"><Text text="Document" /></Column>
-                    <Column width="10rem"><Text text="Document No." /></Column>
-                    <Column width="8rem"><Text text="Document Type" /></Column>
+                    <Column width="13rem"><Text text="Document No." /></Column>
+                    <Column><Text text="Description" /></Column>
+                    <Column width="9rem"><Text text="Document Type" /></Column>
                     <Column width="7rem"><Text text="Document Part" /></Column>
-                    <Column width="7rem"><Text text="Document Version" /></Column>
-                    <Column width="8rem"><Text text="Document Status" /></Column>
+                    <Column width="8rem"><Text text="Document Version" /></Column>
+                    <Column width="9rem"><Text text="Document Status" /></Column>
                   </columns>
                   <items>
                     <ColumnListItem>
                       <cells>
-                        <HBox alignItems="Center">
-                          <core:Icon src="{linkDoc>fileIcon}" color="var(--sapContent_LabelColor)" useIconTooltip="false" class="sapUiTinyMarginEnd" />
-                          <Text text="{linkDoc>fileName}" wrapping="false" />
-                        </HBox>
-                        <Text text="{linkDoc>docName}" wrapping="false" />
                         <Text text="{linkDoc>docNumber}" wrapping="false" />
+                        <Text text="{linkDoc>description}" wrapping="false" />
                         <Text text="{linkDoc>type}" wrapping="false" />
                         <Text text="{linkDoc>part}" wrapping="false" />
                         <Text text="{linkDoc>version}" wrapping="false" />

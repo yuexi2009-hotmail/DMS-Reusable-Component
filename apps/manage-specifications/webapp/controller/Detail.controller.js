@@ -6,8 +6,12 @@ sap.ui.define([
   "sap/ui/core/Fragment",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/ui/model/Sorter"
-], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter) {
+  "sap/ui/model/Sorter",
+  "sap/m/p13n/Engine",
+  "sap/m/p13n/SelectionController",
+  "sap/m/p13n/MetadataHelper"
+], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter,
+             Engine, SelectionController, MetadataHelper) {
   "use strict";
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
@@ -100,6 +104,9 @@ sap.ui.define([
       }
       if (sKey === "documents7") {
         setTimeout(this.onDoc7SetupDragDrop.bind(this), 100);
+      }
+      if (sKey === "documents8") {
+        setTimeout(this.onDoc8SetupDragDrop.bind(this), 100);
       }
     },
 
@@ -363,40 +370,40 @@ sap.ui.define([
 
     onLinkExistingDocument: function () {
       var oView = this.getView();
-      if (!this._oLinkDocDialog) {
-        this._oLinkDocDialog = Fragment.load({
-          id: oView.getId(),
-          name: "com.sap.demo.managespec.view.LinkDocumentDialog",
-          controller: this
-        }).then(function (oDialog) {
-          oView.addDependent(oDialog);
-          var oLinkDocModel = new JSONModel({
-            documents: [
-              { fileName: "Body-material-steel.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Body-color-arctic-white.pdf",  fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Body-structure-frame.dwg",     fileIcon: "sap-icon://document",         docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Raw-material-A.xlsx",          fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Raw-material-B.xlsx",          fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Supplier-cert.pdf",            fileIcon: "sap-icon://pdf-attachment",   docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Test-report.pdf",              fileIcon: "sap-icon://pdf-attachment",   docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Composition-table.xlsx",       fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Wheel-geometry.pdf",           fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Wheel-Design",     docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
-              { fileName: "Wheel-material-spec.xlsx",     fileIcon: "sap-icon://excel-attachment",  docName: "Car-Wheel-Design",     docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
-              { fileName: "Engine-assembly.pdf",          fileIcon: "sap-icon://pdf-attachment",   docName: "Engine-Design-v2",     docNumber: "100000000195", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Engine-block-spec.xlsx",       fileIcon: "sap-icon://excel-attachment",  docName: "Engine-Block-Spec",    docNumber: "100000000197", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Cylinder-head-drawing.dwg",    fileIcon: "sap-icon://document",         docName: "Cylinder-Head-Drawing",docNumber: "100000000198", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Chassis-design.pdf",           fileIcon: "sap-icon://pdf-attachment",   docName: "Chassis-Design",       docNumber: "100000000200", type: "TST", part: "000", version: "00", status: "New" },
-              { fileName: "Frame-material-spec.xlsx",     fileIcon: "sap-icon://excel-attachment",  docName: "Frame-Material-Spec",  docNumber: "100000000202", type: "TST", part: "000", version: "00", status: "New" }
-            ]
-          });
-          oDialog.setModel(oLinkDocModel, "linkDoc");
-          return oDialog;
-        });
+      if (this._oLinkDocDialogInst) {
+        this._oLinkDocDialogInst.destroy();
+        this._oLinkDocDialogInst = null;
       }
-      var oView = this.getView();
-      this._oLinkDocDialog.then(function (oDialog) {
+      this._iLinkDocFragIdx = (this._iLinkDocFragIdx || 0) + 1;
+      Fragment.load({
+        id: "linkDocFrag" + this._iLinkDocFragIdx,
+        name: "com.sap.demo.managespec.view.LinkDocumentDialog",
+        controller: this
+      }).then(function (oDialog) {
+        this._oLinkDocDialogInst = oDialog;
+        oView.addDependent(oDialog);
+        var oLinkDocModel = new JSONModel({
+            documents: [
+              { description: "Car-Body-Design",         docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
+              { description: "Body-Material-Spec",      docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { description: "Car-Wheel-Design",        docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
+              { description: "Engine-Design-v2",        docNumber: "100000000195", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { description: "Engine-Block-Spec",       docNumber: "100000000197", type: "DFT", part: "000", version: "00", status: "In Work" },
+              { description: "Cylinder-Head-Drawing",   docNumber: "100000000198", type: "DFT", part: "000", version: "00", status: "New" },
+              { description: "Chassis-Design",          docNumber: "100000000200", type: "TST", part: "000", version: "00", status: "New" },
+              { description: "Frame-Material-Spec",     docNumber: "100000000202", type: "TST", part: "000", version: "00", status: "New" },
+              { description: "Suspension-Assembly",     docNumber: "100000000203", type: "DRW", part: "001", version: "01", status: "Released" },
+              { description: "Brake-System-Spec",       docNumber: "100000000204", type: "DFT", part: "000", version: "02", status: "In Work" },
+              { description: "Gearbox-Design",          docNumber: "100000000205", type: "DRW", part: "000", version: "01", status: "New" },
+              { description: "Exhaust-Pipe-Drawing",    docNumber: "100000000206", type: "DRW", part: "000", version: "01", status: "Released" },
+              { description: "Cooling-System-Spec",     docNumber: "100000000207", type: "TST", part: "000", version: "03", status: "In Work" },
+              { description: "Fuel-Injection-System",   docNumber: "100000000208", type: "DFT", part: "002", version: "01", status: "New" },
+              { description: "Electrical-Wiring-Plan",  docNumber: "100000000209", type: "DFT", part: "000", version: "02", status: "Released" }
+            ]
+        });
+        oDialog.setModel(oLinkDocModel, "linkDoc");
         oDialog.open();
-      });
+      }.bind(this));
     },
 
     onDocFilterDialogConfirm: function (oEvent) {
@@ -550,43 +557,48 @@ sap.ui.define([
     onLinkExistingDoc3: function () {
       var oView = this.getView();
       var aDocuments = [
-        { fileName: "Safety-valve-drawing.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Valve-Assembly-2026",      docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
-        { fileName: "Pressure-test-report.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Valve-Assembly-2026",      docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
-        { fileName: "Material-datasheet.xlsx",       fileIcon: "sap-icon://excel-attachment", docName: "Valve-Assembly-2026",      docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
-        { fileName: "Coating-specification.pdf",     fileIcon: "sap-icon://pdf-attachment",   docName: "Surface-Treatment-Spec",   docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
-        { fileName: "Chemical-resistance.xlsx",      fileIcon: "sap-icon://excel-attachment", docName: "Surface-Treatment-Spec",   docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
-        { fileName: "Adhesion-test-results.pdf",     fileIcon: "sap-icon://pdf-attachment",   docName: "Surface-Treatment-Spec",   docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
-        { fileName: "Tolerance-analysis.xlsx",       fileIcon: "sap-icon://excel-attachment", docName: "Gearbox-Housing-Design",   docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
-        { fileName: "Gearbox-assembly-drawing.dwg",  fileIcon: "sap-icon://document",         docName: "Gearbox-Housing-Design",   docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
-        { fileName: "Inspection-checklist.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Gearbox-Housing-Design",   docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
-        { fileName: "Weld-procedure-spec.pdf",       fileIcon: "sap-icon://pdf-attachment",   docName: "Frame-Welding-Procedure",  docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
-        { fileName: "Weld-inspection-record.xlsx",   fileIcon: "sap-icon://excel-attachment", docName: "Frame-Welding-Procedure",  docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
-        { fileName: "NDT-report.pdf",                fileIcon: "sap-icon://pdf-attachment",   docName: "Frame-Welding-Procedure",  docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
-        { fileName: "Torque-spec-table.xlsx",        fileIcon: "sap-icon://excel-attachment", docName: "Fastener-Torque-Spec",     docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
-        { fileName: "Bolt-pattern-drawing.dwg",      fileIcon: "sap-icon://document",         docName: "Fastener-Torque-Spec",     docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
-        { fileName: "Assembly-sequence.pdf",         fileIcon: "sap-icon://pdf-attachment",   docName: "Final-Assembly-Guide",     docNumber: "200000002050", type: "DFT", part: "000", version: "02", status: "Released" }
+        { description: "Valve-Assembly-2026",     docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
+        { description: "Surface-Treatment-Spec",  docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
+        { description: "Gearbox-Housing-Design",  docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
+        { description: "Frame-Welding-Procedure", docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
+        { description: "Fastener-Torque-Spec",    docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
+        { description: "Final-Assembly-Guide",    docNumber: "200000002050", type: "DFT", part: "000", version: "02", status: "Released" },
+        { description: "Cooling-System-Layout",   docNumber: "200000002060", type: "DRW", part: "000", version: "01", status: "New" },
+        { description: "Hydraulic-Line-Spec",     docNumber: "200000002070", type: "DFT", part: "002", version: "01", status: "In Work" },
+        { description: "Pump-Assembly-Drawing",   docNumber: "200000002080", type: "DRW", part: "000", version: "04", status: "Released" },
+        { description: "Seal-Replacement-Guide",  docNumber: "200000002090", type: "IMU", part: "000", version: "02", status: "New" },
+        { description: "Motor-Mount-Design",      docNumber: "200000002100", type: "DRW", part: "001", version: "01", status: "In Work" },
+        { description: "Electrical-Wiring-Spec",  docNumber: "200000002110", type: "DFT", part: "000", version: "03", status: "Released" },
+        { description: "Cable-Routing-Diagram",   docNumber: "200000002120", type: "DRW", part: "000", version: "01", status: "New" },
+        { description: "Sensor-Calibration-Proc", docNumber: "200000002130", type: "TST", part: "000", version: "02", status: "In Work" },
+        { description: "Control-Panel-Layout",    docNumber: "200000002140", type: "DFT", part: "000", version: "01", status: "Released" }
       ];
 
-      if (!this._oLinkDoc3Dialog) {
-        Fragment.load({
-          id: "linkDoc3Fragment",
-          name: "com.sap.demo.managespec.view.LinkDoc3Dialog",
-          controller: this
-        }).then(function (oDialog) {
-          this._oLinkDoc3Dialog = oDialog;
-          this._oLinkDoc3AllDocs = aDocuments;
-          oView.addDependent(oDialog);
-          oDialog.setModel(new JSONModel({ documents: aDocuments }), "linkDoc3");
-          oDialog.open();
-        }.bind(this));
-      } else {
+      this._oLinkDoc3AllDocs = aDocuments;
+
+      var oModel = new JSONModel({ documents: aDocuments });
+
+      var that = this;
+      if (this._oLinkDoc3Dialog) {
+        this._oLinkDoc3Dialog.setModel(oModel, "linkDoc3");
         this._oLinkDoc3Dialog.open();
+        return;
       }
+
+      Fragment.load({
+        id: oView.getId(),
+        name: "com.sap.demo.managespec.view.LinkDoc3Dialog",
+        controller: this
+      }).then(function (oDialog) {
+        oView.addDependent(oDialog);
+        oDialog.setModel(oModel, "linkDoc3");
+        that._oLinkDoc3Dialog = oDialog;
+        oDialog.open();
+      });
     },
 
     onLinkDoc3GoSearch: function () {
-      var oSearch = Fragment.byId("linkDoc3Fragment", "linkDoc3SearchField");
-      this._applyLinkDoc3Filters(oSearch ? oSearch.getValue() : "");
+      this._applyLinkDoc3Filters();
     },
 
     onLinkDoc3Filter: function () {
@@ -598,62 +610,132 @@ sap.ui.define([
     },
 
     onLinkDoc3ToggleFilters: function () {
-      var oPanel = Fragment.byId("linkDoc3Fragment", "linkDoc3FilterPanel");
-      var oBtn   = Fragment.byId("linkDoc3Fragment", "linkDoc3ShowFiltersBtn");
-      if (!oPanel || !oBtn) { return; }
-      var bVisible = oPanel.getVisible();
-      oPanel.setVisible(!bVisible);
-      oBtn.setText(bVisible ? "Show Filters" : "Hide Filters");
-      // Re-apply 8px gap after setText triggers DOM re-render
-      setTimeout(function () {
-        var oDomBtn = oBtn.getDomRef ? oBtn.getDomRef() : document.querySelector("[id$='linkDoc3ShowFiltersBtn']");
-        if (oDomBtn) { oDomBtn.style.setProperty("margin-left", "8px", "important"); }
-      }, 0);
+      var oView = this.getView();
+      var oPanel = Fragment.byId(oView.getId(), "linkDoc3FilterPanel");
+      if (oPanel) {
+        var bVisible = oPanel.getVisible();
+        oPanel.setVisible(!bVisible);
+        var oBtn = Fragment.byId(oView.getId(), "linkDoc3ShowFiltersBtn");
+        if (oBtn) { oBtn.setText(bVisible ? "Show Filters" : "Hide Filters"); }
+      }
     },
 
     _applyLinkDoc3Filters: function (sQuery) {
-      var oTable = Fragment.byId("linkDoc3Fragment", "linkDoc3ResultTable");
+      var oView = this.getView();
+      var oTable = Fragment.byId(oView.getId(), "linkDoc3ResultTable");
       if (!oTable) { return; }
       var oBinding = oTable.getBinding("rows");
       if (!oBinding) { return; }
-
-      var oTypeSelect   = Fragment.byId("linkDoc3Fragment", "linkDoc3TypeFilter");
-      var oStatusSelect = Fragment.byId("linkDoc3Fragment", "linkDoc3StatusFilter");
-      var sType   = oTypeSelect   ? oTypeSelect.getSelectedKey()   : "";
-      var sStatus = oStatusSelect ? oStatusSelect.getSelectedKey() : "";
       if (sQuery === undefined) {
-        var oSearch = Fragment.byId("linkDoc3Fragment", "linkDoc3SearchField");
-        sQuery = oSearch ? oSearch.getValue() : "";
+        var oSearchField = Fragment.byId(oView.getId(), "linkDoc3SearchField");
+        sQuery = oSearchField ? (oSearchField.getValue() || "") : "";
       }
 
       var aFilters = [];
-      if (sType)   { aFilters.push(new Filter("type",   FilterOperator.EQ, sType)); }
-      if (sStatus) { aFilters.push(new Filter("status", FilterOperator.EQ, sStatus)); }
-      if (sQuery)  {
+      if (sQuery) {
         aFilters.push(new Filter([
-          new Filter("fileName",  FilterOperator.Contains, sQuery),
-          new Filter("docName",   FilterOperator.Contains, sQuery),
-          new Filter("docNumber", FilterOperator.Contains, sQuery)
+          new Filter("description", FilterOperator.Contains, sQuery),
+          new Filter("docNumber",   FilterOperator.Contains, sQuery)
         ], false));
       }
       oBinding.filter(aFilters.length ? [new Filter(aFilters, true)] : []);
     },
 
     onLinkDoc3Confirm: function () {
-      var oTable = Fragment.byId("linkDoc3Fragment", "linkDoc3ResultTable");
+      var oView = this.getView();
+      var oTable = Fragment.byId(oView.getId(), "linkDoc3ResultTable");
       if (oTable) {
         var aIndices = oTable.getSelectedIndices();
         if (aIndices.length > 0) {
           var oDetailModel = this.getView().getModel("detail");
-          var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
+          var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+
+          var oFilesMap = {
+            "200000002001": [
+              { name: "Valve-Assembly-Rev01.pdf",    size: "543 KB", modifiedOn: "Aug 1, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000091" },
+              { name: "Valve-Assembly-3D.stp",       size: "1.2 MB", modifiedOn: "Aug 3, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000092" }
+            ],
+            "200000002010": [
+              { name: "Surface-Treatment-Spec.pdf",  size: "211 KB", modifiedOn: "Jul 28, 2026", createdBy: "yue.xi01@sap.com", docNumber: "1000000093" }
+            ],
+            "200000002020": [
+              { name: "Gearbox-Housing-Drawing.dwg", size: "892 KB", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000094" },
+              { name: "Gearbox-Housing-BOM.xlsx",    size: "78 KB",  modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000095" },
+              { name: "Gearbox-Housing-Photo.jpg",   size: "3.4 MB", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000096" }
+            ],
+            "200000002030": [
+              { name: "Frame-Welding-Procedure.pdf", size: "320 KB", modifiedOn: "Jul 20, 2026", createdBy: "yue.xi01@sap.com", docNumber: "1000000097" }
+            ],
+            "200000002040": [
+              { name: "Fastener-Torque-Table.pdf",   size: "95 KB",  modifiedOn: "Aug 2, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000098" },
+              { name: "Fastener-Torque-Test.xlsx",   size: "143 KB", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000099" }
+            ],
+            "200000002050": [
+              { name: "Final-Assembly-Guide-v2.pdf", size: "1.8 MB", modifiedOn: "Aug 7, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000100" }
+            ],
+            "200000002060": [
+              { name: "Cooling-System-Layout.pdf",   size: "456 KB", modifiedOn: "Jul 30, 2026", createdBy: "yue.xi01@sap.com", docNumber: "1000000101" }
+            ],
+            "200000002070": [
+              { name: "Hydraulic-Line-Spec.pdf",     size: "234 KB", modifiedOn: "Aug 1, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000102" },
+              { name: "Hydraulic-Diagram.vsd",       size: "678 KB", modifiedOn: "Aug 2, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000103" }
+            ],
+            "200000002080": [
+              { name: "Pump-Assembly-Drawing-v4.dwg",size: "1.1 MB", modifiedOn: "Aug 3, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000104" }
+            ],
+            "200000002090": [
+              { name: "Seal-Replacement-Guide.pdf",  size: "187 KB", modifiedOn: "Jul 25, 2026", createdBy: "yue.xi01@sap.com", docNumber: "1000000105" }
+            ],
+            "200000002100": [
+              { name: "Motor-Mount-Design.stp",      size: "2.3 MB", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000106" },
+              { name: "Motor-Mount-Drawing.dwg",     size: "945 KB", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000107" }
+            ],
+            "200000002110": [
+              { name: "Electrical-Wiring-Spec-v3.pdf", size: "412 KB", modifiedOn: "Aug 4, 2026", createdBy: "yue.xi01@sap.com", docNumber: "1000000108" }
+            ],
+            "200000002120": [
+              { name: "Cable-Routing-Diagram.pdf",   size: "328 KB", modifiedOn: "Aug 1, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000109" }
+            ],
+            "200000002130": [
+              { name: "Sensor-Calibration-Proc.pdf", size: "267 KB", modifiedOn: "Jul 29, 2026", createdBy: "yue.xi01@sap.com", docNumber: "1000000110" }
+            ],
+            "200000002140": [
+              { name: "Control-Panel-Layout.pdf",    size: "389 KB", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", docNumber: "1000000111" }
+            ]
+          };
+
           aIndices.forEach(function (iIndex) {
             var oCtx = oTable.getContextByIndex(iIndex);
             var oDoc = oCtx ? oCtx.getObject() : null;
-            if (oDoc && !aFlat.some(function (d) { return d.fileName === oDoc.fileName; })) {
-              aFlat.push(Object.assign({}, oDoc, { status: "New", showAll: false, attachments: [] }));
+            if (oDoc && !aLeftRows.some(function (d) { return d.docNumber === oDoc.docNumber; })) {
+              var aFiles = (oFilesMap[oDoc.docNumber] || []).map(function (f) {
+                return Object.assign({}, f, {
+                  typeIcon: f.name.endsWith(".pdf") ? "sap-icon://pdf-attachment" : "sap-icon://document",
+                  modifiedBy: f.createdBy
+                });
+              });
+              aLeftRows.push({
+                docId: oDoc.docNumber,
+                docNumber: oDoc.docNumber,
+                type: oDoc.type,
+                part: oDoc.part,
+                version: oDoc.version,
+                status: oDoc.status,
+                isLinked: true,
+                category: "Technical",
+                description: oDoc.description || "",
+                createdBy: "yue.xi01@sap.com",
+                changedBy: "yue.xi01@sap.com",
+                changedOn: "Aug 26, 2026",
+                lab: "LAB01",
+                changeNumber: "ECN-" + oDoc.docNumber.slice(-4),
+                files: aFiles
+              });
             }
           });
-          oDetailModel.setProperty("/documentsFlat", aFlat);
+
+          oDetailModel.setProperty("/doc7LeftRows", aLeftRows);
+          oDetailModel.setProperty("/doc7HasData", true);
         }
       }
       if (this._oLinkDoc3Dialog) { this._oLinkDoc3Dialog.close(); }
@@ -683,7 +765,7 @@ sap.ui.define([
       var oView = this.getView();
       var oTable = oView.byId("linkDocResultTable");
       if (!oTable) {
-        this._oLinkDocDialog.then(function (oDialog) { oDialog.close(); });
+        if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); };
         return;
       }
 
@@ -739,11 +821,11 @@ sap.ui.define([
         MessageToast.show(aNewDocs.length + " document(s) linked");
       }
 
-      this._oLinkDocDialog.then(function (oDialog) { oDialog.close(); });
+      if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); };
     },
 
     onLinkDocCancel: function () {
-      this._oLinkDocDialog.then(function (oDialog) { oDialog.close(); });
+      if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); };
     },
 
     onDocTreeToggle: function () {
@@ -780,22 +862,33 @@ sap.ui.define([
       var oCtx = oItem.getBindingContext("detail");
       if (!oCtx) { return; }
       var oDoc = oCtx.getObject();
-      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document", "default": "sap-icon://document" };
-      var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.21 MB"];
-      var aAtts = (oDoc.attachments || []).map(function (sFile, i) {
-        var sExt = sFile.split(".").pop().toLowerCase();
-        return {
-          typeIcon:   aIconMap[sExt] || aIconMap["default"],
-          name:       sFile,
-          docNumber:  "10000000" + (191 + i),
-          modifiedOn: "Aug 6, 2026",
-          createdBy:  "yue.xi01@sap.com",
-          modifiedBy: "yue.xi01@sap.com",
-          size:       aSizes[i % aSizes.length]
-        };
-      });
       var oDetailModel = this.getView().getModel("detail");
-      oDetailModel.setProperty("/doc7Attachments", aAtts);
+
+      if (oDoc.isLinked) {
+        oDetailModel.setProperty("/doc7ShowSwitchType", true);
+        oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
+        var aFiles = oDoc.files || [];
+        oDetailModel.setProperty("/doc7Attachments", aFiles);
+      } else {
+        oDetailModel.setProperty("/doc7ShowSwitchType", oDoc.type === "ATT");
+        oDetailModel.setProperty("/doc7ActionBtnText", "Switch Type");
+        var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document", "default": "sap-icon://document" };
+        var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.21 MB"];
+        var aAtts = (oDoc.attachments || []).map(function (sFile, i) {
+          var sExt = sFile.split(".").pop().toLowerCase();
+          return {
+            typeIcon:   aIconMap[sExt] || aIconMap["default"],
+            name:       sFile,
+            docNumber:  "10000000" + (191 + i),
+            modifiedOn: "Aug 6, 2026",
+            createdBy:  "yue.xi01@sap.com",
+            modifiedBy: "yue.xi01@sap.com",
+            size:       aSizes[i % aSizes.length]
+          };
+        });
+        oDetailModel.setProperty("/doc7Attachments", aAtts);
+      }
+
       oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
       oDetailModel.setProperty("/doc7StripVisible", true);
       var oView = this.getView();
@@ -803,6 +896,16 @@ sap.ui.define([
         var oBtn = oView.byId(sId);
         if (oBtn) { oBtn.setEnabled(false); }
       });
+    },
+
+    onDoc7ActionBtn: function () {
+      var oDetailModel = this.getView().getModel("detail");
+      var sText = oDetailModel.getProperty("/doc7ActionBtnText");
+      MessageToast.show(sText);
+    },
+
+    onDoc7LinkedDocPress: function () {
+      MessageToast.show("Open Document");
     },
 
     onDoc7AttSelect: function () {
@@ -890,8 +993,7 @@ sap.ui.define([
 
       oModel.setProperty("/doc7Attachments", aAtts);
       oModel.setProperty("/doc7HasData", true);
-
-      // Select first row in left table
+      oModel.setProperty("/doc7ShowSwitchType", true);
       var oDocTable = oView.byId("doc7DocTable");
       if (oDocTable) {
         oDocTable.setSelectedItem(oDocTable.getItems()[0], true);
@@ -905,6 +1007,45 @@ sap.ui.define([
     onDoc7Search:         function () {},
     onDoc7DocNumberPress: function () {},
     onDoc7RowMore:        function () {},
+
+    onDoc7LeftTableSettings: function (oEvent) {
+      var oView = this.getView();
+      var oTable = oView.byId("doc7DocTable");
+      if (!oTable) { return; }
+
+      var oEngine = Engine.getInstance();
+      var sTableId = oTable.getId();
+
+      if (!this._bDoc7P13nRegistered) {
+        this._bDoc7P13nRegistered = true;
+        var oHelper = new MetadataHelper([
+          { key: "doc7ColDocument",    label: "Document",      path: "docId" },
+          { key: "doc7ColType",        label: "Type",          path: "type" },
+          { key: "doc7ColPart",        label: "Part",          path: "part" },
+          { key: "doc7ColVer",         label: "Ver.",          path: "version" },
+          { key: "doc7ColStatus",      label: "Status",        path: "status" },
+          { key: "doc7ColCategory",    label: "S4HANA Info",   path: "category" },
+          { key: "doc7ColDescription", label: "Description",   path: "description" },
+          { key: "doc7ColCreatedBy",   label: "Created By",    path: "createdBy" },
+          { key: "doc7ColChangedBy",   label: "Changed By",    path: "changedBy" },
+          { key: "doc7ColChangedOn",   label: "Changed On",    path: "changedOn" },
+          { key: "doc7ColLab",         label: "Lab/Office",    path: "lab" },
+          { key: "doc7ColChangeNo",    label: "Change Number", path: "changeNumber" }
+        ]);
+
+        oEngine.register(oTable, {
+          helper: oHelper,
+          controller: {
+            Columns: new SelectionController({
+              control: oTable,
+              targetAggregation: "columns"
+            })
+          }
+        });
+      }
+
+      oEngine.show(oTable, ["Columns"], { contentHeight: "35rem", contentWidth: "25rem", source: oEvent.getSource() });
+    },
 
     _onDoc7DragOver: function (oEvent) {
       oEvent.preventDefault();
@@ -967,6 +1108,7 @@ sap.ui.define([
       var oModel = this.getView().getModel("detail");
       oModel.setProperty("/doc7Attachments", aAtts);
       oModel.setProperty("/doc7HasData", true);
+      oModel.setProperty("/doc7ShowSwitchType", true);
       oModel.setProperty("/doc7LeftRows", [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]);
 
       var oDocTable = this.getView().byId("doc7DocTable");
@@ -987,6 +1129,88 @@ sap.ui.define([
       oDom.addEventListener("dragleave", this._onDoc7DragLeave.bind(this));
       oDom.addEventListener("drop",      this._onDoc7Drop.bind(this));
     },
+
+    // ---- Documents 8 (mirrors Doc7) ----
+    onDoc8DocSelect:      function () {},
+    onDoc8AttTableUpdated: function () {
+      var oTable = this.byId("doc8AttTable");
+      if (!oTable) { return; }
+      oTable.$().find(".docAttTypeIcon").each(function () {
+        this.style.setProperty("color", "#506D84", "important");
+        this.style.setProperty("font-size", "1.25rem", "important");
+        this.style.setProperty("width", "2.5rem", "important");
+        this.style.setProperty("height", "2.5rem", "important");
+        this.style.setProperty("line-height", "2.5rem", "important");
+        this.style.setProperty("border", "1px solid rgba(80,109,132,0.4)", "important");
+        this.style.setProperty("border-radius", "0.5rem", "important");
+        this.style.setProperty("background", "#fff", "important");
+        this.style.setProperty("box-sizing", "border-box", "important");
+        this.style.setProperty("display", "inline-flex", "important");
+        this.style.setProperty("align-items", "center", "important");
+        this.style.setProperty("justify-content", "center", "important");
+      });
+    },
+    onDoc8UploadNew: function () {
+      var oModel = this.getView().getModel("detail");
+      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document", "doc": "sap-icon://doc-attachment", "xlsx": "sap-icon://excel-attachment" };
+      var aSizes = ["18 KB", "43 KB", "96 KB"];
+      var aFiles = ["Body-material-steel.pdf", "Body-color-arctic-white.pdf", "Body-structure-frame.dwg"];
+      var aAtts = aFiles.map(function (sFile, i) {
+        var sExt = sFile.split(".").pop().toLowerCase();
+        return { typeIcon: aIconMap[sExt] || "sap-icon://document", name: sFile, modifiedOn: "Aug 26, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: aSizes[i % aSizes.length] };
+      });
+      oModel.setProperty("/doc8Attachments", aAtts);
+      oModel.setProperty("/doc8HasData", true);
+      oModel.setProperty("/doc8LeftRows", [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]);
+      var oDocTable = this.getView().byId("doc8DocTable");
+      if (oDocTable && oDocTable.getItems().length > 0) { oDocTable.setSelectedItem(oDocTable.getItems()[0], true); }
+      MessageToast.show("File uploaded successfully");
+    },
+    _onDoc8DragOver: function (oEvent) {
+      oEvent.preventDefault(); oEvent.stopPropagation();
+      var oDom = this.getView().byId("doc8DropZone");
+      if (oDom) { oDom.getDomRef().classList.add("doc7DropActive"); }
+    },
+    _onDoc8DragLeave: function (oEvent) {
+      var oDom = this.getView().byId("doc8DropZone");
+      if (oDom) { oDom.getDomRef().classList.remove("doc7DropActive"); }
+    },
+    _onDoc8Drop: function (oEvent) {
+      oEvent.preventDefault(); oEvent.stopPropagation();
+      var oDom = this.getView().byId("doc8DropZone");
+      if (oDom) { oDom.getDomRef().classList.remove("doc7DropActive"); }
+      var aFiles = oEvent.dataTransfer && oEvent.dataTransfer.files ? Array.from(oEvent.dataTransfer.files) : [];
+      if (aFiles.length === 0) { return; }
+      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "doc": "sap-icon://doc-attachment", "docx": "sap-icon://doc-attachment", "xls": "sap-icon://excel-attachment", "xlsx": "sap-icon://excel-attachment", "png": "sap-icon://attachment-photo", "jpg": "sap-icon://attachment-photo", "zip": "sap-icon://attachment-zip-file", "dwg": "sap-icon://document", "txt": "sap-icon://document-text" };
+      var aAtts = aFiles.map(function (oFile) {
+        var sExt = oFile.name.split(".").pop().toLowerCase();
+        var fKB = oFile.size / 1024;
+        var sSize = fKB < 1024 ? Math.round(fKB) + " KB" : (fKB / 1024).toFixed(2) + " MB";
+        var now = new Date();
+        return { typeIcon: aIconMap[sExt] || "sap-icon://document", name: oFile.name, modifiedOn: now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }), createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: sSize };
+      });
+      var oModel = this.getView().getModel("detail");
+      oModel.setProperty("/doc8Attachments", aAtts);
+      oModel.setProperty("/doc8HasData", true);
+      oModel.setProperty("/doc8LeftRows", [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]);
+      MessageToast.show(aFiles.length + " file(s) uploaded");
+    },
+    onDoc8SetupDragDrop: function () {
+      var oDropZone = this.getView().byId("doc8DropZone");
+      if (!oDropZone || !oDropZone.getDomRef()) { return; }
+      var oDom = oDropZone.getDomRef();
+      if (oDom._doc8DdBound) { return; }
+      oDom._doc8DdBound = true;
+      oDom.addEventListener("dragover",  this._onDoc8DragOver.bind(this));
+      oDom.addEventListener("dragleave", this._onDoc8DragLeave.bind(this));
+      oDom.addEventListener("drop",      this._onDoc8Drop.bind(this));
+    },
+    onDoc8CreateFolder: function () {}, onDoc8Upload: function () {}, onDoc8CreateLink: function () {},
+    onDoc8EditLink: function () {}, onDoc8Download: function () {}, onDoc8Delete: function () {},
+    onDoc8Move: function () {}, onDoc8Copy: function () {}, onDoc8CheckOut: function () {},
+    onDoc8CheckIn: function () {}, onDoc8Properties: function () {}, onDoc8NavUp: function () {},
+    onDoc8Refresh: function () { MessageToast.show("Refreshed"); },
+    onDoc8Sort: function () {}, onDoc8Settings: function () {}, onDoc8Search: function () {}, onDoc8RowMore: function () {},
 
     _onRouteMatched: function (oEvent) {
       var sSpecId = oEvent.getParameter("arguments").specId;
@@ -1100,9 +1324,15 @@ sap.ui.define([
         documentsAttFlat: aDocumentsAttFlat,
         doc7Attachments: [],
         doc7HasData: false,
-        doc7LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }],
+        doc7ShowSwitchType: false,
+        doc7ActionBtnText: "Switch Type",
+        doc7LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-", isLinked: false,
+          category: "Technical", description: "", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }],
         doc7StripVisible: false,
-        doc7Uuid: ""
+        doc7Uuid: "",
+        doc8Attachments: [],
+        doc8HasData: false,
+        doc8LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]
       });
 
       this.getView().setModel(oDetailModel, "detail");
