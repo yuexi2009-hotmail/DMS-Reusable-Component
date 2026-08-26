@@ -1093,3 +1093,62 @@ body button[id$="-cancelBtn"].sapMBarChild {
 .doc7EmptyToolbar.sapMOTB {
   background: #fff !important;
 }
+
+/* Doc7 left table — bold document ID */
+.doc7DocIdBold.sapMText {
+  font-weight: bold !important;
+}
+
+/* Doc7 right pane toolbar — white background */
+.doc7RightToolbar.sapMTB,
+.doc7RightToolbar.sapMOTB {
+  background: #fff !important;
+}
+
+/* Doc7 splitter panel: fixed height + white background for both panes */
+.doc7SplitterPanel {
+  height: 320px !important;
+  background: #fff;
+}
+.doc7SplitterPanel .sapUiLoSplitter,
+.doc7SplitterPanel .sapUiLoSplitterBar,
+.doc7SplitterPanel .sapUiLoSplitterContent {
+  background: #fff !important;
+}
+.doc7SplitterPanel .sapMList,
+.doc7SplitterPanel .sapMListTbl {
+  background: #fff !important;
+}
+/* unselected rows white, selected rows keep SAP blue highlight */
+.doc7SplitterPanel .sapMLIB:not(.sapMLIBSelected),
+.doc7SplitterPanel .sapMListTblRow:not(.sapMLIBSelected) {
+  background: #fff !important;
+}
+
+/* Doc7 Add button Split mode — vertically center text */
+#doc7CreateBtn .sapMBtnContent {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* Doc7 Add button Split — remove background from text button inner span */
+#doc7CreateBtn .sapMMenuBtnSplit .sapMBtnInner {
+  background: transparent !important;
+}
+
+/* Doc7 Add button Split — align inner buttons vertically */
+#doc7CreateBtn.sapMMenuBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+#doc7CreateBtn .sapMMenuBtnSplit {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+#doc7CreateBtn .sapMMenuBtnSplit > button {
+  height: 100% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}

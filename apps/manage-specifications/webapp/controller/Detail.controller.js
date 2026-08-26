@@ -832,6 +832,15 @@ sap.ui.define([
         this.style.setProperty("align-items", "center", "important");
         this.style.setProperty("justify-content", "center", "important");
       });
+      // Fix Add button text/arrow overlap by setting explicit min-width on inner button
+      var oBtn = this.byId("doc7CreateBtn");
+      if (oBtn && oBtn.getDomRef()) {
+        var oBtnInner = oBtn.getDomRef().querySelector("button");
+        if (oBtnInner) {
+          oBtnInner.style.removeProperty("min-width");
+          oBtnInner.style.removeProperty("padding-right");
+        }
+      }
     },
 
     onDoc7Create:         function () { MessageToast.show("Create attachment"); },
@@ -914,8 +923,57 @@ sap.ui.define([
       oEvent.stopPropagation();
       var oDom = this.getView().byId("doc7DropZone");
       if (oDom) { oDom.getDomRef().classList.remove("doc7DropActive"); }
-      // Treat any drop as "upload" — same logic as Upload new button
-      this.onDoc7UploadNew();
+
+      var aFiles = oEvent.dataTransfer && oEvent.dataTransfer.files
+        ? Array.from(oEvent.dataTransfer.files)
+        : [];
+
+      if (aFiles.length === 0) { return; }
+
+      var aIconMap = {
+        "pdf":  "sap-icon://pdf-attachment",
+        "doc":  "sap-icon://doc-attachment",
+        "docx": "sap-icon://doc-attachment",
+        "xls":  "sap-icon://excel-attachment",
+        "xlsx": "sap-icon://excel-attachment",
+        "ppt":  "sap-icon://ppt-attachment",
+        "pptx": "sap-icon://ppt-attachment",
+        "jpg":  "sap-icon://attachment-photo",
+        "jpeg": "sap-icon://attachment-photo",
+        "png":  "sap-icon://attachment-photo",
+        "zip":  "sap-icon://attachment-zip-file",
+        "dwg":  "sap-icon://document",
+        "txt":  "sap-icon://document-text"
+      };
+
+      var aAtts = aFiles.map(function (oFile) {
+        var sExt = oFile.name.split(".").pop().toLowerCase();
+        var fKB = oFile.size / 1024;
+        var sSize = fKB < 1024
+          ? Math.round(fKB) + " KB"
+          : (fKB / 1024).toFixed(2) + " MB";
+        var now = new Date();
+        var sDate = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        return {
+          typeIcon:   aIconMap[sExt] || "sap-icon://document",
+          name:       oFile.name,
+          modifiedOn: sDate,
+          createdBy:  "yue.xi01@sap.com",
+          modifiedBy: "yue.xi01@sap.com",
+          size:       sSize
+        };
+      });
+
+      var oModel = this.getView().getModel("detail");
+      oModel.setProperty("/doc7Attachments", aAtts);
+      oModel.setProperty("/doc7HasData", true);
+      oModel.setProperty("/doc7LeftRows", [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]);
+
+      var oDocTable = this.getView().byId("doc7DocTable");
+      if (oDocTable && oDocTable.getItems().length > 0) {
+        oDocTable.setSelectedItem(oDocTable.getItems()[0], true);
+      }
+      MessageToast.show(aFiles.length + " file(s) uploaded");
     },
 
     onDoc7SetupDragDrop: function () {
@@ -923,6 +981,8 @@ sap.ui.define([
       var oDropZone = oView.byId("doc7DropZone");
       if (!oDropZone || !oDropZone.getDomRef()) { return; }
       var oDom = oDropZone.getDomRef();
+      if (oDom._doc7DdBound) { return; }
+      oDom._doc7DdBound = true;
       oDom.addEventListener("dragover",  this._onDoc7DragOver.bind(this));
       oDom.addEventListener("dragleave", this._onDoc7DragLeave.bind(this));
       oDom.addEventListener("drop",      this._onDoc7Drop.bind(this));
@@ -1040,6 +1100,7 @@ sap.ui.define([
         documentsAttFlat: aDocumentsAttFlat,
         doc7Attachments: [],
         doc7HasData: false,
+        doc7LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }],
         doc7StripVisible: false,
         doc7Uuid: ""
       });

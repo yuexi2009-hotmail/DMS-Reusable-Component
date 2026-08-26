@@ -846,39 +846,36 @@
                   </VBox>
 
                   <!-- Data state: left/right splitter (shown after upload) -->
-                  <l:ResponsiveSplitter id="doc7Splitter" class="doc7Splitter" visible="{detail>/doc7HasData}">
+                  <l:ResponsiveSplitter id="doc7Splitter" class="doc7Splitter doc7SplitterPanel" visible="{detail>/doc7HasData}">
                     <l:PaneContainer>
                       <l:SplitPane id="doc7PaneLeft" requiredParentWidth="300">
                         <l:layoutData>
-                          <l:SplitterLayoutData size="36%" minSize="160" />
+                          <l:SplitterLayoutData size="30%" minSize="160" />
                         </l:layoutData>
                         <VBox height="100%">
                           <Table
                             id="doc7DocTable"
-                            items="{detail>/documentsFlat}"
+                            items="{detail>/doc7LeftRows}"
                             mode="SingleSelectMaster"
                             noDataText="No documents"
                             selectionChange=".onDoc7DocSelect"
                             class="sapUiSizeCompact detailTable doc7DocTable"
                             fixedLayout="false">
                             <columns>
-                              <Column minScreenWidth="Tablet" demandPopin="false"><Text text="Document" /></Column>
-                              <Column width="4rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline"><Text text="Type" /></Column>
-                              <Column width="4rem" minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline"><Text text="Part" /></Column>
-                              <Column width="4rem" minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline"><Text text="Ver." /></Column>
-                              <Column width="5.5rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline"><Text text="Status" /></Column>
+                              <Column><Text text="Document" /></Column>
+                              <Column width="4rem"><Text text="Type" /></Column>
+                              <Column width="4rem"><Text text="Part" /></Column>
+                              <Column width="4rem"><Text text="Ver." /></Column>
+                              <Column width="5.5rem"><Text text="Status" /></Column>
                             </columns>
                             <items>
                               <ColumnListItem type="Inactive">
                                 <cells>
-                                  <VBox class="doc7DocCell">
-                                    <Text text="{detail>docName}" class="detailDocNumber" wrapping="false" />
-                                    <Text text="{detail>docNumber}" class="detailDocMeta" wrapping="false" />
-                                  </VBox>
-                                  <Text text="{detail>type}" />
-                                  <Text text="{detail>part}" />
-                                  <Text text="{detail>version}" />
-                                  <Text text="{detail>status}" />
+                                  <Text text="{detail>docId}" class="doc7DocIdBold" wrapping="false" />
+                                  <Text text="{detail>type}" wrapping="false" />
+                                  <Text text="{detail>part}" wrapping="false" />
+                                  <Text text="{detail>version}" wrapping="false" />
+                                  <Text text="{detail>status}" wrapping="false" />
                                 </cells>
                               </ColumnListItem>
                             </items>
@@ -895,14 +892,14 @@
                           class="sapUiSizeCompact"
                           updateFinished=".onDoc7AttTableUpdated">
                           <headerToolbar>
-                            <OverflowToolbar>
+                            <OverflowToolbar class="doc7RightToolbar">
                               <VariantManagement id="doc7AttVM" selectedKey="standard">
                                 <VariantItem key="standard" text="Standard" />
                               </VariantManagement>
                               <Text id="doc7ItemCount" text="Items ({= ${detail>/doc7Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc7Search" width="15rem" placeholder="Search" search=".onDoc7Search" />
-                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
+                              <MenuButton id="doc7CreateBtn" text="Add" type="Emphasized" buttonMode="Split" menuPosition="BeginBottom">
                                 <menu>
                                   <Menu>
                                     <items>
@@ -920,8 +917,12 @@
                               <Button id="doc7EditBtn"   text="Edit Link"  type="Transparent" enabled="false" press=".onDoc7EditLink" />
                               <Button id="doc7DownBtn"   text="Download"   type="Transparent" enabled="false" press=".onDoc7Download" />
                               <Button id="doc7DeleteBtn" text="Delete"     type="Transparent" enabled="false" press=".onDoc7Delete" />
-                              <Button id="doc7MoveBtn"   text="Move"       type="Transparent" enabled="false" press=".onDoc7Move" />
-                              <Button id="doc7CopyBtn"   text="Copy"       type="Transparent" enabled="false" press=".onDoc7Copy" />
+                              <Button id="doc7MoveBtn" text="Move" type="Transparent" enabled="false" press=".onDoc7Move">
+                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
+                              </Button>
+                              <Button id="doc7CopyBtn" text="Copy" type="Transparent" enabled="false" press=".onDoc7Copy">
+                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
+                              </Button>
                               <MenuButton id="doc7ManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
                                 <menu>
                                   <Menu>
