@@ -892,20 +892,117 @@ sap.ui.define([
       oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
       oDetailModel.setProperty("/doc7StripVisible", true);
       var oView = this.getView();
+      var oUnlinkBtn = oView.byId("unlinkBtn7");
+      if (oUnlinkBtn) { oUnlinkBtn.setEnabled(!!oDoc.isLinked); }
       ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
         if (oBtn) { oBtn.setEnabled(false); }
       });
     },
 
-    onDoc7ActionBtn: function () {
+    onDoc7ActionBtn: function (oEvent) {
       var oDetailModel = this.getView().getModel("detail");
       var sText = oDetailModel.getProperty("/doc7ActionBtnText");
-      MessageToast.show(sText);
+      if (sText === "Switch Type") {
+        this._openSwitchTypeDialog(oEvent);
+      } else {
+        MessageToast.show("Sync");
+      }
+    },
+
+    _openSwitchTypeDialog: function (oEvent) {
+      var oView = this.getView();
+      var that = this;
+
+      // get current type of selected left-table row
+      var oTable = oView.byId("doc7DocTable");
+      var oSelected = oTable ? oTable.getSelectedItem() : null;
+      var sCurrentType = oSelected ? (oSelected.getBindingContext("detail").getProperty("type") || "ATT") : "ATT";
+
+      var aTypes = ["ATT", "DFT", "DRW", "TST", "IMU"];
+      var iSelected = Math.max(aTypes.indexOf(sCurrentType), 0);
+
+      if (!this._oSwitchTypeDialog) {
+        Fragment.load({
+          id: oView.getId(),
+          name: "com.sap.demo.managespec.view.SwitchTypeDialog",
+          controller: this
+        }).then(function (oDialog) {
+          oView.addDependent(oDialog);
+          that._oSwitchTypeDialog = oDialog;
+          var oGroup = Fragment.byId(oView.getId(), "switchTypeRBGroup");
+          if (oGroup) { oGroup.setSelectedIndex(iSelected); }
+          oDialog.open();
+        }).catch(function (oErr) {
+          MessageToast.show("Error: " + oErr.message);
+        });
+      } else {
+        var oGroup = Fragment.byId(oView.getId(), "switchTypeRBGroup");
+        if (oGroup) { oGroup.setSelectedIndex(iSelected); }
+        this._oSwitchTypeDialog.open();
+      }
+    },
+
+    onSwitchTypeConfirm: function () {
+      var oView = this.getView();
+      var oGroup = Fragment.byId(oView.getId(), "switchTypeRBGroup");
+      if (oGroup) {
+        var aTypes = ["ATT", "DFT", "DRW", "TST", "IMU"];
+        var sNewType = aTypes[oGroup.getSelectedIndex()] || "ATT";
+
+        var oTable = oView.byId("doc7DocTable");
+        var oSelected = oTable ? oTable.getSelectedItem() : null;
+        if (oSelected) {
+          var oCtx = oSelected.getBindingContext("detail");
+          var oDetailModel = oView.getModel("detail");
+          oDetailModel.setProperty(oCtx.getPath() + "/type", sNewType);
+          if (sNewType !== "ATT") {
+            oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
+          }
+        }
+      }
+      if (this._oSwitchTypeDialog) { this._oSwitchTypeDialog.close(); }
+    },
+
+    onSwitchTypeCancel: function () {
+      if (this._oSwitchTypeDialog) { this._oSwitchTypeDialog.close(); }
     },
 
     onDoc7LinkedDocPress: function () {
       MessageToast.show("Open Document");
+    },
+
+    onDoc7Unlink: function () {
+      var oView = this.getView();
+      var oLeftTable = oView.byId("doc7DocTable");
+      var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
+      if (!oSelected) { return; }
+      var oCtx = oSelected.getBindingContext("detail");
+      var oDoc = oCtx ? oCtx.getObject() : null;
+      if (!oDoc || !oDoc.isLinked) { return; }
+
+      var oDetailModel = oView.getModel("detail");
+      var sDocNumber = oDoc.docNumber;
+
+      MessageBox.confirm(
+        "Do you want to unlink the selected document(s)? They will remain saved in the system.",
+        {
+          title: "Unlink",
+          actions: ["Unlink", MessageBox.Action.CANCEL],
+          emphasizedAction: "Unlink",
+          onClose: function (sAction) {
+            if (sAction !== "Unlink") { return; }
+            var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+            aLeftRows = aLeftRows.filter(function (r) { return r.docNumber !== sDocNumber; });
+            oDetailModel.setProperty("/doc7LeftRows", aLeftRows);
+            oDetailModel.setProperty("/doc7Attachments", []);
+            oDetailModel.setProperty("/doc7ShowSwitchType", false);
+            var oUnlinkBtn = oView.byId("unlinkBtn7");
+            if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
+            MessageToast.show("Document unlinked");
+          }
+        }
+      );
     },
 
     onDoc7AttSelect: function () {

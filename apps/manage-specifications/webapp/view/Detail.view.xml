@@ -768,7 +768,7 @@
                         </Menu>
                       </menu>
                     </MenuButton>
-                    <Button id="unlinkBtn7" text="Unlink" type="Transparent" enabled="false" />
+                    <Button id="unlinkBtn7" text="Unlink" type="Transparent" enabled="false" press=".onDoc7Unlink" />
                   </Toolbar>
 
                   <!-- Empty state: full-width table + illustration inside noData (default) -->
@@ -874,13 +874,13 @@
                           <items>
                             <ColumnListItem type="Inactive">
                               <cells>
-                                <HBox>
+                                <HBox alignItems="Center" renderType="Bare">
                                   <Text text="{detail>docId}"
-                                        visible="{= !${detail>isLinked} }"
+                                        visible="{= !${detail>isLinked} &amp;&amp; ${detail>type} === 'ATT' }"
                                         class="doc7DocIdBold"
                                         wrapping="false" />
-                                  <Link text="{detail>docNumber}"
-                                        visible="{detail>isLinked}"
+                                  <Link text="{= ${detail>isLinked} ? ${detail>docNumber} : ${detail>docId} }"
+                                        visible="{= ${detail>isLinked} || ${detail>type} !== 'ATT' }"
                                         press=".onDoc7LinkedDocPress"
                                         class="doc7DocIdLinked"
                                         wrapping="false" />
