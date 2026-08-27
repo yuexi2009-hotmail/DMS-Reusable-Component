@@ -1138,7 +1138,6 @@ body button[id$="-cancelBtn"].sapMBarChild {
 .doc7RightToolbar.sapMTB,
 .doc7RightToolbar.sapMOTB {
   background: #fff !important;
-  border-bottom: 1px solid var(--sapList_HeaderBorderColor) !important;
 }
 .doc7RightToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after,
 .doc7EmptyToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after {
