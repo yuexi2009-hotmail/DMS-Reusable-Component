@@ -488,17 +488,17 @@
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Documents ({= ${detail>/documentsFlat}.length})" level="H4" />
                     <ToolbarSpacer />
-                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                    <MenuButton text="Add" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
                           <items>
-                            <MenuItem text="Link Existing Document" press=".onLinkExistingDoc9" />
-                            <MenuItem text="Link New Document" />
+                            <MenuItem text="Add Existing" press=".onLinkExistingDoc9" />
+                            <MenuItem text="Add New Document" />
                           </items>
                         </Menu>
                       </menu>
                     </MenuButton>
-                    <Button id="unlinkBtn9" text="Unlink" type="Transparent" enabled="false" press=".onDoc9Unlink" />
+                    <Button id="unlinkBtn9" text="Remove" type="Transparent" enabled="false" press=".onDoc9Unlink" />
                   </Toolbar>
 
                   <!-- Empty state: full-width table + illustration inside noData (default) -->
