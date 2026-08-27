@@ -610,17 +610,7 @@
                           <items>
                             <ColumnListItem type="Active">
                               <cells>
-                                <HBox alignItems="Center" renderType="Bare">
-                                  <Text text="{detail>docId}"
-                                        visible="{= !${detail>isLinked} &amp;&amp; ${detail>type} === 'ATT' }"
-                                        class="doc9DocIdBold"
-                                        wrapping="false" />
-                                  <Link text="{= ${detail>isLinked} ? ${detail>docNumber} : ${detail>docId} }"
-                                        visible="{= ${detail>isLinked} || ${detail>type} !== 'ATT' }"
-                                        press=".onDoc9LinkedDocPress"
-                                        class="doc9DocIdLinked"
-                                        wrapping="false" />
-                                </HBox>
+                                <Text text="{detail>docId}" class="doc9DocIdBold" wrapping="false" />
                                 <Text text="{detail>type}" wrapping="false" />
                                 <Text text="{detail>part}" wrapping="false" />
                                 <Text text="{detail>version}" wrapping="false" />

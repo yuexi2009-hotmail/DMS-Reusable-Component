@@ -1122,7 +1122,8 @@ body button[id$="-cancelBtn"].sapMBarChild {
 }
 
 /* Doc7 left table — ATT row: black bold text */
-.doc7DocIdBold.sapMText {
+.doc7DocIdBold.sapMText,
+.doc9DocIdBold.sapMText {
   font-weight: bold !important;
   color: var(--sapTextColor) !important;
 }
