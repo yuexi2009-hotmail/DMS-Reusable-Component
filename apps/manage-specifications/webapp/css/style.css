@@ -1140,15 +1140,23 @@ body button[id$="-cancelBtn"].sapMBarChild {
   background: #fff !important;
 }
 .doc7RightToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after,
-.doc7EmptyToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after {
+.doc7EmptyToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after,
+#doc7CreateBtn.sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after {
   position: relative !important;
   padding-right: 0.35rem !important;
   padding-left: 0.5rem !important;
 }
+/* disabled state: remove arrow padding so button doesn't expand */
+#doc7CreateBtn.sapMMenuBtn .sapMBtnDisabled::after,
+#doc7CreateBtn.sapMMenuBtn button:disabled::after {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  content: none !important;
+}
 
 /* Doc7 splitter panel: fixed height + white background for both panes */
 .doc7SplitterPanel {
-  height: 320px !important;
+  height: 500px !important;
   background: var(--sapShell_Background);
 }
 .doc7SplitterPanel .sapUiLoSplitter,
@@ -1206,6 +1214,15 @@ body button[id$="-cancelBtn"].sapMBarChild {
 #doc7CreateBtn.sapMMenuBtn {
   display: inline-flex !important;
   align-items: center !important;
+  width: auto !important;
+}
+#doc7CreateBtn .sapMBtnInner {
+  width: auto !important;
+  min-width: unset !important;
+  padding-right: 0.5rem !important;
+}
+#doc7CreateBtn .sapMBtnInner.sapMBtnText {
+  padding-right: 0.5rem !important;
 }
 #doc7CreateBtn .sapMMenuBtnSplit {
   display: inline-flex !important;

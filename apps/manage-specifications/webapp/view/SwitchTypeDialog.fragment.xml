@@ -4,7 +4,7 @@
 
   <Dialog
     id="switchTypeDialog"
-    title="Switch Type"
+    title="Change Type"
     contentWidth="22rem"
     resizable="false"
     draggable="true"

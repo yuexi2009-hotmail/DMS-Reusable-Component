@@ -867,43 +867,47 @@ sap.ui.define([
       if (oDoc.isLinked) {
         oDetailModel.setProperty("/doc7ShowSwitchType", true);
         oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
-        var aFiles = oDoc.files || [];
-        oDetailModel.setProperty("/doc7Attachments", aFiles);
+      } else if (oDoc.type === "ATT") {
+        oDetailModel.setProperty("/doc7ShowSwitchType", true);
+        oDetailModel.setProperty("/doc7ActionBtnText", "Change Type");
       } else {
-        oDetailModel.setProperty("/doc7ShowSwitchType", oDoc.type === "ATT");
-        oDetailModel.setProperty("/doc7ActionBtnText", "Switch Type");
-        var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document", "default": "sap-icon://document" };
-        var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.21 MB"];
-        var aAtts = (oDoc.attachments || []).map(function (sFile, i) {
-          var sExt = sFile.split(".").pop().toLowerCase();
-          return {
-            typeIcon:   aIconMap[sExt] || aIconMap["default"],
-            name:       sFile,
-            docNumber:  "10000000" + (191 + i),
-            modifiedOn: "Aug 6, 2026",
-            createdBy:  "yue.xi01@sap.com",
-            modifiedBy: "yue.xi01@sap.com",
-            size:       aSizes[i % aSizes.length]
-          };
-        });
-        oDetailModel.setProperty("/doc7Attachments", aAtts);
+        oDetailModel.setProperty("/doc7ShowSwitchType", true);
+        oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
       }
 
       oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
       oDetailModel.setProperty("/doc7StripVisible", true);
+      oDetailModel.setProperty("/doc7SelectedDocId", oDoc.docId || null);
+
+      var bEverLoaded = oDetailModel.getProperty("/doc7EverLoaded");
+      this.onDoc7LoadFiles(oDoc.docId);
+
       var oView = this.getView();
+      var bIsATT = oDoc.type === "ATT";
       var oUnlinkBtn = oView.byId("unlinkBtn7");
-      if (oUnlinkBtn) { oUnlinkBtn.setEnabled(!!oDoc.isLinked); }
-      ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
+      if (oUnlinkBtn) { oUnlinkBtn.setEnabled(!bIsATT || !!oDoc.isLinked); }
+      var oCreateBtn = oView.byId("doc7CreateBtn");
+      if (oCreateBtn) { oCreateBtn.setEnabled(bIsATT); }
+      ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn", "doc7ManageBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
         if (oBtn) { oBtn.setEnabled(false); }
       });
+      var oAttTable = oView.byId("doc7AttTable");
+      if (oAttTable) {
+        if (bIsATT) {
+          oAttTable.setMode("MultiSelect");
+          oAttTable.getItems().forEach(function (oItem) { oItem.setType("Active"); oItem.setEnabled(true); });
+        } else {
+          oAttTable.setMode("MultiSelect");
+          oAttTable.getItems().forEach(function (oItem) { oItem.setEnabled(false); });
+        }
+      }
     },
 
     onDoc7ActionBtn: function (oEvent) {
       var oDetailModel = this.getView().getModel("detail");
       var sText = oDetailModel.getProperty("/doc7ActionBtnText");
-      if (sText === "Switch Type") {
+      if (sText === "Change Type") {
         this._openSwitchTypeDialog(oEvent);
       } else {
         MessageToast.show("Sync");
@@ -969,6 +973,68 @@ sap.ui.define([
       MessageToast.show("Open Document");
     },
 
+    onDoc7LoadFiles: function (sDocId) {
+      var oView = this.getView();
+      var oDetailModel = oView.getModel("detail");
+      var oLeftTable = oView.byId("doc7DocTable");
+
+      // if called from button (no arg), get docId from selected item
+      if (!sDocId) {
+        var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
+        sDocId = oSelected ? oSelected.getBindingContext("detail").getProperty("docId") : null;
+      }
+
+      var mFiles = {
+        "100000000913": [
+          { typeIcon: "sap-icon://pdf-attachment", name: "ATT-Technical-Spec.pdf",         docNumber: "100000000181", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
+          { typeIcon: "sap-icon://document",        name: "ATT-Assembly-Guide.docx",        docNumber: "100000000182", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
+          { typeIcon: "sap-icon://document",        name: "ATT-Test-Report.xlsx",           docNumber: "100000000183", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+        ],
+        "200000002010": [
+          { typeIcon: "sap-icon://pdf-attachment", name: "Surface-Treatment-Spec.pdf",    docNumber: "100000000191", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Coating-Process-Guide.docx",    docNumber: "100000000192", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Test-Result-Aug2026.xlsx",      docNumber: "100000000193", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+        ],
+        "200000002020": [
+          { typeIcon: "sap-icon://document",        name: "Gearbox-Housing-Drawing.dwg",   docNumber: "100000000201", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "205 KB" },
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Assembly-Instruction-v3.pdf",   docNumber: "100000000202", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "124 KB" },
+          { typeIcon: "sap-icon://document",        name: "Tolerance-Table.xlsx",          docNumber: "100000000203", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "32 KB"  },
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Change-Notice-CN-0051.pdf",     docNumber: "100000000204", modifiedOn: "Aug 7, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+        ],
+        "200000002030": [
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Frame-Welding-Procedure.pdf",   docNumber: "100000000211", modifiedOn: "Aug 12, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "512 KB" },
+          { typeIcon: "sap-icon://document",        name: "Weld-Inspection-Report.docx",   docNumber: "100000000212", modifiedOn: "Aug 11, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "67 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Material-Certificate.xlsx",     docNumber: "100000000213", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "28 KB"  },
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Quality-Control-Checklist.pdf", docNumber: "100000000214", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "45 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Revision-History.docx",         docNumber: "100000000215", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "12 KB"  }
+        ]
+      };
+
+      // fallback to first doc's files if no row selected
+      var aAtts = mFiles[sDocId] || mFiles["200000002010"];
+      oDetailModel.setProperty("/doc7Attachments", aAtts);
+      oDetailModel.setProperty("/doc7AttLoaded", true);
+      oDetailModel.setProperty("/doc7HasData", true);
+      // Highlight first row and trigger its select logic
+      if (!oDetailModel.getProperty("/doc7EverLoaded")) {
+        setTimeout(function () {
+          var aItems = oLeftTable.getItems();
+          if (aItems.length > 0) {
+            oLeftTable.setSelectedItem(aItems[0], true);
+            // fire same logic as clicking the row
+            var oFakeEvent = { getParameter: function () { return aItems[0]; }, getSource: function () { return aItems[0]; } };
+            this.onDoc7DocSelect(oFakeEvent);
+          }
+        }.bind(this), 0);
+      }
+      oDetailModel.setProperty("/doc7EverLoaded", true);
+      // All action buttons stay disabled — type is not ATT
+      ["doc7CreateBtn", "doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn", "doc7ManageBtn"].forEach(function (sId) {
+        var oBtn = oView.byId(sId);
+        if (oBtn) { oBtn.setEnabled(false); }
+      });
+    },
+
     onDoc7Unlink: function () {
       var oView = this.getView();
       var oLeftTable = oView.byId("doc7DocTable");
@@ -1016,10 +1082,19 @@ sap.ui.define([
       var oTable = this.getView().byId("doc7AttTable");
       var bHas = oTable && oTable.getSelectedItems().length > 0;
       var oView = this.getView();
+
+      // Only enable action buttons when selected doc in left table is ATT type
+      var oLeftTable = oView.byId("doc7DocTable");
+      var oLeftSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
+      var sType = oLeftSelected ? oLeftSelected.getBindingContext("detail").getProperty("type") : null;
+      var bIsATT = sType === "ATT";
+
       ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
-        if (oBtn) { oBtn.setEnabled(bHas); }
+        if (oBtn) { oBtn.setEnabled(bHas && bIsATT); }
       });
+      var oManageBtn = oView.byId("doc7ManageBtn");
+      if (oManageBtn) { oManageBtn.setEnabled(bHas && bIsATT); }
     },
 
     onDoc7AttTableUpdated: function () {
@@ -1039,6 +1114,17 @@ sap.ui.define([
         this.style.setProperty("align-items", "center", "important");
         this.style.setProperty("justify-content", "center", "important");
       });
+      // Disable rows if selected doc is not ATT
+      var oDetailModel = this.getView().getModel("detail");
+      var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+      var sSelectedDocId = oDetailModel.getProperty("/doc7SelectedDocId");
+      var oSelectedDoc = aLeftRows.filter(function (r) { return r.docId === sSelectedDocId; })[0];
+      var sType = oSelectedDoc ? oSelectedDoc.type : null;
+      if (sType !== "ATT") {
+        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(false); });
+      } else {
+        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(true); });
+      }
       // Fix Add button text/arrow overlap by setting explicit min-width on inner button
       var oBtn = this.byId("doc7CreateBtn");
       if (oBtn && oBtn.getDomRef()) {
@@ -1428,11 +1514,18 @@ sap.ui.define([
         documentsFlat: aDocumentsFlat,
         documentsAttFlat: aDocumentsAttFlat,
         doc7Attachments: [],
-        doc7HasData: false,
+        doc7HasData: true,
+        doc7EverLoaded: false,
         doc7ShowSwitchType: false,
-        doc7ActionBtnText: "Switch Type",
-        doc7LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-", isLinked: false,
-          category: "Technical", description: "", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }],
+        doc7ActionBtnText: "Change Type",
+        doc7AttLoaded: false,
+        doc7SelectedDocId: null,
+        doc7LeftRows: [
+          { docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-",        isLinked: false, category: "Technical", description: "ATT-Document",              createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "200000002010", type: "TST", part: "000", version: "02", status: "In Work",  isLinked: false, category: "Technical", description: "Surface-Treatment-Spec",  createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "200000002020", type: "DRW", part: "001", version: "03", status: "Released", isLinked: false, category: "Technical", description: "Gearbox-Housing-Design",  createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 5, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work",  isLinked: false, category: "Technical", description: "Frame-Welding-Procedure", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 4, 2026",  lab: "LAB01", changeNumber: "" }
+        ],
         doc7StripVisible: false,
         doc7Uuid: "",
         doc8Attachments: [],

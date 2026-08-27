@@ -751,13 +751,12 @@
                 </VBox>
               </IconTabFilter>
 
-              <IconTabFilter text="Documents 7" key="documents7">
+              <IconTabFilter text="Document Load File" key="documents7">
                 <VBox class="doc7TabContent">
                   <!-- Title toolbar always visible -->
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Documents ({= ${detail>/documentsFlat}.length})" level="H4" />
                     <ToolbarSpacer />
-                    <Button id="doc7SwitchTypeBtn" text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
                     <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
@@ -846,6 +845,7 @@
                           mode="SingleSelectMaster"
                           noDataText="No documents"
                           selectionChange=".onDoc7DocSelect"
+                          itemPress=".onDoc7DocSelect"
                           class="sapUiSizeCompact detailTable doc7DocTable"
                           fixedLayout="false">
                           <headerToolbar>
@@ -854,6 +854,7 @@
                               <Text id="doc7LeftCount" text="({= ${detail>/doc7LeftRows}.length})" class="doc7LeftCount" />
                               <ToolbarSpacer />
                               <SearchField width="12rem" placeholder="Search" class="doc7LeftSearch" />
+                              <Button id="doc7SwitchTypeBtn" text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
                               <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7LeftTableSettings" class="doc7SettingsBtn" />
                             </OverflowToolbar>
                           </headerToolbar>
@@ -872,7 +873,7 @@
                             <Column id="doc7ColChangeNo" width="8rem" visible="false"><Text text="Change Number" /></Column>
                           </columns>
                           <items>
-                            <ColumnListItem type="Inactive">
+                            <ColumnListItem type="Active">
                               <cells>
                                 <HBox alignItems="Center" renderType="Bare">
                                   <Text text="{detail>docId}"
@@ -905,11 +906,22 @@
                         <Table id="doc7AttTable"
                           items="{detail>/doc7Attachments}"
                           mode="MultiSelect"
-                          noDataText="No items"
                           growing="true"
                           growingThreshold="10"
                           class="sapUiSizeCompact doc7AttTable"
                           updateFinished=".onDoc7AttTableUpdated">
+                          <noData>
+                            <IllustratedMessage
+                              illustrationType="sapIllus-Tent"
+                              illustrationSize="Dialog"
+                              title='Click "Load Files" to load documents.'
+                              description="Select a document row or click Load Files below."
+                              visible="{= !${detail>/doc7AttLoaded} }">
+                              <additionalContent>
+                                <Button text="Load Files" type="Default" press=".onDoc7LoadFiles" />
+                              </additionalContent>
+                            </IllustratedMessage>
+                          </noData>
                           <headerToolbar>
                             <OverflowToolbar class="doc7RightToolbar">
                               <VariantManagement id="doc7AttVM" selectedKey="standard">
@@ -918,7 +930,7 @@
                               <Text id="doc7ItemCount" text="Items ({= ${detail>/doc7Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc7Search" width="15rem" placeholder="Search" search=".onDoc7Search" />
-                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
+                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
                                 <menu>
                                   <Menu>
                                     <items>
@@ -953,10 +965,10 @@
                                   </Menu>
                                 </menu>
                               </MenuButton>
-                              <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   press=".onDoc7NavUp" />
-                              <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onDoc7Refresh" />
-                              <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     press=".onDoc7Sort" />
-                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7Settings" />
+                              <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   press=".onDoc7NavUp"   enabled="false" />
+                              <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onDoc7Refresh" enabled="false" />
+                              <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     press=".onDoc7Sort"    enabled="false" />
+                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7Settings" enabled="false" />
                             </OverflowToolbar>
                           </headerToolbar>
                           <columns>
