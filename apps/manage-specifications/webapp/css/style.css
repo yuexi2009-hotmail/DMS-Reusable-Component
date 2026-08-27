@@ -955,6 +955,13 @@ body button[id$="-cancelBtn"].sapMBarChild {
   padding-right: 2rem;
   box-sizing: border-box;
 }
+/* Doc9 (Document Empty state) — same padding as Doc7 */
+.doc9TabContent.sapMVBox {
+  padding-top: 0.75rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+}
 /* Info banner */
 .doc7InfoStrip.sapMMessageStrip {
   border-radius: 0.5rem;
@@ -1094,6 +1101,11 @@ body button[id$="-cancelBtn"].sapMBarChild {
 
 /* Doc7 tab layout: fill remaining height */
 .doc7TabContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.doc9TabContent {
   display: flex;
   flex-direction: column;
   height: 100%;

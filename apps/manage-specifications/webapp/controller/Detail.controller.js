@@ -1321,6 +1321,224 @@ sap.ui.define([
       oDom.addEventListener("drop",      this._onDoc7Drop.bind(this));
     },
 
+    // ---- Documents 9 (Document Empty state — duplicate of Doc7) ----
+    onDoc9DocSelect: function (oEvent) {
+      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+      if (!oItem || oItem.isA("sap.m.Table")) { return; }
+      var oCtx = oItem.getBindingContext("detail");
+      if (!oCtx) { return; }
+      var oDoc = oCtx.getObject();
+      var oDetailModel = this.getView().getModel("detail");
+
+      if (oDoc.isLinked) {
+        oDetailModel.setProperty("/doc9ShowSwitchType", true);
+        oDetailModel.setProperty("/doc9ActionBtnText", "Sync");
+      } else if (oDoc.type === "ATT") {
+        oDetailModel.setProperty("/doc9ShowSwitchType", true);
+        oDetailModel.setProperty("/doc9ActionBtnText", "Change Type");
+      } else {
+        oDetailModel.setProperty("/doc9ShowSwitchType", true);
+        oDetailModel.setProperty("/doc9ActionBtnText", "Sync");
+      }
+
+      oDetailModel.setProperty("/doc9SelectedDocId", oDoc.docId || null);
+
+      this.onDoc9LoadFiles(oDoc.docId);
+
+      var oView = this.getView();
+      var bIsATT = oDoc.type === "ATT";
+      var oUnlinkBtn = oView.byId("unlinkBtn9");
+      if (oUnlinkBtn) { oUnlinkBtn.setEnabled(!bIsATT || !!oDoc.isLinked); }
+      var oCreateBtn = oView.byId("doc9CreateBtn");
+      if (oCreateBtn) { oCreateBtn.setEnabled(bIsATT); }
+      ["doc9EditBtn", "doc9DownBtn", "doc9DeleteBtn", "doc9MoveBtn", "doc9CopyBtn", "doc9ManageBtn"].forEach(function (sId) {
+        var oBtn = oView.byId(sId);
+        if (oBtn) { oBtn.setEnabled(false); }
+      });
+      var oAttTable = oView.byId("doc9AttTable");
+      if (oAttTable) {
+        if (bIsATT) {
+          oAttTable.setMode("MultiSelect");
+          oAttTable.getItems().forEach(function (oItem) { oItem.setType("Active"); oItem.setEnabled(true); });
+        } else {
+          oAttTable.setMode("MultiSelect");
+          oAttTable.getItems().forEach(function (oItem) { oItem.setEnabled(false); });
+        }
+      }
+    },
+
+    onDoc9LoadFiles: function (sDocId) {
+      var oView = this.getView();
+      var oDetailModel = oView.getModel("detail");
+      var oLeftTable = oView.byId("doc9DocTable");
+
+      if (!sDocId) {
+        var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
+        sDocId = oSelected ? oSelected.getBindingContext("detail").getProperty("docId") : null;
+      }
+
+      var mFiles = {
+        "100000000913": [
+          { typeIcon: "sap-icon://pdf-attachment", name: "ATT-Technical-Spec.pdf",         docNumber: "100000000181", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
+          { typeIcon: "sap-icon://document",        name: "ATT-Assembly-Guide.docx",        docNumber: "100000000182", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
+          { typeIcon: "sap-icon://document",        name: "ATT-Test-Report.xlsx",           docNumber: "100000000183", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+        ],
+        "200000002010": [
+          { typeIcon: "sap-icon://pdf-attachment", name: "Surface-Treatment-Spec.pdf",    docNumber: "100000000191", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Coating-Process-Guide.docx",    docNumber: "100000000192", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Test-Result-Aug2026.xlsx",      docNumber: "100000000193", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+        ],
+        "200000002020": [
+          { typeIcon: "sap-icon://document",        name: "Gearbox-Housing-Drawing.dwg",   docNumber: "100000000201", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "205 KB" },
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Assembly-Instruction-v3.pdf",   docNumber: "100000000202", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "124 KB" },
+          { typeIcon: "sap-icon://document",        name: "Tolerance-Table.xlsx",          docNumber: "100000000203", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "32 KB"  },
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Change-Notice-CN-0051.pdf",     docNumber: "100000000204", modifiedOn: "Aug 7, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+        ],
+        "200000002030": [
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Frame-Welding-Procedure.pdf",   docNumber: "100000000211", modifiedOn: "Aug 12, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "512 KB" },
+          { typeIcon: "sap-icon://document",        name: "Weld-Inspection-Report.docx",   docNumber: "100000000212", modifiedOn: "Aug 11, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "67 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Material-Certificate.xlsx",     docNumber: "100000000213", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "28 KB"  },
+          { typeIcon: "sap-icon://pdf-attachment",  name: "Quality-Control-Checklist.pdf", docNumber: "100000000214", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "45 KB"  },
+          { typeIcon: "sap-icon://document",        name: "Revision-History.docx",         docNumber: "100000000215", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "12 KB"  }
+        ]
+      };
+
+      var aAtts = mFiles[sDocId] || mFiles["200000002010"];
+      oDetailModel.setProperty("/doc9Attachments", aAtts);
+      oDetailModel.setProperty("/doc9AttLoaded", true);
+      oDetailModel.setProperty("/doc9HasData", true);
+      if (!oDetailModel.getProperty("/doc9EverLoaded")) {
+        setTimeout(function () {
+          var aItems = oLeftTable.getItems();
+          if (aItems.length > 0) {
+            oLeftTable.setSelectedItem(aItems[0], true);
+            var oFakeEvent = { getParameter: function () { return aItems[0]; }, getSource: function () { return aItems[0]; } };
+            this.onDoc9DocSelect(oFakeEvent);
+          }
+        }.bind(this), 0);
+      }
+      oDetailModel.setProperty("/doc9EverLoaded", true);
+      ["doc9CreateBtn", "doc9EditBtn", "doc9DownBtn", "doc9DeleteBtn", "doc9MoveBtn", "doc9CopyBtn", "doc9ManageBtn"].forEach(function (sId) {
+        var oBtn = oView.byId(sId);
+        if (oBtn) { oBtn.setEnabled(false); }
+      });
+    },
+
+    onDoc9Unlink: function () {
+      var oView = this.getView();
+      var oLeftTable = oView.byId("doc9DocTable");
+      var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
+      if (!oSelected) { return; }
+      var oCtx = oSelected.getBindingContext("detail");
+      var oDoc = oCtx ? oCtx.getObject() : null;
+      if (!oDoc || !oDoc.isLinked) { return; }
+      MessageToast.show("Unlink: " + oDoc.docId);
+    },
+
+    onDoc9ActionBtn: function (oEvent) {
+      var oDetailModel = this.getView().getModel("detail");
+      var sText = oDetailModel.getProperty("/doc9ActionBtnText");
+      if (sText === "Change Type") {
+        MessageToast.show("Change Type");
+      } else {
+        MessageToast.show("Sync");
+      }
+    },
+
+    onDoc9AttTableUpdated: function () {
+      var oTable = this.byId("doc9AttTable");
+      if (!oTable) { return; }
+      oTable.$().find(".docAttTypeIcon").each(function () {
+        this.style.setProperty("color", "#506D84", "important");
+        this.style.setProperty("font-size", "1.25rem", "important");
+        this.style.setProperty("width", "2.5rem", "important");
+        this.style.setProperty("height", "2.5rem", "important");
+        this.style.setProperty("line-height", "2.5rem", "important");
+        this.style.setProperty("border", "1px solid rgba(80,109,132,0.4)", "important");
+        this.style.setProperty("border-radius", "0.5rem", "important");
+        this.style.setProperty("background", "#fff", "important");
+        this.style.setProperty("box-sizing", "border-box", "important");
+        this.style.setProperty("display", "inline-flex", "important");
+        this.style.setProperty("align-items", "center", "important");
+        this.style.setProperty("justify-content", "center", "important");
+      });
+      var oDetailModel = this.getView().getModel("detail");
+      var aLeftRows = oDetailModel.getProperty("/doc9LeftRows") || [];
+      var sSelectedDocId = oDetailModel.getProperty("/doc9SelectedDocId");
+      var oSelectedDoc = aLeftRows.filter(function (r) { return r.docId === sSelectedDocId; })[0];
+      var sType = oSelectedDoc ? oSelectedDoc.type : null;
+      if (sType !== "ATT") {
+        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(false); });
+      } else {
+        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(true); });
+      }
+    },
+
+    onDoc9LinkedDocPress: function () {},
+    onDoc9Create:         function () { MessageToast.show("Create attachment"); },
+    onDoc9CreateFolder:   function () {},
+    onDoc9Upload:         function () {},
+    onDoc9CreateLink:     function () {},
+    onDoc9EditLink:       function () { MessageToast.show("Edit Link"); },
+    onDoc9Download:       function () { MessageToast.show("Download"); },
+    onDoc9Delete:         function () { MessageToast.show("Delete"); },
+    onDoc9Move:           function () { MessageToast.show("Move"); },
+    onDoc9Copy:           function () {},
+    onDoc9CheckOut:       function () {},
+    onDoc9CheckIn:        function () {},
+    onDoc9Properties:     function () {},
+    onDoc9NavUp:          function () {},
+    onDoc9Refresh:        function () { MessageToast.show("Refreshed"); },
+    onDoc9Sort:           function () {},
+    onDoc9Settings:       function () {},
+    onDoc9Search:         function () {},
+    onDoc9RowMore:        function () {},
+
+    onDoc9UploadNew: function () {
+      var oModel = this.getView().getModel("detail");
+      var aFiles = ["Body-material-steel.pdf", "Body-color-arctic-white.pdf", "Body-structure-frame.dwg"];
+      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document" };
+      var aSizes = ["18 KB", "43 KB", "96 KB"];
+      var aAtts = aFiles.map(function (sFile, i) {
+        var sExt = sFile.split(".").pop().toLowerCase();
+        return { typeIcon: aIconMap[sExt] || "sap-icon://document", name: sFile, modifiedOn: "Aug 6, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: aSizes[i % aSizes.length] };
+      });
+      oModel.setProperty("/doc9Attachments", aAtts);
+      oModel.setProperty("/doc9HasData", true);
+      MessageToast.show("File uploaded successfully");
+    },
+
+    onDoc9LeftTableSettings: function (oEvent) {
+      var oView = this.getView();
+      var oTable = oView.byId("doc9DocTable");
+      if (!oTable) { return; }
+      var oEngine = Engine.getInstance();
+      if (!this._bDoc9P13nRegistered) {
+        this._bDoc9P13nRegistered = true;
+        var oHelper = new MetadataHelper([
+          { key: "doc9ColDocument",    label: "Document",      path: "docId" },
+          { key: "doc9ColType",        label: "Type",          path: "type" },
+          { key: "doc9ColPart",        label: "Part",          path: "part" },
+          { key: "doc9ColVer",         label: "Ver.",          path: "version" },
+          { key: "doc9ColStatus",      label: "Status",        path: "status" },
+          { key: "doc9ColCategory",    label: "S4HANA Info",   path: "category" },
+          { key: "doc9ColDescription", label: "Description",   path: "description" },
+          { key: "doc9ColCreatedBy",   label: "Created By",    path: "createdBy" },
+          { key: "doc9ColChangedBy",   label: "Changed By",    path: "changedBy" },
+          { key: "doc9ColChangedOn",   label: "Changed On",    path: "changedOn" },
+          { key: "doc9ColLab",         label: "Lab/Office",    path: "lab" },
+          { key: "doc9ColChangeNo",    label: "Change Number", path: "changeNumber" }
+        ]);
+        oEngine.register(oTable, {
+          helper: oHelper,
+          controller: {
+            Columns: new SelectionController({ control: oTable, targetAggregation: "columns" })
+          }
+        });
+      }
+      oEngine.show(oTable, ["Columns"], { contentHeight: "35rem", contentWidth: "25rem", source: oEvent.getSource() });
+    },
+
     // ---- Documents 8 (mirrors Doc7) ----
     onDoc8DocSelect:      function () {},
     onDoc8AttTableUpdated: function () {
@@ -1528,6 +1746,19 @@ sap.ui.define([
         ],
         doc7StripVisible: false,
         doc7Uuid: "",
+        doc9Attachments: [],
+        doc9HasData: true,
+        doc9EverLoaded: false,
+        doc9ShowSwitchType: false,
+        doc9ActionBtnText: "Change Type",
+        doc9AttLoaded: false,
+        doc9SelectedDocId: null,
+        doc9LeftRows: [
+          { docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-",        isLinked: false, category: "Technical", description: "ATT-Document",              createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "200000002010", type: "TST", part: "000", version: "02", status: "In Work",  isLinked: false, category: "Technical", description: "Surface-Treatment-Spec",  createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "200000002020", type: "DRW", part: "001", version: "03", status: "Released", isLinked: false, category: "Technical", description: "Gearbox-Housing-Design",  createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 5, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work",  isLinked: false, category: "Technical", description: "Frame-Welding-Procedure", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 4, 2026",  lab: "LAB01", changeNumber: "" }
+        ],
         doc8Attachments: [],
         doc8HasData: false,
         doc8LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]
