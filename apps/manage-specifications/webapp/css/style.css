@@ -1177,6 +1177,9 @@ body button[id$="-cancelBtn"].sapMBarChild {
   background: var(--sapShell_Background) !important;
   background-color: var(--sapShell_Background) !important;
 }
+.doc7SplitterPanel .sapUiLoSplitterContent {
+  overflow-y: auto !important;
+}
 .doc7SplitterPanel .sapUiLoSplitterBar,
 .doc7SplitterPanel .sapUiLoSplitterBar .sapUiLoSplitterBarGrip,
 .doc7SplitterPanel > .sapUiLoSplitter > .sapUiLoSplitterBar,

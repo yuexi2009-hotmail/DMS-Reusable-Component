@@ -108,6 +108,9 @@ sap.ui.define([
       if (sKey === "documents8") {
         setTimeout(this.onDoc8SetupDragDrop.bind(this), 100);
       }
+      if (sKey === "documentsEmptyState") {
+        setTimeout(this._setupDoc9DropZone.bind(this), 100);
+      }
     },
 
     _doc4AutoSelect: function () {
@@ -1393,6 +1396,7 @@ sap.ui.define([
           var oBtn = oView.byId(sId);
           if (oBtn) { oBtn.setEnabled(false); }
         });
+        this._setupDoc9DropZone();
       }.bind(this), 0);
     },
 
@@ -1444,12 +1448,56 @@ sap.ui.define([
       } else {
         oTable.getItems().forEach(function (oItem) { oItem.setEnabled(true); });
       }
+      this._setupDoc9DropZone();
     },
 
     onDoc9LinkedDocPress: function () {},
     onDoc9Create:         function () { MessageToast.show("Create attachment"); },
     onDoc9CreateFolder:   function () {},
     onDoc9Upload:         function () {},
+
+    _setupDoc9DropZone: function () {
+      if (this._doc9DropBound) { return; }
+      var oView = this.getView();
+      var oModel = oView.getModel("detail");
+
+      // Use the splitter DOM — covers both toolbar and noData area
+      var oSplitter = oView.byId("doc9Splitter");
+      var oDom = oSplitter ? oSplitter.getDomRef() : null;
+      if (!oDom) { return; }
+
+      this._doc9DropBound = true;
+
+      var aIconMap = { "pdf": "sap-icon://pdf-attachment", "dwg": "sap-icon://document", "xlsx": "sap-icon://excel-attachment", "doc": "sap-icon://doc-attachment", "docx": "sap-icon://doc-attachment" };
+
+      this._doc9DragOver = function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      };
+      this._doc9Drop = function (e) {
+        e.preventDefault();
+        var aFiles = Array.from(e.dataTransfer.files);
+        if (!aFiles.length) { return; }
+        var aExisting = oModel.getProperty("/doc9Attachments") || [];
+        var aNew = aFiles.map(function (oFile) {
+          var sExt = oFile.name.split(".").pop().toLowerCase();
+          var sSizeKB = Math.round(oFile.size / 1024) || 1;
+          return {
+            typeIcon:   aIconMap[sExt] || "sap-icon://document",
+            name:       oFile.name,
+            modifiedOn: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            createdBy:  "yue.xi01@sap.com",
+            modifiedBy: "yue.xi01@sap.com",
+            size:       sSizeKB + " KB"
+          };
+        });
+        oModel.setProperty("/doc9Attachments", aExisting.concat(aNew));
+        MessageToast.show(aNew.length + " file(s) uploaded");
+      };
+
+      oDom.addEventListener("dragover", this._doc9DragOver);
+      oDom.addEventListener("drop", this._doc9Drop);
+    },
     onDoc9CreateLink:     function () {},
     onDoc9EditLink:       function () { MessageToast.show("Edit Link"); },
     onDoc9Download:       function () { MessageToast.show("Download"); },

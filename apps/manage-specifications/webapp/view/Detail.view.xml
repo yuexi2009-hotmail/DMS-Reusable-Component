@@ -633,6 +633,7 @@
                           mode="MultiSelect"
                           growing="true"
                           growingThreshold="10"
+                          sticky="ColumnHeaders,HeaderToolbar"
                           class="sapUiSizeCompact doc9AttTable"
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
