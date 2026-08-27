@@ -1044,6 +1044,7 @@ sap.ui.define([
     },
 
     onDoc7Create:         function () { MessageToast.show("Create attachment"); },
+    onDoc7CreateDefault:  function () {},
     onDoc7CreateFolder:   function () {},
     onDoc7Upload:         function () {},
     onDoc7CreateLink:     function () {},

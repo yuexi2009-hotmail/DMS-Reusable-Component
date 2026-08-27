@@ -854,7 +854,7 @@
                               <Text id="doc7LeftCount" text="({= ${detail>/doc7LeftRows}.length})" class="doc7LeftCount" />
                               <ToolbarSpacer />
                               <SearchField width="12rem" placeholder="Search" class="doc7LeftSearch" />
-                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7LeftTableSettings" />
+                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7LeftTableSettings" class="sapUiTinyMarginBegin" />
                             </OverflowToolbar>
                           </headerToolbar>
                           <columns>
@@ -908,7 +908,7 @@
                           noDataText="No items"
                           growing="true"
                           growingThreshold="10"
-                          class="sapUiSizeCompact"
+                          class="sapUiSizeCompact doc7AttTable"
                           updateFinished=".onDoc7AttTableUpdated">
                           <headerToolbar>
                             <OverflowToolbar class="doc7RightToolbar">
