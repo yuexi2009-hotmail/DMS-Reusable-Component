@@ -1137,12 +1137,14 @@ body button[id$="-cancelBtn"].sapMBarChild {
   pointer-events: none !important;
 }
 /* Doc7 left table — linked row: blue bold, clickable */
-.doc7DocIdLinked.sapMLnk {
+.doc7DocIdLinked.sapMLnk,
+.doc9DocIdLinked.sapMLnk {
   color: var(--sapLinkColor) !important;
   font-weight: bold !important;
   text-decoration: none !important;
 }
-.doc7DocIdLinked.sapMLnk:hover {
+.doc7DocIdLinked.sapMLnk:hover,
+.doc9DocIdLinked.sapMLnk:hover {
   text-decoration: underline !important;
   color: var(--sapLink_Hover_Color) !important;
 }

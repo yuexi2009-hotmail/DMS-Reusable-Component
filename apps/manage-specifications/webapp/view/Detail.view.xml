@@ -492,7 +492,7 @@
                       <menu>
                         <Menu>
                           <items>
-                            <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
+                            <MenuItem text="Link Existing Document" press=".onLinkExistingDoc9" />
                             <MenuItem text="Link New Document" />
                           </items>
                         </Menu>
@@ -610,7 +610,17 @@
                           <items>
                             <ColumnListItem type="Active">
                               <cells>
-                                <Text text="{detail>docId}" class="doc9DocIdBold" wrapping="false" />
+                                <HBox alignItems="Center" renderType="Bare">
+                                  <Text text="{detail>docId}"
+                                        visible="{= !${detail>isLinked} &amp;&amp; ${detail>type} === 'ATT' }"
+                                        class="doc9DocIdBold"
+                                        wrapping="false" />
+                                  <Link text="{= ${detail>isLinked} ? ${detail>docNumber} : ${detail>docId} }"
+                                        visible="{= ${detail>isLinked} || ${detail>type} !== 'ATT' }"
+                                        press=".onDoc9LinkedDocPress"
+                                        class="doc9DocIdLinked"
+                                        wrapping="false" />
+                                </HBox>
                                 <Text text="{detail>type}" wrapping="false" />
                                 <Text text="{detail>part}" wrapping="false" />
                                 <Text text="{detail>version}" wrapping="false" />
@@ -638,13 +648,15 @@
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="{= ${detail>/doc9EverLoaded} ? 'sapIllus-UploadCollection' : 'sapIllus-Tent' }"
-                              illustrationSize="{= ${detail>/doc9EverLoaded} ? 'Scene' : 'Dialog' }"
-                              title="{= ${detail>/doc9EverLoaded} ? 'Drag and drop documents here to upload them.' : 'Click &quot;Load Files&quot; to load documents.' }"
-                              description="{= ${detail>/doc9EverLoaded} ? 'Click Upload new or drag files here.' : 'Select a document row or click Load Files below.' }">
+                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : ${detail>/doc9RightState} === 'noFiles' ? 'sapIllus-EmptyList' : 'sapIllus-Tent' }"
+                              illustrationSize="{= ${detail>/doc9RightState} === 'upload' ? 'Scene' : 'Dialog' }"
+                              title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : ${detail>/doc9RightState} === 'noFiles' ? 'No files found.' : 'Click &quot;Load Files&quot; to load documents.' }"
+                              description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : ${detail>/doc9RightState} === 'noFiles' ? 'Go to Document Management to upload and manage files.' : 'Select a document row or click Load Files below.' }">
                               <additionalContent>
                                 <Button text="Load Files" type="Default" press=".onDoc9LoadFiles"
-                                  visible="{= !${detail>/doc9EverLoaded} }" />
+                                  visible="{= ${detail>/doc9RightState} === 'initial' }" />
+                                <Button text="Navigate to DMS" type="Default" press=".onDoc9NavigateToDMS"
+                                  visible="{= ${detail>/doc9RightState} === 'noFiles' }" />
                               </additionalContent>
                             </IllustratedMessage>
                           </noData>
