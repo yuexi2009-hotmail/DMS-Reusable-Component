@@ -917,9 +917,9 @@ sap.ui.define([
       // get current type of selected left-table row
       var oTable = oView.byId("doc7DocTable");
       var oSelected = oTable ? oTable.getSelectedItem() : null;
-      var sCurrentType = oSelected ? (oSelected.getBindingContext("detail").getProperty("type") || "ATT") : "ATT";
+      var sCurrentType = oSelected ? (oSelected.getBindingContext("detail").getProperty("type") || "DFT") : "DFT";
 
-      var aTypes = ["ATT", "DFT", "DRW", "TST", "IMU"];
+      var aTypes = ["DFT", "DRW", "TST", "IMU"];
       var iSelected = Math.max(aTypes.indexOf(sCurrentType), 0);
 
       if (!this._oSwitchTypeDialog) {
@@ -930,25 +930,24 @@ sap.ui.define([
         }).then(function (oDialog) {
           oView.addDependent(oDialog);
           that._oSwitchTypeDialog = oDialog;
-          var oGroup = Fragment.byId(oView.getId(), "switchTypeRBGroup");
-          if (oGroup) { oGroup.setSelectedIndex(iSelected); }
+          var oSelect = Fragment.byId(oView.getId(), "switchTypeSelect");
+          if (oSelect) { oSelect.setSelectedItem(oSelect.getItems()[iSelected]); }
           oDialog.open();
         }).catch(function (oErr) {
           MessageToast.show("Error: " + oErr.message);
         });
       } else {
-        var oGroup = Fragment.byId(oView.getId(), "switchTypeRBGroup");
-        if (oGroup) { oGroup.setSelectedIndex(iSelected); }
+        var oSelect = Fragment.byId(oView.getId(), "switchTypeSelect");
+        if (oSelect) { oSelect.setSelectedItem(oSelect.getItems()[iSelected]); }
         this._oSwitchTypeDialog.open();
       }
     },
 
     onSwitchTypeConfirm: function () {
       var oView = this.getView();
-      var oGroup = Fragment.byId(oView.getId(), "switchTypeRBGroup");
-      if (oGroup) {
-        var aTypes = ["ATT", "DFT", "DRW", "TST", "IMU"];
-        var sNewType = aTypes[oGroup.getSelectedIndex()] || "ATT";
+      var oSelect = Fragment.byId(oView.getId(), "switchTypeSelect");
+      if (oSelect) {
+        var sNewType = oSelect.getSelectedKey() || "DFT";
 
         var oTable = oView.byId("doc7DocTable");
         var oSelected = oTable ? oTable.getSelectedItem() : null;
@@ -956,9 +955,7 @@ sap.ui.define([
           var oCtx = oSelected.getBindingContext("detail");
           var oDetailModel = oView.getModel("detail");
           oDetailModel.setProperty(oCtx.getPath() + "/type", sNewType);
-          if (sNewType !== "ATT") {
-            oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
-          }
+          oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
         }
       }
       if (this._oSwitchTypeDialog) { this._oSwitchTypeDialog.close(); }

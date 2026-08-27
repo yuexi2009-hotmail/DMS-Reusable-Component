@@ -17,14 +17,13 @@
           type="Warning"
           showIcon="true"
           class="sapUiSmallMarginBottom" />
-        <Label text="Document Type:" class="doc7SwitchTypeLabel" />
-        <RadioButtonGroup id="switchTypeRBGroup" columns="1">
-          <RadioButton id="switchTypeRB_ATT" text="ATT" />
-          <RadioButton id="switchTypeRB_DFT" text="DFT" />
-          <RadioButton id="switchTypeRB_DRW" text="DRW" />
-          <RadioButton id="switchTypeRB_TST" text="TST" />
-          <RadioButton id="switchTypeRB_IMU" text="IMU" />
-        </RadioButtonGroup>
+        <Label text="Document Type:" labelFor="switchTypeSelect" class="doc7SwitchTypeLabel" />
+        <Select id="switchTypeSelect" width="100%">
+          <core:Item key="DFT" text="DFT" />
+          <core:Item key="DRW" text="DRW" />
+          <core:Item key="TST" text="TST" />
+          <core:Item key="IMU" text="IMU" />
+        </Select>
       </VBox>
     </content>
 
