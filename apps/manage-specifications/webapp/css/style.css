@@ -1227,6 +1227,12 @@ body button[id$="-cancelBtn"].sapMBarChild {
 .doc7LeftToolbar.sapMOTB {
   background: #fff !important;
 }
+.doc7SettingsBtn.sapMBtn {
+  margin-left: 12px !important;
+}
+.doc7LeftSearch.sapMBarChild {
+  margin-right: 8px !important;
+}
 .doc7LeftTitle.sapMTitle .sapMTitleStyleH4 {
   font-weight: bold !important;
 }
@@ -1240,4 +1246,18 @@ body button[id$="-cancelBtn"].sapMBarChild {
 #doc7CreateEmpty .sapMBtnInner {
   min-width: 5rem !important;
   white-space: nowrap !important;
+}
+
+.doc7SwitchTypeLabel.sapMLabel {
+  height: 24px !important;
+  line-height: 24px !important;
+}
+.doc7SwitchTypeLabel.sapMFlexItem,
+div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
+  height: 24px !important;
+  max-height: 24px !important;
+}
+
+.unlinkMsgBox .sapMDialogFooter .sapMBtn + .sapMBtn {
+  margin-left: 0.5rem !important;
 }

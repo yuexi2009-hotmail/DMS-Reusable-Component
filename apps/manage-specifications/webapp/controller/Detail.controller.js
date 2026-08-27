@@ -981,28 +981,38 @@ sap.ui.define([
       var oDoc = oCtx ? oCtx.getObject() : null;
       if (!oDoc || !oDoc.isLinked) { return; }
 
-      var oDetailModel = oView.getModel("detail");
-      var sDocNumber = oDoc.docNumber;
+      this._sDoc7UnlinkDocNumber = oDoc.docNumber;
+      var that = this;
 
-      MessageBox.confirm(
-        "Do you want to unlink the selected document(s)? They will remain saved in the system.",
-        {
-          title: "Unlink",
-          actions: ["Unlink", MessageBox.Action.CANCEL],
-          emphasizedAction: "Unlink",
-          onClose: function (sAction) {
-            if (sAction !== "Unlink") { return; }
-            var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
-            aLeftRows = aLeftRows.filter(function (r) { return r.docNumber !== sDocNumber; });
-            oDetailModel.setProperty("/doc7LeftRows", aLeftRows);
-            oDetailModel.setProperty("/doc7Attachments", []);
-            oDetailModel.setProperty("/doc7ShowSwitchType", false);
-            var oUnlinkBtn = oView.byId("unlinkBtn7");
-            if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
-            MessageToast.show("Document unlinked");
-          }
-        }
-      );
+      if (!this._oUnlinkDialog) {
+        Fragment.load({ id: oView.getId(), name: "com.sap.demo.managespec.view.UnlinkDialog", controller: this })
+          .then(function (oDialog) {
+            that._oUnlinkDialog = oDialog;
+            oView.addDependent(oDialog);
+            oDialog.open();
+          });
+      } else {
+        this._oUnlinkDialog.open();
+      }
+    },
+
+    onDoc7UnlinkConfirm: function () {
+      var oView = this.getView();
+      var oDetailModel = oView.getModel("detail");
+      var sDocNumber = this._sDoc7UnlinkDocNumber;
+      var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+      aLeftRows = aLeftRows.filter(function (r) { return r.docNumber !== sDocNumber; });
+      oDetailModel.setProperty("/doc7LeftRows", aLeftRows);
+      oDetailModel.setProperty("/doc7Attachments", []);
+      oDetailModel.setProperty("/doc7ShowSwitchType", false);
+      var oUnlinkBtn = oView.byId("unlinkBtn7");
+      if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
+      this._oUnlinkDialog.close();
+      MessageToast.show("Document unlinked");
+    },
+
+    onDoc7UnlinkCancel: function () {
+      if (this._oUnlinkDialog) { this._oUnlinkDialog.close(); }
     },
 
     onDoc7AttSelect: function () {

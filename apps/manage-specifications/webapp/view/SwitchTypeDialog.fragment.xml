@@ -17,6 +17,7 @@
           type="Warning"
           showIcon="true"
           class="sapUiSmallMarginBottom" />
+        <Label text="Document Type:" class="doc7SwitchTypeLabel" />
         <RadioButtonGroup id="switchTypeRBGroup" columns="1">
           <RadioButton id="switchTypeRB_ATT" text="ATT" />
           <RadioButton id="switchTypeRB_DFT" text="DFT" />
@@ -28,10 +29,10 @@
     </content>
 
     <beginButton>
-      <Button text="OK" type="Emphasized" press=".onSwitchTypeConfirm" class="sapUiSizeCompact" />
+      <Button text="OK" type="Emphasized" press=".onSwitchTypeConfirm" width="auto" />
     </beginButton>
     <endButton>
-      <Button text="Cancel" press=".onSwitchTypeCancel" class="sapUiSizeCompact" />
+      <Button text="Cancel" press=".onSwitchTypeCancel" width="auto" />
     </endButton>
 
   </Dialog>
