@@ -555,10 +555,14 @@
                       </columns>
                       <noData>
                         <IllustratedMessage
-                          illustrationType="sapIllus-UploadCollection"
-                          illustrationSize="Scene"
-                          title='Click "Upload new" and then drag and drop documents here to upload them.'
-                          description="Drag and drop documents here to upload." />
+                          illustrationType="sapIllus-Tent"
+                          illustrationSize="Dialog"
+                          title='Click "Load Files" to load documents.'
+                          description="Select a document row or click Load Files below.">
+                          <additionalContent>
+                            <Button text="Load Files" type="Default" press=".onDoc9LoadFiles" />
+                          </additionalContent>
+                        </IllustratedMessage>
                       </noData>
                     </Table>
                   </VBox>
@@ -643,13 +647,13 @@
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="sapIllus-Tent"
-                              illustrationSize="Dialog"
-                              title='Click "Load Files" to load documents.'
-                              description="Select a document row or click Load Files below."
-                              visible="{= !${detail>/doc9AttLoaded} }">
+                              illustrationType="{= ${detail>/doc9EverLoaded} ? 'sapIllus-UploadCollection' : 'sapIllus-Tent' }"
+                              illustrationSize="{= ${detail>/doc9EverLoaded} ? 'Scene' : 'Dialog' }"
+                              title="{= ${detail>/doc9EverLoaded} ? 'Drag and drop documents here to upload them.' : 'Click &quot;Load Files&quot; to load documents.' }"
+                              description="{= ${detail>/doc9EverLoaded} ? 'Click Upload new or drag files here.' : 'Select a document row or click Load Files below.' }">
                               <additionalContent>
-                                <Button text="Load Files" type="Default" press=".onDoc9LoadFiles" />
+                                <Button text="Load Files" type="Default" press=".onDoc9LoadFiles"
+                                  visible="{= !${detail>/doc9EverLoaded} }" />
                               </additionalContent>
                             </IllustratedMessage>
                           </noData>
