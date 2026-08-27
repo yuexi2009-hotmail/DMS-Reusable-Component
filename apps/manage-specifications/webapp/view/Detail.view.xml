@@ -649,7 +649,7 @@
                           <noData>
                             <IllustratedMessage
                               illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : ${detail>/doc9RightState} === 'noFiles' ? 'sapIllus-EmptyList' : 'sapIllus-Tent' }"
-                              illustrationSize="{= ${detail>/doc9RightState} === 'upload' ? 'Scene' : 'Dialog' }"
+                              illustrationSize="Dialog"
                               title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : ${detail>/doc9RightState} === 'noFiles' ? 'No files found.' : 'Click &quot;Load Files&quot; to load documents.' }"
                               description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : ${detail>/doc9RightState} === 'noFiles' ? 'Go to Document Management to upload and manage files.' : 'Select a document row or click Load Files below.' }">
                               <additionalContent>
