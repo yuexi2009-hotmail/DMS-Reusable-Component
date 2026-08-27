@@ -1022,6 +1022,14 @@ body button[id$="-cancelBtn"].sapMBarChild {
   padding-bottom: 0.25rem !important;
 }
 .doc7DocCell.sapMVBox { gap: 0 !important; }
+
+/* Horizontal scroll: only table body scrolls, toolbar stays fixed */
+#doc7PaneLeft .sapMListTblWrapper {
+  overflow-x: auto !important;
+}
+#doc7PaneLeft .sapMListTbl {
+  min-width: max-content !important;
+}
 .doc7DocCell .detailDocNumber.sapMText { line-height: 1.25rem !important; }
 .doc7DocCell .detailDocMeta.sapMText {
   line-height: 1rem !important;
