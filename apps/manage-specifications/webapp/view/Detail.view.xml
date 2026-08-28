@@ -398,6 +398,16 @@
                                 <Button text="Load Files" type="Default" press=".onDoc7LoadFiles" />
                               </additionalContent>
                             </IllustratedMessage>
+                            <IllustratedMessage
+                              illustrationType="sapIllus-NoSavedItems"
+                              illustrationSize="Dialog"
+                              title="No files found."
+                              description="Go to Document Management to upload and manage files."
+                              visible="{= ${detail>/doc7AttLoaded} &amp;&amp; ${detail>/doc7Attachments}.length === 0 }">
+                              <additionalContent>
+                                <Button text="Navigate to DMS" type="Default" press=".onDoc7NavigateToDMS" />
+                              </additionalContent>
+                            </IllustratedMessage>
                           </noData>
                           <headerToolbar>
                             <OverflowToolbar class="doc7RightToolbar">
@@ -612,7 +622,7 @@
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-NoTasks' }"
+                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-NoSavedItems' }"
                               illustrationSize="Dialog"
                               title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : 'No files found.' }"
                               description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : 'Go to Document Management to upload and manage files.' }">

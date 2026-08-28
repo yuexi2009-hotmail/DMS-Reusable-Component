@@ -565,6 +565,12 @@ sap.ui.define([
     onLinkExistingDoc3: function () {
       this._doc3LinkCaller = this._doc3LinkCaller || "doc7";
       var oView = this.getView();
+      var oDetailModel = oView.getModel("detail");
+      var sPrefix = this._doc3LinkCaller === "doc9" ? "doc9" : "doc7";
+      var aLeftRows = oDetailModel.getProperty("/" + sPrefix + "LeftRows") || [];
+      var oLinkedSet = {};
+      aLeftRows.forEach(function (r) { oLinkedSet[r.docId] = true; });
+
       var aDocuments = [
         { description: "Valve-Assembly-2026",     docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
         { description: "Surface-Treatment-Spec",  docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
@@ -580,8 +586,11 @@ sap.ui.define([
         { description: "Electrical-Wiring-Spec",  docNumber: "200000002110", type: "DFT", part: "000", version: "03", status: "Released" },
         { description: "Cable-Routing-Diagram",   docNumber: "200000002120", type: "DRW", part: "000", version: "01", status: "New" },
         { description: "Sensor-Calibration-Proc", docNumber: "200000002130", type: "TST", part: "000", version: "02", status: "In Work" },
-        { description: "Control-Panel-Layout",    docNumber: "200000002140", type: "DFT", part: "000", version: "01", status: "Released" }
-      ];
+        { description: "Control-Panel-Layout",    docNumber: "200000002140", type: "DFT", part: "000", version: "01", status: "Released" },
+        { description: "Empty-Doc-No-Files",      docNumber: "200000002150", type: "DFT", part: "000", version: "01", status: "New" }
+      ].map(function (d) {
+        return Object.assign({}, d, { alreadyLinked: !!oLinkedSet[d.docNumber] });
+      });
 
       this._oLinkDoc3AllDocs = aDocuments;
 
@@ -603,6 +612,17 @@ sap.ui.define([
         oDialog.setModel(oModel, "linkDoc3");
         that._oLinkDoc3Dialog = oDialog;
         oDialog.open();
+      });
+    },
+
+    onLinkDoc3RowSelectionChange: function (oEvent) {
+      var oTable = oEvent.getSource();
+      var aIndices = oTable.getSelectedIndices();
+      aIndices.forEach(function (iIndex) {
+        var oCtx = oTable.getContextByIndex(iIndex);
+        if (oCtx && oCtx.getProperty("alreadyLinked")) {
+          oTable.removeSelectionInterval(iIndex, iIndex);
+        }
       });
     },
 
@@ -1041,13 +1061,7 @@ sap.ui.define([
           { typeIcon: "sap-icon://document",        name: "Tolerance-Table.xlsx",          docNumber: "100000000203", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "32 KB"  },
           { typeIcon: "sap-icon://pdf-attachment",  name: "Change-Notice-CN-0051.pdf",     docNumber: "100000000204", modifiedOn: "Aug 7, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
         ],
-        "200000002030": [
-          { typeIcon: "sap-icon://pdf-attachment",  name: "Frame-Welding-Procedure.pdf",   docNumber: "100000000211", modifiedOn: "Aug 12, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "512 KB" },
-          { typeIcon: "sap-icon://document",        name: "Weld-Inspection-Report.docx",   docNumber: "100000000212", modifiedOn: "Aug 11, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "67 KB"  },
-          { typeIcon: "sap-icon://document",        name: "Material-Certificate.xlsx",     docNumber: "100000000213", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "28 KB"  },
-          { typeIcon: "sap-icon://pdf-attachment",  name: "Quality-Control-Checklist.pdf", docNumber: "100000000214", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "45 KB"  },
-          { typeIcon: "sap-icon://document",        name: "Revision-History.docx",         docNumber: "100000000215", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "12 KB"  }
-        ]
+        "200000002030": []
       };
 
       // fallback to first doc's files if no row selected
