@@ -1401,7 +1401,15 @@ sap.ui.define([
         oDetailModel.setProperty("/doc9RightState", "upload");
         setTimeout(function () {
           var aItems = oLeftTable ? oLeftTable.getItems() : [];
-          if (aItems.length > 0) { oLeftTable.setSelectedItem(aItems[0], true); }
+          if (aItems.length > 0) {
+            oLeftTable.setSelectedItem(aItems[0], true);
+            var oCtx = aItems[0].getBindingContext("detail");
+            if (oCtx) {
+              var oDoc = oCtx.getObject();
+              oDetailModel.setProperty("/doc9ShowSwitchType", true);
+              oDetailModel.setProperty("/doc9ActionBtnText", oDoc.isLinked ? "Sync" : oDoc.type === "ATT" ? "Change Type" : "Sync");
+            }
+          }
           this._setupDoc9DropZone();
         }.bind(this), 0);
         var oCreateBtn = oView.byId("doc9CreateBtn");

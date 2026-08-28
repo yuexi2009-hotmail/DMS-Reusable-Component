@@ -478,60 +478,26 @@
                 <VBox class="doc9TabContent">
                   <!-- Title toolbar always visible -->
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Title text="Documents ({= ${detail>/documentsFlat}.length})" level="H4" />
+                    <Title text="Documents" level="H4" />
                     <ToolbarSpacer />
-                    <MenuButton text="Add" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                    <Button text="{detail>/doc9ActionBtnText}" type="Transparent" visible="{detail>/doc9ShowSwitchType}" press=".onDoc9ActionBtn" />
+                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
                           <items>
-                            <MenuItem text="Add Existing" press=".onLinkExistingDoc9" />
-                            <MenuItem text="Add New Document" />
+                            <MenuItem text="Link Existing" press=".onLinkExistingDoc9" />
+                            <MenuItem text="Link New" />
                           </items>
                         </Menu>
                       </menu>
                     </MenuButton>
-                    <Button id="unlinkBtn9" text="Remove" type="Transparent" enabled="false" press=".onDoc9Unlink" />
+                    <Button id="unlinkBtn9" text="Unlink" type="Transparent" enabled="false" press=".onDoc9Unlink" />
                   </Toolbar>
 
                   <!-- Empty state: full-width table + illustration inside noData (default) -->
                   <VBox id="doc9DropZone" visible="{= !${detail>/doc9HasData} }" class="doc9DropZone">
                     <Table id="doc9AttTableEmpty"
                       class="sapUiSizeCompact doc9AttTableEmpty">
-                      <headerToolbar>
-                        <OverflowToolbar class="doc9EmptyToolbar">
-                          <VariantManagement id="doc9AttVMEmpty" selectedKey="standard">
-                            <VariantItem key="standard" text="Standard" />
-                          </VariantManagement>
-                          <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
-                          <ToolbarSpacer />
-                          <SearchField width="15rem" placeholder="Search" />
-                          <MenuButton id="doc9CreateEmpty" text="Create" type="Emphasized" menuPosition="BeginBottom">
-                            <layoutData><OverflowToolbarLayoutData priority="NeverOverflow" /></layoutData>
-                            <menu>
-                              <Menu itemSelected=".onDoc9MenuItemSelected">
-                                <MenuItem text="Document" icon="sap-icon://document">
-                                  <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc9UploadNew" />
-                                </MenuItem>
-                                <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc9CreateLink" />
-                              </Menu>
-                            </menu>
-                          </MenuButton>
-                          <Button id="doc9EditBtnE" text="Edit Link" type="Transparent" enabled="false" />
-                          <Button id="doc9DownBtnE" text="Download" type="Transparent" enabled="false" />
-                          <Button id="doc9DeleteBtnE" text="Delete" type="Transparent" enabled="false" />
-                          <MenuButton text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
-                            <menu><Menu><items>
-                              <MenuItem text="Check Out" />
-                              <MenuItem text="Check In" />
-                              <MenuItem text="Properties" />
-                            </items></Menu></menu>
-                          </MenuButton>
-                          <Button icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" />
-                          <Button icon="sap-icon://refresh"            type="Transparent" tooltip="Refresh" press=".onDoc9Refresh" />
-                          <Button icon="sap-icon://sort"               type="Transparent" tooltip="Sort" />
-                          <Button icon="sap-icon://action-settings"    type="Transparent" tooltip="Settings" />
-                        </OverflowToolbar>
-                      </headerToolbar>
                       <columns>
                         <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
                         <Column><Text text="Name" /></Column>
@@ -566,7 +532,7 @@
                           id="doc9DocTable"
                           items="{detail>/doc9LeftRows}"
                           mode="SingleSelectMaster"
-                          noDataText="No documents"
+                          noDataText="{= ${detail>/doc9EverLoaded} ? 'No documents' : '' }"
                           selectionChange=".onDoc9DocSelect"
                           itemPress=".onDoc9DocSelect"
                           class="sapUiSizeCompact detailTable doc9DocTable"
@@ -576,8 +542,6 @@
                               <Title text="Items" level="H4" class="doc9LeftTitle" />
                               <Text id="doc9LeftCount" text="({= ${detail>/doc9LeftRows}.length})" class="doc9LeftCount" />
                               <ToolbarSpacer />
-                              <SearchField width="12rem" placeholder="Search" class="doc9LeftSearch" />
-                              <Button id="doc9SwitchTypeBtn" text="{detail>/doc9ActionBtnText}" type="Transparent" visible="{detail>/doc9ShowSwitchType}" press=".onDoc9ActionBtn" />
                               <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc9LeftTableSettings" class="doc9SettingsBtn" />
                             </OverflowToolbar>
                           </headerToolbar>
@@ -596,7 +560,7 @@
                             <Column id="doc9ColChangeNo" width="8rem" visible="false"><Text text="Change Number" /></Column>
                           </columns>
                           <items>
-                            <ColumnListItem type="Active">
+                            <ColumnListItem type="Active" visible="{detail>/doc9EverLoaded}">
                               <cells>
                                 <HBox alignItems="Center" renderType="Bare">
                                   <Text text="{detail>docId}"
@@ -626,7 +590,20 @@
                         </Table>
                       </l:SplitPane>
                       <l:SplitPane id="doc9PaneRight" requiredParentWidth="300">
+                        <VBox class="doc9RightPane" height="100%">
+                        <!-- initial state: full illustration only, no table chrome -->
+                        <IllustratedMessage
+                          visible="{= ${detail>/doc9RightState} === 'initial' }"
+                          illustrationType="sapIllus-Tent"
+                          illustrationSize="Dialog"
+                          title='Click "Load Files" to load documents.'
+                          description="Select a document row or click Load Files below.">
+                          <additionalContent>
+                            <Button text="Load Files" type="Default" press=".onDoc9LoadFiles" />
+                          </additionalContent>
+                        </IllustratedMessage>
                         <Table id="doc9AttTable"
+                          visible="{= ${detail>/doc9RightState} !== 'initial' }"
                           items="{detail>/doc9Attachments}"
                           mode="MultiSelect"
                           growing="true"
@@ -636,20 +613,18 @@
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : ${detail>/doc9RightState} === 'noFiles' ? 'sapIllus-EmptyList' : 'sapIllus-Tent' }"
+                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-EmptyList' }"
                               illustrationSize="Dialog"
-                              title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : ${detail>/doc9RightState} === 'noFiles' ? 'No files found.' : 'Click &quot;Load Files&quot; to load documents.' }"
-                              description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : ${detail>/doc9RightState} === 'noFiles' ? 'Go to Document Management to upload and manage files.' : 'Select a document row or click Load Files below.' }">
+                              title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : 'No files found.' }"
+                              description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : 'Go to Document Management to upload and manage files.' }">
                               <additionalContent>
-                                <Button text="Load Files" type="Default" press=".onDoc9LoadFiles"
-                                  visible="{= ${detail>/doc9RightState} === 'initial' }" />
                                 <Button text="Navigate to DMS" type="Default" press=".onDoc9NavigateToDMS"
                                   visible="{= ${detail>/doc9RightState} === 'noFiles' }" />
                               </additionalContent>
                             </IllustratedMessage>
                           </noData>
                           <headerToolbar>
-                            <OverflowToolbar class="doc9RightToolbar">
+                            <OverflowToolbar class="doc9RightToolbar" visible="{= ${detail>/doc9RightState} !== 'initial' }">
                               <VariantManagement id="doc9AttVM" selectedKey="standard">
                                 <VariantItem key="standard" text="Standard" />
                               </VariantManagement>
@@ -716,6 +691,7 @@
                             </ColumnListItem>
                           </items>
                         </Table>
+                        </VBox>
                       </l:SplitPane>
                     </l:PaneContainer>
                   </l:ResponsiveSplitter>

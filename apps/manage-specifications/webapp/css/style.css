@@ -1,5 +1,20 @@
 /* Manage Specifications — app styles (SAP design tokens only) */
 
+/* doc9 right pane: stretch to fill height */
+.doc9RightPane {
+  height: 100%;
+}
+/* initial IllustratedMessage: constrain height so splitter doesn't stretch */
+.doc9RightPane > .sapMIllustratedMessage {
+  max-height: 320px;
+}
+/* fix Load Files button text vertical alignment in IllustratedMessage */
+.doc9RightPane .sapMIllustratedMessageAdditionalContent .sapMBtn .sapMBtnInner {
+  line-height: normal;
+  display: flex;
+  align-items: center;
+}
+
 /* Shell + App stack: App fills remaining height below ShellBar */
 .manageSpecApp {
   height: 100%;
@@ -1109,6 +1124,7 @@ body button[id$="-cancelBtn"].sapMBarChild {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-bottom: 24px;
 }
 .doc7Splitter {
   flex: 1;
@@ -1253,4 +1269,11 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 
 .unlinkMsgBox .sapMDialogFooter .sapMBtn + .sapMBtn {
   margin-left: 0.5rem !important;
+}
+
+/* doc9 splitter height override — must be after .doc7SplitterPanel rule */
+.doc9Splitter,
+.doc9Splitter .sapUiResponsiveSplitterPage,
+.doc9Splitter .sapUiLoSplitter {
+  height: 400px !important;
 }
