@@ -990,6 +990,15 @@ sap.ui.define([
             // Show files if any, otherwise show empty state with Navigate to DMS
             var aFiles = oDetailModel.getProperty("/doc9Attachments") || [];
             oDetailModel.setProperty("/doc9RightState", aFiles.length > 0 ? "upload" : "noFiles");
+          } else {
+            // doc7: disable all right-side toolbar actions, enable Unlink
+            ["doc7CreateBtn", "doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn",
+             "doc7MoveBtn", "doc7CopyBtn", "doc7ManageBtn"].forEach(function (sId) {
+              var oBtn = oView.byId(sId);
+              if (oBtn) { oBtn.setEnabled(false); }
+            });
+            var oUnlinkBtn = oView.byId("unlinkBtn7");
+            if (oUnlinkBtn) { oUnlinkBtn.setEnabled(true); }
           }
         }
       }
