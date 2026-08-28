@@ -237,14 +237,15 @@
                 <VBox class="doc7TabContent">
                   <!-- Title toolbar always visible -->
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Title text="Documents ({= ${detail>/documentsFlat}.length})" level="H4" />
+                    <Title text="Documents" level="H4" />
                     <ToolbarSpacer />
+                    <Button text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
                     <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
                         <Menu>
                           <items>
-                            <MenuItem text="Link Existing Document" press=".onLinkExistingDoc3" />
-                            <MenuItem text="Link New Document" />
+                            <MenuItem text="Link Existing" press=".onLinkExistingDoc3" />
+                            <MenuItem text="Link New" />
                           </items>
                         </Menu>
                       </menu>
@@ -331,8 +332,6 @@
                               <Title text="Items" level="H4" class="doc7LeftTitle" />
                               <Text id="doc7LeftCount" text="({= ${detail>/doc7LeftRows}.length})" class="doc7LeftCount" />
                               <ToolbarSpacer />
-                              <SearchField width="12rem" placeholder="Search" class="doc7LeftSearch" />
-                              <Button id="doc7SwitchTypeBtn" text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
                               <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7LeftTableSettings" class="doc7SettingsBtn" />
                             </OverflowToolbar>
                           </headerToolbar>
