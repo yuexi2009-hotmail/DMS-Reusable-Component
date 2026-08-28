@@ -1859,7 +1859,21 @@ sap.ui.define([
           var oBinding = oTable.getBinding("rows");
           if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
         });
-      }, 100);
+
+        // doc7: auto-select first row and load files on init
+        var oDoc7Table = oView.byId("doc7DocTable");
+        if (oDoc7Table) {
+          var aItems = oDoc7Table.getItems();
+          if (aItems.length > 0) {
+            oDoc7Table.setSelectedItem(aItems[0], true);
+            var oCtx = aItems[0].getBindingContext("detail");
+            if (oCtx) {
+              var sDocId = oCtx.getProperty("docId");
+              this.onDoc7LoadFiles(sDocId);
+            }
+          }
+        }
+      }.bind(this), 100);
 
       var oRootView = this.getOwnerComponent().getRootControl();
       var oShellBar = oRootView.byId("appShellBar");
