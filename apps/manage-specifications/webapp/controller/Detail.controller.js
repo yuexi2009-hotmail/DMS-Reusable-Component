@@ -1409,36 +1409,10 @@ sap.ui.define([
         return;
       }
 
-      // Called from row click (docId provided) → load corresponding files
-      var mFiles = {
-        "100000000913": [
-          { typeIcon: "sap-icon://pdf-attachment", name: "ATT-Technical-Spec.pdf",         docNumber: "100000000181", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
-          { typeIcon: "sap-icon://document",        name: "ATT-Assembly-Guide.docx",        docNumber: "100000000182", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
-          { typeIcon: "sap-icon://document",        name: "ATT-Test-Report.xlsx",           docNumber: "100000000183", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
-        ],
-        "200000002010": [
-          { typeIcon: "sap-icon://pdf-attachment", name: "Surface-Treatment-Spec.pdf",    docNumber: "100000000191", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
-          { typeIcon: "sap-icon://document",        name: "Coating-Process-Guide.docx",    docNumber: "100000000192", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
-          { typeIcon: "sap-icon://document",        name: "Test-Result-Aug2026.xlsx",      docNumber: "100000000193", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
-        ],
-        "200000002020": [
-          { typeIcon: "sap-icon://document",        name: "Gearbox-Housing-Drawing.dwg",   docNumber: "100000000201", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "205 KB" },
-          { typeIcon: "sap-icon://pdf-attachment",  name: "Assembly-Instruction-v3.pdf",   docNumber: "100000000202", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "124 KB" },
-          { typeIcon: "sap-icon://document",        name: "Tolerance-Table.xlsx",          docNumber: "100000000203", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "32 KB"  },
-          { typeIcon: "sap-icon://pdf-attachment",  name: "Change-Notice-CN-0051.pdf",     docNumber: "100000000204", modifiedOn: "Aug 7, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
-        ],
-        "200000002030": [
-          { typeIcon: "sap-icon://pdf-attachment",  name: "Frame-Welding-Procedure.pdf",   docNumber: "100000000211", modifiedOn: "Aug 12, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "512 KB" },
-          { typeIcon: "sap-icon://document",        name: "Weld-Inspection-Report.docx",   docNumber: "100000000212", modifiedOn: "Aug 11, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "67 KB"  },
-          { typeIcon: "sap-icon://document",        name: "Material-Certificate.xlsx",     docNumber: "100000000213", modifiedOn: "Aug 10, 2026", createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "28 KB"  },
-          { typeIcon: "sap-icon://pdf-attachment",  name: "Quality-Control-Checklist.pdf", docNumber: "100000000214", modifiedOn: "Aug 9, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "45 KB"  },
-          { typeIcon: "sap-icon://document",        name: "Revision-History.docx",         docNumber: "100000000215", modifiedOn: "Aug 8, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "12 KB"  }
-        ]
-      };
-
-      var aAtts = mFiles[sDocId] || [];
-      oDetailModel.setProperty("/doc9Attachments", aAtts);
-      oDetailModel.setProperty("/doc9RightState", aAtts.length > 0 ? "upload" : "noFiles");
+      // Called from row click → always show upload/drag-drop state (empty, let user upload)
+      oDetailModel.setProperty("/doc9Attachments", []);
+      oDetailModel.setProperty("/doc9RightState", "upload");
+      setTimeout(this._setupDoc9DropZone.bind(this), 0);
 
       var oUnlinkBtn = oView.byId("unlinkBtn9");
       if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
