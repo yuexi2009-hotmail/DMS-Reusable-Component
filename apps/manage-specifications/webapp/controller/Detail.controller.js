@@ -897,7 +897,10 @@ sap.ui.define([
       var oUnlinkBtn = oView.byId("unlinkBtn7");
       if (oUnlinkBtn) { oUnlinkBtn.setEnabled(!bIsATT || !!oDoc.isLinked); }
       var oCreateBtn = oView.byId("doc7CreateBtn");
-      if (oCreateBtn) { oCreateBtn.setEnabled(bIsATT); }
+      if (oCreateBtn) {
+        oCreateBtn.setEnabled(bIsATT);
+        this._fixMenuBtnWidth(oCreateBtn);
+      }
       ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn", "doc7ManageBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
         if (oBtn) { oBtn.setEnabled(false); }
@@ -1137,13 +1140,20 @@ sap.ui.define([
       }
       // Fix Add button text/arrow overlap by setting explicit min-width on inner button
       var oBtn = this.byId("doc7CreateBtn");
-      if (oBtn && oBtn.getDomRef()) {
-        var oBtnInner = oBtn.getDomRef().querySelector("button");
+      this._fixMenuBtnWidth(oBtn);
+    },
+
+    _fixMenuBtnWidth: function (oMenuBtn) {
+      if (!oMenuBtn) { return; }
+      setTimeout(function () {
+        var oDom = oMenuBtn.getDomRef();
+        if (!oDom) { return; }
+        var oBtnInner = oDom.querySelector("button");
         if (oBtnInner) {
+          oBtnInner.style.setProperty("width", "auto", "important");
           oBtnInner.style.removeProperty("min-width");
-          oBtnInner.style.removeProperty("padding-right");
         }
-      }
+      }, 0);
     },
 
     onDoc7Create:         function () { MessageToast.show("Create attachment"); },
@@ -1360,7 +1370,7 @@ sap.ui.define([
       var oUnlinkBtn = oView.byId("unlinkBtn9");
       if (oUnlinkBtn) { oUnlinkBtn.setEnabled(!bIsATT || !!oDoc.isLinked); }
       var oCreateBtn = oView.byId("doc9CreateBtn");
-      if (oCreateBtn) { oCreateBtn.setEnabled(bIsATT); }
+      if (oCreateBtn) { oCreateBtn.setEnabled(bIsATT); this._fixMenuBtnWidth(oCreateBtn); }
       ["doc9EditBtn", "doc9DownBtn", "doc9DeleteBtn", "doc9MoveBtn", "doc9CopyBtn", "doc9ManageBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
         if (oBtn) { oBtn.setEnabled(false); }
@@ -1395,7 +1405,7 @@ sap.ui.define([
           this._setupDoc9DropZone();
         }.bind(this), 0);
         var oCreateBtn = oView.byId("doc9CreateBtn");
-        if (oCreateBtn) { oCreateBtn.setEnabled(true); }
+        if (oCreateBtn) { oCreateBtn.setEnabled(true); this._fixMenuBtnWidth(oCreateBtn); }
         return;
       }
 
@@ -1433,7 +1443,7 @@ sap.ui.define([
       var oUnlinkBtn = oView.byId("unlinkBtn9");
       if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
       var oCreateBtn = oView.byId("doc9CreateBtn");
-      if (oCreateBtn) { oCreateBtn.setEnabled(true); }
+      if (oCreateBtn) { oCreateBtn.setEnabled(true); this._fixMenuBtnWidth(oCreateBtn); }
       ["doc9EditBtn", "doc9DownBtn", "doc9DeleteBtn", "doc9MoveBtn", "doc9CopyBtn", "doc9ManageBtn"].forEach(function (sId) {
         var oBtn = oView.byId(sId);
         if (oBtn) { oBtn.setEnabled(false); }

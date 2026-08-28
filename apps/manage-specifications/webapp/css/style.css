@@ -1154,22 +1154,26 @@ body button[id$="-cancelBtn"].sapMBarChild {
 .doc7RightToolbar.sapMOTB {
   background: #fff !important;
 }
-.doc7RightToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after,
-.doc7EmptyToolbar .sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after,
-#doc7CreateBtn.sapMMenuBtn.sapMMenuBtnRegular .sapMBtnInner::after {
-  position: relative !important;
-  padding-right: 0.35rem !important;
-  padding-left: 0.5rem !important;
+#doc7CreateBtn.sapMMenuBtn {
+  width: auto !important;
+  min-width: unset !important;
 }
-/* disabled state: remove arrow padding so button doesn't expand */
-#doc7CreateBtn.sapMMenuBtn .sapMBtnDisabled::after,
-#doc7CreateBtn.sapMMenuBtn button:disabled::after {
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  content: none !important;
+#doc7CreateBtn button {
+  width: auto !important;
+  min-width: unset !important;
 }
-
-/* Doc7 splitter panel: fixed height + white background for both panes */
+#doc7CreateBtn button:disabled .sapMBtnInner,
+#doc7CreateBtn button.sapMBtnDisabled .sapMBtnInner {
+  padding-right: 0.375rem !important;
+}
+#doc9CreateBtn.sapMMenuBtn {
+  width: auto !important;
+  min-width: unset !important;
+}
+#doc9CreateBtn button {
+  width: auto !important;
+  min-width: unset !important;
+}
 .doc7SplitterPanel {
   height: 500px !important;
   background: var(--sapShell_Background);
@@ -1216,55 +1220,7 @@ body button[id$="-cancelBtn"].sapMBarChild {
   background: #fff !important;
 }
 
-/* Doc7 Add button Split mode — vertically center text */
-#doc7CreateBtn .sapMBtnContent {
-  display: flex !important;
-  align-items: center !important;
-  height: 100% !important;
-}
-
-/* Doc7 Add button Split — remove background from text button inner span */
-#doc7CreateBtn .sapMMenuBtnSplit .sapMBtnInner {
-  background: transparent !important;
-}
-
-/* Doc7 Add button Split — align inner buttons vertically */
-#doc7CreateBtn.sapMMenuBtn {
-  display: inline-flex !important;
-  align-items: center !important;
-  width: auto !important;
-}
-#doc7CreateBtn .sapMBtnInner {
-  width: auto !important;
-  min-width: unset !important;
-  padding-right: 0.5rem !important;
-}
-#doc7CreateBtn .sapMBtnInner.sapMBtnText {
-  padding-right: 0.5rem !important;
-}
-#doc7CreateBtn .sapMMenuBtnSplit {
-  display: inline-flex !important;
-  align-items: center !important;
-  height: 100% !important;
-}
-#doc7CreateBtn .sapMMenuBtnSplit > button {
-  height: 100% !important;
-  display: inline-flex !important;
-  align-items: center !important;
-}
-
-/* Doc7 Add button — remove extra border on text part */
-#doc7CreateBtn .sapMMenuBtnSplit > button:first-child {
-  border-right: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-#doc7CreateBtn .sapMMenuBtnSplit .sapMBtnInner {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Doc7 left pane toolbar */
+/* Doc7 splitter panel: fixed height + white background for both panes */
 .doc7LeftToolbar.sapMTB,
 .doc7LeftToolbar.sapMOTB {
   background: #fff !important;
@@ -1284,11 +1240,6 @@ body button[id$="-cancelBtn"].sapMBarChild {
   margin-left: 0.25rem;
 }
 
-/* Doc7 empty state Create button — fix text/arrow overlap */
-#doc7CreateEmpty .sapMBtnInner {
-  min-width: 5rem !important;
-  white-space: nowrap !important;
-}
 
 .doc7SwitchTypeLabel.sapMLabel {
   height: 24px !important;

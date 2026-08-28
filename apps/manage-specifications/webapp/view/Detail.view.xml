@@ -264,18 +264,14 @@
                           <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
                           <ToolbarSpacer />
                           <SearchField width="15rem" placeholder="Search" />
-                          <MenuButton id="doc7CreateEmpty" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
+                          <MenuButton id="doc7CreateEmpty" text="Create" type="Emphasized" menuPosition="BeginBottom">
                             <layoutData><OverflowToolbarLayoutData priority="NeverOverflow" /></layoutData>
                             <menu>
-                              <Menu>
-                                <items>
-                                  <MenuItem text="Document" icon="sap-icon://document">
-                                    <items>
-                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7UploadNew" />
-                                    </items>
-                                  </MenuItem>
-                                  <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
-                                </items>
+                              <Menu itemSelected=".onDoc7MenuItemSelected">
+                                <MenuItem text="Document" icon="sap-icon://document">
+                                  <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7UploadNew" />
+                                </MenuItem>
+                                <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
                               </Menu>
                             </menu>
                           </MenuButton>
@@ -412,18 +408,14 @@
                               <Text id="doc7ItemCount" text="Items ({= ${detail>/doc7Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc7Search" width="15rem" placeholder="Search" search=".onDoc7Search" />
-                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" menuPosition="BeginBottom" enabled="false">
                                 <menu>
-                                  <Menu>
-                                    <items>
-                                      <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc7CreateFolder" />
-                                      <MenuItem text="Document" icon="sap-icon://document">
-                                        <items>
-                                          <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7Upload" />
-                                        </items>
-                                      </MenuItem>
-                                      <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
-                                    </items>
+                                  <Menu itemSelected=".onDoc7MenuItemSelected">
+                                    <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc7CreateFolder" />
+                                    <MenuItem text="Document" icon="sap-icon://document">
+                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7Upload" />
+                                    </MenuItem>
+                                    <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
                                   </Menu>
                                 </menu>
                               </MenuButton>
@@ -513,18 +505,14 @@
                           <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
                           <ToolbarSpacer />
                           <SearchField width="15rem" placeholder="Search" />
-                          <MenuButton id="doc9CreateEmpty" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
+                          <MenuButton id="doc9CreateEmpty" text="Create" type="Emphasized" menuPosition="BeginBottom">
                             <layoutData><OverflowToolbarLayoutData priority="NeverOverflow" /></layoutData>
                             <menu>
-                              <Menu>
-                                <items>
-                                  <MenuItem text="Document" icon="sap-icon://document">
-                                    <items>
-                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc9UploadNew" />
-                                    </items>
-                                  </MenuItem>
-                                  <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc9CreateLink" />
-                                </items>
+                              <Menu itemSelected=".onDoc9MenuItemSelected">
+                                <MenuItem text="Document" icon="sap-icon://document">
+                                  <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc9UploadNew" />
+                                </MenuItem>
+                                <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc9CreateLink" />
                               </Menu>
                             </menu>
                           </MenuButton>
@@ -668,18 +656,14 @@
                               <Text id="doc9ItemCount" text="Items ({= ${detail>/doc9Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc9Search" width="15rem" placeholder="Search" search=".onDoc9Search" />
-                              <MenuButton id="doc9CreateBtn" text="Create" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                              <MenuButton id="doc9CreateBtn" text="Create" type="Emphasized" menuPosition="BeginBottom" enabled="false">
                                 <menu>
-                                  <Menu>
-                                    <items>
-                                      <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc9CreateFolder" />
-                                      <MenuItem text="Document" icon="sap-icon://document">
-                                        <items>
-                                          <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc9Upload" />
-                                        </items>
-                                      </MenuItem>
-                                      <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc9CreateLink" />
-                                    </items>
+                                  <Menu itemSelected=".onDoc9MenuItemSelected">
+                                    <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc9CreateFolder" />
+                                    <MenuItem text="Document" icon="sap-icon://document">
+                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc9Upload" />
+                                    </MenuItem>
+                                    <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc9CreateLink" />
                                   </Menu>
                                 </menu>
                               </MenuButton>
@@ -885,7 +869,7 @@
                               <Text id="doc8ItemCount" text="Items ({= ${detail>/doc8Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc8Search" width="15rem" placeholder="Search" search=".onDoc8Search" />
-                              <MenuButton id="doc8CreateBtn" text="Add" type="Emphasized" buttonMode="Split" menuPosition="BeginBottom">
+                              <MenuButton id="doc8CreateBtn" text="Add" type="Emphasized" buttonMode="Regular" menuPosition="BeginBottom">
                                 <menu>
                                   <Menu>
                                     <items>
