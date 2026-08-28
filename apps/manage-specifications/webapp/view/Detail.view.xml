@@ -613,7 +613,7 @@
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-EmptyList' }"
+                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-NoTasks' }"
                               illustrationSize="Dialog"
                               title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : 'No files found.' }"
                               description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : 'Go to Document Management to upload and manage files.' }">

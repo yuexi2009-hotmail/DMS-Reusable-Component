@@ -5,7 +5,7 @@
   <Dialog
     id="switchTypeDialog"
     title="Change Type"
-    contentWidth="22rem"
+    contentWidth="30rem"
     resizable="false"
     draggable="true"
     class="sapUiSizeCompact">
@@ -17,6 +17,7 @@
           type="Warning"
           showIcon="true"
           class="sapUiSmallMarginBottom" />
+        <Text text="After changing the type, future file management operations must be performed in Document Management System (DMS). Current files will become read-only." class="sapUiSmallMarginBottom" wrapping="true" />
         <Label text="Document Type:" labelFor="switchTypeSelect" class="doc7SwitchTypeLabel" />
         <Select id="switchTypeSelect" width="100%">
           <core:Item key="DFT" text="DFT" />

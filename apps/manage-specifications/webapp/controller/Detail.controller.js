@@ -979,6 +979,18 @@ sap.ui.define([
           var oDetailModel = oView.getModel("detail");
           oDetailModel.setProperty(oCtx.getPath() + "/type", sNewType);
           oDetailModel.setProperty(sBtnTextKey, "Sync");
+
+          if (sCaller === "doc9") {
+            // Disable all right-side toolbar actions — files become read-only
+            ["doc9CreateBtn", "doc9EditBtn", "doc9DownBtn", "doc9DeleteBtn",
+             "doc9MoveBtn", "doc9CopyBtn", "doc9ManageBtn"].forEach(function (sId) {
+              var oBtn = oView.byId(sId);
+              if (oBtn) { oBtn.setEnabled(false); }
+            });
+            // Show files if any, otherwise show empty state with Navigate to DMS
+            var aFiles = oDetailModel.getProperty("/doc9Attachments") || [];
+            oDetailModel.setProperty("/doc9RightState", aFiles.length > 0 ? "upload" : "noFiles");
+          }
         }
       }
       if (this._oSwitchTypeDialog) { this._oSwitchTypeDialog.close(); }

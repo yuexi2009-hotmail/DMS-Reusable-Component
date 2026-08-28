@@ -1275,5 +1275,5 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 .doc9Splitter,
 .doc9Splitter .sapUiResponsiveSplitterPage,
 .doc9Splitter .sapUiLoSplitter {
-  height: 400px !important;
+  height: 450px !important;
 }
