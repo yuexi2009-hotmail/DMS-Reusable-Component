@@ -927,12 +927,15 @@ sap.ui.define([
       }
     },
 
-    _openSwitchTypeDialog: function (oEvent) {
+    _openSwitchTypeDialog: function (oEvent, sCaller) {
       var oView = this.getView();
       var that = this;
 
+      this._switchTypeCaller = sCaller || "doc7";
+
       // get current type of selected left-table row
-      var oTable = oView.byId("doc7DocTable");
+      var sTableId = this._switchTypeCaller === "doc9" ? "doc9DocTable" : "doc7DocTable";
+      var oTable = oView.byId(sTableId);
       var oSelected = oTable ? oTable.getSelectedItem() : null;
       var sCurrentType = oSelected ? (oSelected.getBindingContext("detail").getProperty("type") || "DFT") : "DFT";
 
@@ -965,14 +968,17 @@ sap.ui.define([
       var oSelect = Fragment.byId(oView.getId(), "switchTypeSelect");
       if (oSelect) {
         var sNewType = oSelect.getSelectedKey() || "DFT";
+        var sCaller = this._switchTypeCaller || "doc7";
+        var sTableId = sCaller === "doc9" ? "doc9DocTable" : "doc7DocTable";
+        var sBtnTextKey = sCaller === "doc9" ? "/doc9ActionBtnText" : "/doc7ActionBtnText";
 
-        var oTable = oView.byId("doc7DocTable");
+        var oTable = oView.byId(sTableId);
         var oSelected = oTable ? oTable.getSelectedItem() : null;
         if (oSelected) {
           var oCtx = oSelected.getBindingContext("detail");
           var oDetailModel = oView.getModel("detail");
           oDetailModel.setProperty(oCtx.getPath() + "/type", sNewType);
-          oDetailModel.setProperty("/doc7ActionBtnText", "Sync");
+          oDetailModel.setProperty(sBtnTextKey, "Sync");
         }
       }
       if (this._oSwitchTypeDialog) { this._oSwitchTypeDialog.close(); }
@@ -1417,10 +1423,23 @@ sap.ui.define([
         return;
       }
 
-      // Called from row click → always show upload/drag-drop state (empty, let user upload)
-      oDetailModel.setProperty("/doc9Attachments", []);
-      oDetailModel.setProperty("/doc9RightState", "upload");
-      setTimeout(this._setupDoc9DropZone.bind(this), 0);
+      // Called from row click → linked doc or non-ATT shows files; ATT non-linked shows upload state
+      var aLeftRows = oDetailModel.getProperty("/doc9LeftRows") || [];
+      var oSelectedDoc = aLeftRows.filter(function (r) { return r.docId === sDocId; })[0];
+      var bShowFiles = oSelectedDoc && (oSelectedDoc.isLinked || oSelectedDoc.type !== "ATT");
+
+      if (bShowFiles) {
+        var aAtts = (oSelectedDoc.files || []).map(function (f) {
+          return Object.assign({ typeIcon: f.name && f.name.endsWith(".pdf") ? "sap-icon://pdf-attachment" : "sap-icon://document" }, f);
+        });
+        oDetailModel.setProperty("/doc9Attachments", aAtts);
+        oDetailModel.setProperty("/doc9RightState", aAtts.length > 0 ? "upload" : "noFiles");
+      } else {
+        // ATT non-linked → upload/drag-drop state
+        oDetailModel.setProperty("/doc9Attachments", []);
+        oDetailModel.setProperty("/doc9RightState", "upload");
+        setTimeout(this._setupDoc9DropZone.bind(this), 0);
+      }
 
       var oUnlinkBtn = oView.byId("unlinkBtn9");
       if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
@@ -1450,7 +1469,7 @@ sap.ui.define([
       var oDetailModel = this.getView().getModel("detail");
       var sText = oDetailModel.getProperty("/doc9ActionBtnText");
       if (sText === "Change Type") {
-        MessageToast.show("Change Type");
+        this._openSwitchTypeDialog(oEvent, "doc9");
       } else {
         MessageToast.show("Sync");
       }
