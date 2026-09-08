@@ -13,17 +13,16 @@
     <content>
       <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTopBottom">
         <MessageStrip
-          text="Once the type is switched from ATT to another type, it cannot be changed again. Please proceed with caution."
+          text="Once the type is switched from ATT to another type, it cannot be changed again. After changing the type, future file management operations must be performed in Document Management System (DMS). Current files will become read-only."
           type="Warning"
           showIcon="true"
           class="sapUiSmallMarginBottom" />
-        <Text text="After changing the type, future file management operations must be performed in Document Management System (DMS). Current files will become read-only." class="sapUiSmallMarginBottom" wrapping="true" />
         <Label text="Document Type:" labelFor="switchTypeSelect" class="doc7SwitchTypeLabel" />
         <Select id="switchTypeSelect" width="100%">
-          <core:Item key="DFT" text="DFT" />
-          <core:Item key="DRW" text="DRW" />
-          <core:Item key="TST" text="TST" />
-          <core:Item key="IMU" text="IMU" />
+          <core:ListItem key="DFT" text="DFT – Default Document" />
+          <core:ListItem key="DRW" text="DRW – Drawing" />
+          <core:ListItem key="TST" text="TST – Test Specification" />
+          <core:ListItem key="IMU" text="IMU – Image / URL" />
         </Select>
       </VBox>
     </content>
