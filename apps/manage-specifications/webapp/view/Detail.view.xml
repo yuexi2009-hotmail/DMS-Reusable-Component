@@ -290,7 +290,7 @@
                         <mdc:Table
                           id="doc9DocTable"
                           header="Items"
-                          p13nMode="Column,Sort,Group"
+                          p13nMode="Column,Sort,Filter,Group"
                           selectionMode="Single"
                           showRowCount="true"
                           class="sapUiSizeCompact"
@@ -506,7 +506,7 @@
                         <mdc:Table
                           id="doc7DocTable"
                           header="Items"
-                          p13nMode="Column,Sort,Group"
+                          p13nMode="Column,Sort,Filter,Group"
                           selectionMode="Single"
                           showRowCount="true"
                           class="sapUiSizeCompact"

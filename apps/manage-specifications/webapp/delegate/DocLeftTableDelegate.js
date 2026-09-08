@@ -1,8 +1,9 @@
 sap.ui.define([
   "sap/ui/mdc/TableDelegate",
   "sap/ui/mdc/table/Column",
-  "sap/m/Text"
-], function (TableDelegate, Column, Text) {
+  "sap/m/Text",
+  "sap/ui/mdc/FilterField"
+], function (TableDelegate, Column, Text, FilterField) {
   "use strict";
 
   var aPropertyInfos = [
@@ -45,6 +46,25 @@ sap.ui.define([
       template: oTemplate,
       width: _getColWidth(sPropertyKey)
     });
+  };
+
+  oDelegate.getFilterDelegate = function () {
+    return {
+      addItem: function (oFilterBar, sPropertyKey) {
+        var oPI = aPropertyInfos.find(function (p) { return p.key === sPropertyKey; });
+        if (!oPI) { return Promise.resolve(null); }
+        var sId = oFilterBar.getId() + "---ff-" + sPropertyKey;
+        var oExisting = sap.ui.getCore().byId(sId);
+        if (oExisting) { return Promise.resolve(oExisting); }
+        return Promise.resolve(new FilterField(sId, {
+          propertyKey: oPI.key,
+          label: oPI.label,
+          dataType: oPI.dataType,
+          conditions: "{$filters>/conditions/" + oPI.key + "}",
+          maxConditions: -1
+        }));
+      }
+    };
   };
 
   function _getColWidth(sKey) {

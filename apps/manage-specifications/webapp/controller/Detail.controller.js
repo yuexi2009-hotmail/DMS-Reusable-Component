@@ -902,6 +902,7 @@ sap.ui.define([
       oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
       oDetailModel.setProperty("/doc7StripVisible", true);
       oDetailModel.setProperty("/doc7SelectedDocId", oDoc.docId || null);
+      oDetailModel.setProperty("/doc7SelectedDocType", oDoc.type || null);
 
       var bEverLoaded = oDetailModel.getProperty("/doc7EverLoaded");
       this.onDoc7LoadFiles(oDoc.docId);
@@ -950,8 +951,8 @@ sap.ui.define([
       // get current type of selected left-table row
       var sTableId = this._switchTypeCaller === "doc9" ? "doc9DocTable" : "doc7DocTable";
       var oTable = oView.byId(sTableId);
-      var oSelected = oTable ? oTable.getSelectedItem() : null;
-      var sCurrentType = oSelected ? (oSelected.getBindingContext("detail").getProperty("type") || "DFT") : "DFT";
+      var aSelCtx = oTable && oTable.getSelectedContexts ? oTable.getSelectedContexts() : [];
+      var sCurrentType = aSelCtx.length ? (aSelCtx[0].getProperty("type") || "DFT") : "DFT";
 
       var aTypes = ["DFT", "DRW", "TST", "IMU"];
       var iSelected = Math.max(aTypes.indexOf(sCurrentType), 0);
@@ -987,9 +988,9 @@ sap.ui.define([
         var sBtnTextKey = sCaller === "doc9" ? "/doc9ActionBtnText" : "/doc7ActionBtnText";
 
         var oTable = oView.byId(sTableId);
-        var oSelected = oTable ? oTable.getSelectedItem() : null;
-        if (oSelected) {
-          var oCtx = oSelected.getBindingContext("detail");
+        var aSelCtx = oTable && oTable.getSelectedContexts ? oTable.getSelectedContexts() : [];
+        if (aSelCtx.length) {
+          var oCtx = aSelCtx[0];
           var oDetailModel = oView.getModel("detail");
           oDetailModel.setProperty(oCtx.getPath() + "/type", sNewType);
           oDetailModel.setProperty(sBtnTextKey, "Sync");
@@ -1034,8 +1035,8 @@ sap.ui.define([
 
       // if called from button (no arg), get docId from selected item
       if (!sDocId) {
-        var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
-        sDocId = oSelected ? oSelected.getBindingContext("detail").getProperty("docId") : null;
+        var aSelCtx = oLeftTable && oLeftTable.getSelectedContexts ? oLeftTable.getSelectedContexts() : [];
+        sDocId = aSelCtx.length ? aSelCtx[0].getProperty("docId") : null;
       }
 
       var mFiles = {
@@ -1066,12 +1067,12 @@ sap.ui.define([
       // Highlight first row and trigger its select logic
       if (!oDetailModel.getProperty("/doc7EverLoaded")) {
         setTimeout(function () {
-          var aItems = oLeftTable.getItems();
-          if (aItems.length > 0) {
-            oLeftTable.setSelectedItem(aItems[0], true);
-            // fire same logic as clicking the row
-            var oFakeEvent = { getParameter: function () { return aItems[0]; }, getSource: function () { return aItems[0]; } };
-            this.onDoc7DocSelect(oFakeEvent);
+          var oBinding = oLeftTable && oLeftTable.getRowBinding && oLeftTable.getRowBinding();
+          var aContexts = oBinding ? (oBinding.getCurrentContexts ? oBinding.getCurrentContexts() : []) : [];
+          if (aContexts.length > 0) {
+            var sFirstDocId = aContexts[0].getProperty("docId");
+            oDetailModel.setProperty("/doc7SelectedDocId", sFirstDocId);
+            this.onDoc7LoadFiles(sFirstDocId);
           }
         }.bind(this), 0);
       }
@@ -1086,10 +1087,9 @@ sap.ui.define([
     onDoc7Unlink: function () {
       var oView = this.getView();
       var oLeftTable = oView.byId("doc7DocTable");
-      var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
-      if (!oSelected) { return; }
-      var oCtx = oSelected.getBindingContext("detail");
-      var oDoc = oCtx ? oCtx.getObject() : null;
+      var aSelCtx = oLeftTable && oLeftTable.getSelectedContexts ? oLeftTable.getSelectedContexts() : [];
+      if (!aSelCtx.length) { return; }
+      var oDoc = aSelCtx[0].getObject();
       if (!oDoc || !oDoc.isLinked) { return; }
 
       this._sDoc7UnlinkDocNumber = oDoc.docNumber;
@@ -1132,9 +1132,8 @@ sap.ui.define([
       var oView = this.getView();
 
       // Only enable action buttons when selected doc in left table is ATT type
-      var oLeftTable = oView.byId("doc7DocTable");
-      var oLeftSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
-      var sType = oLeftSelected ? oLeftSelected.getBindingContext("detail").getProperty("type") : null;
+      var oDetailModel = oView.getModel("detail");
+      var sType = oDetailModel.getProperty("/doc7SelectedDocType");
       var bIsATT = sType === "ATT";
 
       ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
@@ -1169,9 +1168,9 @@ sap.ui.define([
       var oSelectedDoc = aLeftRows.filter(function (r) { return r.docId === sSelectedDocId; })[0];
       var sType = oSelectedDoc ? oSelectedDoc.type : null;
       if (sType !== "ATT") {
-        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(false); });
+        oTable.getItems().forEach(function (oItem) { if (oItem.setEnabled) { oItem.setEnabled(false); } });
       } else {
-        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(true); });
+        oTable.getItems().forEach(function (oItem) { if (oItem.setEnabled) { oItem.setEnabled(true); } });
       }
       // Fix Add button text/arrow overlap by setting explicit min-width on inner button
       var oBtn = this.byId("doc7CreateBtn");
@@ -1444,10 +1443,9 @@ sap.ui.define([
     onDoc9Unlink: function () {
       var oView = this.getView();
       var oLeftTable = oView.byId("doc9DocTable");
-      var oSelected = oLeftTable ? oLeftTable.getSelectedItem() : null;
-      if (!oSelected) { return; }
-      var oCtx = oSelected.getBindingContext("detail");
-      var oDoc = oCtx ? oCtx.getObject() : null;
+      var aSelCtx = oLeftTable && oLeftTable.getSelectedContexts ? oLeftTable.getSelectedContexts() : [];
+      if (!aSelCtx.length) { return; }
+      var oDoc = aSelCtx[0].getObject();
       if (!oDoc || !oDoc.isLinked) { return; }
       MessageToast.show("Unlink: " + oDoc.docId);
     },
@@ -1487,9 +1485,9 @@ sap.ui.define([
       var oSelectedDoc = aLeftRows.filter(function (r) { return r.docId === sSelectedDocId; })[0];
       var sType = oSelectedDoc ? oSelectedDoc.type : null;
       if (sType !== "ATT") {
-        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(false); });
+        oTable.getItems().forEach(function (oItem) { if (oItem.setEnabled) { oItem.setEnabled(false); } });
       } else {
-        oTable.getItems().forEach(function (oItem) { oItem.setEnabled(true); });
+        oTable.getItems().forEach(function (oItem) { if (oItem.setEnabled) { oItem.setEnabled(true); } });
       }
       this._setupDoc9DropZone();
     },
