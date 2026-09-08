@@ -1126,6 +1126,7 @@ sap.ui.define([
       oDetailModel.setProperty("/doc7Attachments", aAtts);
       oDetailModel.setProperty("/doc7AttLoaded", true);
       oDetailModel.setProperty("/doc7HasData", true);
+      oDetailModel.setProperty("/doc7ShowUploadState", false);
       // Highlight first row and trigger its select logic
       if (!oDetailModel.getProperty("/doc7EverLoaded")) {
         setTimeout(function () {

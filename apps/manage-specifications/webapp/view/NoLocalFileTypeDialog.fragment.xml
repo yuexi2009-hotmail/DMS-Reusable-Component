@@ -4,22 +4,20 @@
 
   <Dialog
     id="noLocalFileTypeDialog"
-    title="No Local File Type Found"
+    title="No Local Document Type Found"
     contentWidth="32rem"
     resizable="false"
     draggable="true"
-    type="Message"
     class="sapUiSizeCompact">
 
     <content>
-      <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTopBottom">
-        <Text
-          text="No local file type was found for this document. To upload and manage files locally, please configure a local file type in the Document Configuration settings first." />
-      </VBox>
+      <Text
+        text="No local document type was found. To upload and manage files locally, please configure a local document type in the Document Configuration settings first."
+        class="sapUiSmallMarginBeginEnd sapUiTinyMarginTopBottom" />
     </content>
 
     <beginButton>
-      <Button text="Configure File Type" type="Emphasized" press=".onConfigureFileType" width="auto" />
+      <Button text="Configure Document Type" type="Emphasized" press=".onConfigureFileType" width="auto" />
     </beginButton>
     <endButton>
       <Button text="Cancel" press=".onConfigureFileTypeCancel" width="auto" />
