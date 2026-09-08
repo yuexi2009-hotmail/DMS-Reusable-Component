@@ -881,47 +881,6 @@ sap.ui.define([
     },
 
         // ---- Documents 7 ----
-    onDoc7LeftTableSettings: function () {
-      var oTable = this.byId("doc7DocTable");
-      if (!oTable) { return; }
-      var that = this;
-      sap.ui.require([
-        "sap/m/p13n/Engine",
-        "sap/m/p13n/SelectionController",
-        "sap/m/p13n/SortController",
-        "sap/m/p13n/FilterController",
-        "sap/m/p13n/GroupController"
-      ], function (Engine, SelectionController, SortController, FilterController, GroupController) {
-        var oEngine = Engine.getInstance();
-        if (!oEngine.isRegistered(oTable)) {
-          var aProps = [
-            { name: "docId",        label: "Document" },
-            { name: "type",         label: "Type" },
-            { name: "part",         label: "Part" },
-            { name: "version",      label: "Ver." },
-            { name: "status",       label: "Status" },
-            { name: "category",     label: "S4HANA Info" },
-            { name: "description",  label: "Description" },
-            { name: "createdBy",    label: "Created By" },
-            { name: "changedBy",    label: "Changed By" },
-            { name: "changedOn",    label: "Changed On" },
-            { name: "lab",          label: "Lab/Office" },
-            { name: "changeNumber", label: "Change Number" }
-          ];
-          oEngine.register(oTable, {
-            helper: { getProperties: function () { return aProps; } },
-            controller: {
-              Columns: new SelectionController({ control: oTable, targetAggregation: "columns" }),
-              Sort:    new SortController({ control: oTable }),
-              Filter:  new FilterController({ control: oTable }),
-              Group:   new GroupController({ control: oTable })
-            }
-          });
-        }
-        oEngine.show(oTable, ["Columns", "Sort", "Filter", "Group"]);
-      });
-    },
-
     onDoc7DocSelect: function (oEvent) {
       var oCtx = oEvent.getParameter("bindingContext") ||
                  (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
@@ -1379,46 +1338,6 @@ sap.ui.define([
     },
 
     // ---- Documents 9 (Document Empty state — duplicate of Doc7) ----
-    onDoc9LeftTableSettings: function () {
-      var oTable = this.byId("doc9DocTable");
-      if (!oTable) { return; }
-      sap.ui.require([
-        "sap/m/p13n/Engine",
-        "sap/m/p13n/SelectionController",
-        "sap/m/p13n/SortController",
-        "sap/m/p13n/FilterController",
-        "sap/m/p13n/GroupController"
-      ], function (Engine, SelectionController, SortController, FilterController, GroupController) {
-        var oEngine = Engine.getInstance();
-        if (!oEngine.isRegistered(oTable)) {
-          var aProps = [
-            { name: "docId",        label: "Document" },
-            { name: "type",         label: "Type" },
-            { name: "part",         label: "Part" },
-            { name: "version",      label: "Ver." },
-            { name: "status",       label: "Status" },
-            { name: "category",     label: "S4HANA Info" },
-            { name: "description",  label: "Description" },
-            { name: "createdBy",    label: "Created By" },
-            { name: "changedBy",    label: "Changed By" },
-            { name: "changedOn",    label: "Changed On" },
-            { name: "lab",          label: "Lab/Office" },
-            { name: "changeNumber", label: "Change Number" }
-          ];
-          oEngine.register(oTable, {
-            helper: { getProperties: function () { return aProps; } },
-            controller: {
-              Columns: new SelectionController({ control: oTable, targetAggregation: "columns" }),
-              Sort:    new SortController({ control: oTable }),
-              Filter:  new FilterController({ control: oTable }),
-              Group:   new GroupController({ control: oTable })
-            }
-          });
-        }
-        oEngine.show(oTable, ["Columns", "Sort", "Filter", "Group"]);
-      });
-    },
-
     onDoc9DocSelect: function (oEvent) {
       var oCtx = oEvent.getParameter("bindingContext") ||
                  (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
@@ -1890,10 +1809,10 @@ sap.ui.define([
         // doc7: auto-select first row and load files on init
         var oDoc7Table = oView.byId("doc7DocTable");
         if (oDoc7Table) {
-          var aItems = oDoc7Table.getItems();
-          if (aItems.length > 0) {
-            oDoc7Table.setSelectedItem(aItems[0], true);
-            var oCtx = aItems[0].getBindingContext("detail");
+          var oBinding = oDoc7Table.getRowBinding && oDoc7Table.getRowBinding();
+          var aContexts = oBinding ? (oBinding.getCurrentContexts ? oBinding.getCurrentContexts() : []) : [];
+          if (aContexts.length > 0) {
+            var oCtx = aContexts[0];
             if (oCtx) {
               var sDocId = oCtx.getProperty("docId");
               this.onDoc7LoadFiles(sDocId);

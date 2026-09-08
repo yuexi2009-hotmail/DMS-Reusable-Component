@@ -287,39 +287,27 @@
                         <l:layoutData>
                           <l:SplitterLayoutData size="30%" minSize="160" />
                         </l:layoutData>
-                        <Table id="doc9DocTable"
-                          items="{detail>/doc9LeftRows}"
-                          mode="SingleSelectLeft"
-                          growing="true"
-                          growingThreshold="20"
+                        <mdc:Table
+                          id="doc9DocTable"
+                          header="Items"
+                          p13nMode="Column,Sort,Group"
+                          selectionMode="Single"
+                          showRowCount="true"
                           class="sapUiSizeCompact"
-                          selectionChange=".onDoc9DocSelect">
-                          <headerToolbar>
-                            <OverflowToolbar>
-                              <Title text="Items" titleStyle="H5" />
-                              <ToolbarSpacer />
-                              <Button icon="sap-icon://action-settings" press=".onDoc9LeftTableSettings" type="Transparent" tooltip="View Settings"/>
-                            </OverflowToolbar>
-                          </headerToolbar>
-                          <columns>
-                            <Column id="doc9ColDocId"  ><Text text="Document" /></Column>
-                            <Column id="doc9ColType"   width="4rem"  ><Text text="Type" /></Column>
-                            <Column id="doc9ColPart"   width="4rem"  ><Text text="Part" /></Column>
-                            <Column id="doc9ColVer"    width="4rem"  ><Text text="Ver." /></Column>
-                            <Column id="doc9ColStatus" width="5.5rem"><Text text="Status" /></Column>
-                          </columns>
-                          <items>
-                            <ColumnListItem type="Active">
-                              <cells>
-                                <Text text="{detail>docId}" wrapping="false"/>
-                                <Text text="{detail>type}" wrapping="false"/>
-                                <Text text="{detail>part}" wrapping="false"/>
-                                <Text text="{detail>version}" wrapping="false"/>
-                                <Text text="{detail>status}" wrapping="false"/>
-                              </cells>
-                            </ColumnListItem>
-                          </items>
-                        </Table>
+                          rowPress=".onDoc9DocSelect"
+                          delegate="{
+                            name: 'com/sap/demo/managespec/delegate/DocLeftTableDelegate',
+                            payload: { bindingPath: '/doc9LeftRows' }
+                          }">
+                          <mdc:type>
+                            <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
+                          </mdc:type>
+                          <mdct:Column propertyKey="docId"   header="Document"  ><Text text="{detail>docId}"   wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="type"    header="Type"      width="4rem"  ><Text text="{detail>type}"    wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="part"    header="Part"      width="4rem"  ><Text text="{detail>part}"    wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="version" header="Ver."      width="4rem"  ><Text text="{detail>version}" wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="status"  header="Status"    width="5.5rem"><Text text="{detail>status}"  wrapping="false"/></mdct:Column>
+                        </mdc:Table>
                       </l:SplitPane>
                       <l:SplitPane id="doc9PaneRight" requiredParentWidth="300">
                         <VBox class="doc9RightPane" height="100%">
@@ -515,39 +503,27 @@
                         <l:layoutData>
                           <l:SplitterLayoutData size="30%" minSize="160" />
                         </l:layoutData>
-                        <Table id="doc7DocTable"
-                          items="{detail>/doc7LeftRows}"
-                          mode="SingleSelectLeft"
-                          growing="true"
-                          growingThreshold="20"
+                        <mdc:Table
+                          id="doc7DocTable"
+                          header="Items"
+                          p13nMode="Column,Sort,Group"
+                          selectionMode="Single"
+                          showRowCount="true"
                           class="sapUiSizeCompact"
-                          selectionChange=".onDoc7DocSelect">
-                          <headerToolbar>
-                            <OverflowToolbar>
-                              <Title text="Items" titleStyle="H5" />
-                              <ToolbarSpacer />
-                              <Button icon="sap-icon://action-settings" press=".onDoc7LeftTableSettings" type="Transparent" tooltip="View Settings"/>
-                            </OverflowToolbar>
-                          </headerToolbar>
-                          <columns>
-                            <Column id="doc7ColDocId"  ><Text text="Document" /></Column>
-                            <Column id="doc7ColType"   width="4rem"  ><Text text="Type" /></Column>
-                            <Column id="doc7ColPart"   width="4rem"  ><Text text="Part" /></Column>
-                            <Column id="doc7ColVer"    width="4rem"  ><Text text="Ver." /></Column>
-                            <Column id="doc7ColStatus" width="5.5rem"><Text text="Status" /></Column>
-                          </columns>
-                          <items>
-                            <ColumnListItem type="Active">
-                              <cells>
-                                <Text text="{detail>docId}" wrapping="false"/>
-                                <Text text="{detail>type}" wrapping="false"/>
-                                <Text text="{detail>part}" wrapping="false"/>
-                                <Text text="{detail>version}" wrapping="false"/>
-                                <Text text="{detail>status}" wrapping="false"/>
-                              </cells>
-                            </ColumnListItem>
-                          </items>
-                        </Table>
+                          rowPress=".onDoc7DocSelect"
+                          delegate="{
+                            name: 'com/sap/demo/managespec/delegate/DocLeftTableDelegate',
+                            payload: { bindingPath: '/doc7LeftRows' }
+                          }">
+                          <mdc:type>
+                            <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
+                          </mdc:type>
+                          <mdct:Column propertyKey="docId"   header="Document"  ><Text text="{detail>docId}"   wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="type"    header="Type"      width="4rem"  ><Text text="{detail>type}"    wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="part"    header="Part"      width="4rem"  ><Text text="{detail>part}"    wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="version" header="Ver."      width="4rem"  ><Text text="{detail>version}" wrapping="false"/></mdct:Column>
+                          <mdct:Column propertyKey="status"  header="Status"    width="5.5rem"><Text text="{detail>status}"  wrapping="false"/></mdct:Column>
+                        </mdc:Table>
                       </l:SplitPane>
                       <l:SplitPane id="doc7PaneRight" requiredParentWidth="300">
                         <Table id="doc7AttTable"

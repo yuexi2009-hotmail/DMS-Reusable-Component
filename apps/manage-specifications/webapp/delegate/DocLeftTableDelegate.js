@@ -6,18 +6,18 @@ sap.ui.define([
   "use strict";
 
   var aPropertyInfos = [
-    { key: "docId",        label: "Document",      path: "docId",        dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "type",         label: "Type",          path: "type",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: true },
-    { key: "part",         label: "Part",          path: "part",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "version",      label: "Ver.",          path: "version",      dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "status",       label: "Status",        path: "status",       dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: true },
-    { key: "category",     label: "S4HANA Info",   path: "category",     dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "description",  label: "Description",   path: "description",  dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "createdBy",    label: "Created By",    path: "createdBy",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "changedBy",    label: "Changed By",    path: "changedBy",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "changedOn",    label: "Changed On",    path: "changedOn",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "lab",          label: "Lab/Office",    path: "lab",          dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
-    { key: "changeNumber", label: "Change Number", path: "changeNumber", dataType: "sap.ui.model.type.String", sortable: true, filterable: true }
+    { key: "docId",        label: "Document",      path: "docId",        dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "type",         label: "Type",          path: "type",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: true  },
+    { key: "part",         label: "Part",          path: "part",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "version",      label: "Ver.",          path: "version",      dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "status",       label: "Status",        path: "status",       dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: true  },
+    { key: "category",     label: "S4HANA Info",   path: "category",     dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "description",  label: "Description",   path: "description",  dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "createdBy",    label: "Created By",    path: "createdBy",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "changedBy",    label: "Changed By",    path: "changedBy",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "changedOn",    label: "Changed On",    path: "changedOn",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "lab",          label: "Lab/Office",    path: "lab",          dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false },
+    { key: "changeNumber", label: "Change Number", path: "changeNumber", dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: false }
   ];
 
   var oDelegate = Object.assign({}, TableDelegate);
