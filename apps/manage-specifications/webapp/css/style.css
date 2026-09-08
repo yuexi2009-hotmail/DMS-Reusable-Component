@@ -1277,3 +1277,8 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 .doc9Splitter .sapUiLoSplitter {
   height: 450px !important;
 }
+
+.docIdBold,
+.docIdBold .sapMLnk {
+  font-weight: bold !important;
+}

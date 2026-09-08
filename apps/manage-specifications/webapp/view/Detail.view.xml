@@ -302,7 +302,7 @@
                           <mdc:type>
                             <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
                           </mdc:type>
-                          <mdct:Column propertyKey="docId"   header="Document"  ><HBox><Text text="{detail>docId}" wrapping="false" visible="{= ${detail>type} === 'ATT' }"/><Link text="{detail>docId}" wrapping="false" visible="{= ${detail>type} !== 'ATT' }" press=".onDocIdLinkPress"/></HBox></mdct:Column>
+                          <mdct:Column propertyKey="docId"   header="Document"  ><HBox><Text text="{detail>docId}" wrapping="false" visible="{= ${detail>type} === 'ATT' }" class="docIdBold"/><Link text="{detail>docId}" wrapping="false" visible="{= ${detail>type} !== 'ATT' }" press=".onDocIdLinkPress" class="docIdBold"/></HBox></mdct:Column>
                           <mdct:Column propertyKey="type"    header="Type"      width="4rem"  ><Text text="{detail>type}"    wrapping="false"/></mdct:Column>
                           <mdct:Column propertyKey="part"    header="Part"      width="4rem"  ><Text text="{detail>part}"    wrapping="false"/></mdct:Column>
                           <mdct:Column propertyKey="version" header="Ver."      width="4rem"  ><Text text="{detail>version}" wrapping="false"/></mdct:Column>
@@ -519,7 +519,7 @@
                           <mdc:type>
                             <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
                           </mdc:type>
-                          <mdct:Column propertyKey="docId"   header="Document"  ><HBox><Text text="{detail>docId}" wrapping="false" visible="{= ${detail>type} === 'ATT' }"/><Link text="{detail>docId}" wrapping="false" visible="{= ${detail>type} !== 'ATT' }" press=".onDocIdLinkPress"/></HBox></mdct:Column>
+                          <mdct:Column propertyKey="docId"   header="Document"  ><HBox><Text text="{detail>docId}" wrapping="false" visible="{= ${detail>type} === 'ATT' }" class="docIdBold"/><Link text="{detail>docId}" wrapping="false" visible="{= ${detail>type} !== 'ATT' }" press=".onDocIdLinkPress" class="docIdBold"/></HBox></mdct:Column>
                           <mdct:Column propertyKey="type"    header="Type"      width="4rem"  ><Text text="{detail>type}"    wrapping="false"/></mdct:Column>
                           <mdct:Column propertyKey="part"    header="Part"      width="4rem"  ><Text text="{detail>part}"    wrapping="false"/></mdct:Column>
                           <mdct:Column propertyKey="version" header="Ver."      width="4rem"  ><Text text="{detail>version}" wrapping="false"/></mdct:Column>
