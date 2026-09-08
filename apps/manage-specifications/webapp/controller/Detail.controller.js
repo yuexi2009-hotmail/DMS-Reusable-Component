@@ -892,10 +892,39 @@ sap.ui.define([
     },
 
     onDoc7DocSelect: function (oEvent) {
-      var oCtx = oEvent.getParameter("bindingContext") ||
-                 (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
-      if (!oCtx) { return; }
-      var oDoc = oCtx.getObject();
+      var oCtx = oEvent.getParameter("bindingContext");
+      var oListItem = oEvent.getParameter("listItem");
+
+      // selectionMode="None": bindingContext is from internal model, get data via path from detail model
+      var oDoc;
+      if (oCtx) {
+        var sPath = oCtx.getPath();
+        oDoc = this.getView().getModel("detail").getProperty(sPath);
+      } else if (oListItem) {
+        var oDetailCtx = oListItem.getBindingContext("detail");
+        if (oDetailCtx) { oDoc = oDetailCtx.getObject(); }
+      }
+      if (!oDoc) { return; }
+
+      // Manual row highlight — find listItem by path match
+      if (!oListItem && oCtx) {
+        var sPath2 = oCtx.getPath();
+        var oInnerTable = this.getView().byId("doc7DocTable");
+        if (oInnerTable && oInnerTable._oTable) {
+          oInnerTable._oTable.getItems().forEach(function (it) {
+            var c = it.getBindingContext("detail");
+            if (c && c.getPath() === sPath2) { oListItem = it; }
+          });
+        }
+      }
+      if (oListItem) {
+        if (this._oDoc7SelectedItem && this._oDoc7SelectedItem !== oListItem) {
+          this._oDoc7SelectedItem.removeStyleClass("sapMLIBSelected");
+        }
+        oListItem.addStyleClass("sapMLIBSelected");
+        this._oDoc7SelectedItem = oListItem;
+      }
+      this._sDoc7SelectedPath = oCtx ? oCtx.getPath() : null;
       var oDetailModel = this.getView().getModel("detail");
 
       if (oDoc.isLinked) {
@@ -998,7 +1027,15 @@ sap.ui.define([
         var sBtnTextKey = sCaller === "doc9" ? "/doc9ActionBtnText" : "/doc7ActionBtnText";
 
         var oTable = oView.byId(sTableId);
-        var aSelCtx = oTable && oTable.getSelectedContexts ? oTable.getSelectedContexts() : [];
+        // selectionMode="None": use stored path of manually selected row
+        var sSelectedPath = sCaller === "doc9" ? this._sDoc9SelectedPath : this._sDoc7SelectedPath;
+        var aSelCtx = [];
+        if (sSelectedPath) {
+          var oDetailModelTmp = oView.getModel("detail");
+          aSelCtx = [{ getPath: function() { return sSelectedPath; } }];
+        } else {
+          aSelCtx = oTable && oTable.getSelectedContexts ? oTable.getSelectedContexts() : [];
+        }
         if (aSelCtx.length) {
           var oCtx = aSelCtx[0];
           var oDetailModel = oView.getModel("detail");
@@ -1421,10 +1458,38 @@ sap.ui.define([
 
     // ---- Documents 9 (Document Empty state — duplicate of Doc7) ----
     onDoc9DocSelect: function (oEvent) {
-      var oCtx = oEvent.getParameter("bindingContext") ||
-                 (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
-      if (!oCtx) { return; }
-      var oDoc = oCtx.getObject();
+      var oCtx = oEvent.getParameter("bindingContext");
+      var oListItem = oEvent.getParameter("listItem");
+
+      var oDoc;
+      if (oCtx) {
+        var sPath = oCtx.getPath();
+        oDoc = this.getView().getModel("detail").getProperty(sPath);
+      } else if (oListItem) {
+        var oDetailCtx = oListItem.getBindingContext("detail");
+        if (oDetailCtx) { oDoc = oDetailCtx.getObject(); }
+      }
+      if (!oDoc) { return; }
+
+      if (!oListItem && oCtx) {
+        var sPath2 = oCtx.getPath();
+        var oInnerTable9 = this.getView().byId("doc9DocTable");
+        if (oInnerTable9 && oInnerTable9._oTable) {
+          oInnerTable9._oTable.getItems().forEach(function (it) {
+            var c = it.getBindingContext("detail");
+            if (c && c.getPath() === sPath2) { oListItem = it; }
+          });
+        }
+      }
+      if (oListItem) {
+        if (this._oDoc9SelectedItem && this._oDoc9SelectedItem !== oListItem) {
+          this._oDoc9SelectedItem.removeStyleClass("sapMLIBSelected");
+        }
+        oListItem.addStyleClass("sapMLIBSelected");
+        this._oDoc9SelectedItem = oListItem;
+      }
+      this._sDoc9SelectedPath = oCtx ? oCtx.getPath() : null;
+
       var oDetailModel = this.getView().getModel("detail");
 
       if (oDoc.isLinked) {
