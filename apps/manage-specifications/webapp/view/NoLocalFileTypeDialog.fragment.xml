@@ -1,0 +1,30 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="noLocalFileTypeDialog"
+    title="No Local File Type Found"
+    contentWidth="32rem"
+    resizable="false"
+    draggable="true"
+    type="Message"
+    class="sapUiSizeCompact">
+
+    <content>
+      <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTopBottom">
+        <Text
+          text="No local file type was found for this document. To upload and manage files locally, please configure a local file type in the Document Configuration settings first." />
+      </VBox>
+    </content>
+
+    <beginButton>
+      <Button text="Configure File Type" type="Emphasized" press=".onConfigureFileType" width="auto" />
+    </beginButton>
+    <endButton>
+      <Button text="Cancel" press=".onConfigureFileTypeCancel" width="auto" />
+    </endButton>
+
+  </Dialog>
+
+</core:FragmentDefinition>

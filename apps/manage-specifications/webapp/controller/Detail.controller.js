@@ -1146,6 +1146,35 @@ sap.ui.define([
       });
     },
 
+    onConfigureFileType: function () {
+      if (this._oNoLocalFileTypeDialog) { this._oNoLocalFileTypeDialog.close(); }
+
+      var oView = this.getView();
+      var oDetailModel = oView.getModel("detail");
+      var oLeftTable = oView.byId("doc9DocTable");
+
+      // doc9: proceed to upload/drag-drop state
+      this._pendingDoc9LoadFiles = false;
+      oDetailModel.setProperty("/doc9Attachments", []);
+      oDetailModel.setProperty("/doc9RightState", "upload");
+      setTimeout(function () {
+        var oBinding = oLeftTable && oLeftTable.getRowBinding && oLeftTable.getRowBinding();
+        var aContexts = oBinding ? (oBinding.getCurrentContexts ? oBinding.getCurrentContexts() : []) : [];
+        if (aContexts.length > 0) {
+          var oDoc = aContexts[0].getObject();
+          oDetailModel.setProperty("/doc9ShowSwitchType", true);
+          oDetailModel.setProperty("/doc9ActionBtnText", oDoc.isLinked ? "Sync" : oDoc.type === "ATT" ? "Change Type" : "Sync");
+        }
+        this._setupDoc9DropZone();
+      }.bind(this), 0);
+      var oCreateBtn = oView.byId("doc9CreateBtn");
+      if (oCreateBtn) { oCreateBtn.setEnabled(true); this._fixMenuBtnWidth(oCreateBtn); }
+    },
+
+    onConfigureFileTypeCancel: function () {
+      if (this._oNoLocalFileTypeDialog) { this._oNoLocalFileTypeDialog.close(); }
+    },
+
     onDoc7Unlink: function () {
       var oView = this.getView();
       var oLeftTable = oView.byId("doc7DocTable");
@@ -1458,22 +1487,23 @@ sap.ui.define([
       oDetailModel.setProperty("/doc9EverLoaded", true);
       oDetailModel.setProperty("/doc9HasData", true);
 
-      // Called from button (no docId, or event object passed) → upload/drag-drop state, select first row
+      // Called from button (no docId, or event object passed) → show "No local file type" dialog first
       if (typeof sDocId !== "string") {
-        oDetailModel.setProperty("/doc9Attachments", []);
-        oDetailModel.setProperty("/doc9RightState", "upload");
-        setTimeout(function () {
-          var oBinding = oLeftTable && oLeftTable.getRowBinding && oLeftTable.getRowBinding();
-          var aContexts = oBinding ? (oBinding.getCurrentContexts ? oBinding.getCurrentContexts() : []) : [];
-          if (aContexts.length > 0) {
-            var oDoc = aContexts[0].getObject();
-            oDetailModel.setProperty("/doc9ShowSwitchType", true);
-            oDetailModel.setProperty("/doc9ActionBtnText", oDoc.isLinked ? "Sync" : oDoc.type === "ATT" ? "Change Type" : "Sync");
-          }
-          this._setupDoc9DropZone();
-        }.bind(this), 0);
-        var oCreateBtn = oView.byId("doc9CreateBtn");
-        if (oCreateBtn) { oCreateBtn.setEnabled(true); this._fixMenuBtnWidth(oCreateBtn); }
+        var that9 = this;
+        this._pendingDoc9LoadFiles = true;
+        if (!this._oNoLocalFileTypeDialog) {
+          Fragment.load({
+            id: oView.getId(),
+            name: "com.sap.demo.managespec.view.NoLocalFileTypeDialog",
+            controller: this
+          }).then(function (oDialog) {
+            oView.addDependent(oDialog);
+            that9._oNoLocalFileTypeDialog = oDialog;
+            oDialog.open();
+          });
+        } else {
+          this._oNoLocalFileTypeDialog.open();
+        }
         return;
       }
 
