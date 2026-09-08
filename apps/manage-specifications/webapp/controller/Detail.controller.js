@@ -881,6 +881,12 @@ sap.ui.define([
     },
 
         // ---- Documents 7 ----
+    onDocIdLinkPress: function (oEvent) {
+      var oLink = oEvent.getSource();
+      var sDocId = oLink.getText();
+      sap.m.MessageToast.show("Open document: " + sDocId);
+    },
+
     onDoc7DocSelect: function (oEvent) {
       var oCtx = oEvent.getParameter("bindingContext") ||
                  (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
