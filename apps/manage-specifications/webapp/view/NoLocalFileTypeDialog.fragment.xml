@@ -12,16 +12,13 @@
 
     <content>
       <Text
-        text="No local document type was found. To upload and manage files locally, please configure a local document type in the Document Configuration settings first."
+        text="The document type for local attachment is not defined. Please contact your administrator to add the required configuration."
         class="sapUiSmallMarginBeginEnd sapUiTinyMarginTopBottom" />
     </content>
 
     <beginButton>
-      <Button text="Configure Document Type" type="Emphasized" press=".onConfigureFileType" width="auto" />
+      <Button text="OK" type="Emphasized" press=".onConfigureFileType" width="auto" />
     </beginButton>
-    <endButton>
-      <Button text="Cancel" press=".onConfigureFileTypeCancel" width="auto" />
-    </endButton>
 
   </Dialog>
 

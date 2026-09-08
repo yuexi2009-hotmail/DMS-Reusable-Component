@@ -1,97 +1,102 @@
 <core:FragmentDefinition
   xmlns="sap.m"
-  xmlns:core="sap.ui.core">
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form">
 
   <Dialog
     id="linkDocumentDialog"
-    title="Search document"
+    title="Link Documents"
     contentWidth="72rem"
-    contentHeight="42rem"
+    contentHeight="44rem"
     resizable="true"
     draggable="true"
-    class="sapUiSizeCompact">
+    class="sapUiSizeCompact linkDocumentDialog">
 
     <content>
-      <VBox fitContainer="true">
+      <VBox fitContainer="true" class="sapUiNoMargin">
 
-        <!-- Tabs -->
-        <IconTabBar
-          id="linkDocDialogTabs"
-          stretchContentHeight="false"
-          backgroundDesign="Transparent"
-          class="sapUiNoContentPadding linkDocTabBar">
+        <!-- Search bar -->
+        <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDocSearchBar">
+          <SearchField
+            id="linkDocSearchField"
+            placeholder="Search"
+            width="30rem"
+            search=".onLinkDocSearch" />
+          <ToolbarSpacer />
+          <Button id="linkDocGoBtn" text="Go" type="Emphasized" press=".onLinkDocGo" />
+          <Button id="linkDocToggleFiltersBtn" text="Hide Filters" type="Transparent" press=".onLinkDocToggleFilters" />
+        </Toolbar>
+
+        <!-- Filter bar -->
+        <VBox id="linkDocFilterBar" visible="true" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
+          <f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="2">
+            <f:content>
+              <Label text="Document Type:" />
+              <Select id="linkDocTypeFilter" width="100%" change=".onLinkDocFilterChange">
+                <core:Item key="" text="All" />
+                <core:Item key="DFT" text="DFT" />
+                <core:Item key="DRW" text="DRW" />
+                <core:Item key="TST" text="TST" />
+                <core:Item key="IMU" text="IMU" />
+              </Select>
+              <Label text="Status:" />
+              <Select id="linkDocStatusFilter" width="100%" change=".onLinkDocFilterChange">
+                <core:Item key="" text="All" />
+                <core:Item key="New" text="New" />
+                <core:Item key="In Work" text="In Work" />
+                <core:Item key="Released" text="Released" />
+              </Select>
+            </f:content>
+          </f:SimpleForm>
+        </VBox>
+
+        <!-- Results table -->
+        <Table
+          id="linkDocResultTable"
+          items="{linkDoc>/filteredDocuments}"
+          mode="MultiSelect"
+          sticky="ColumnHeaders,HeaderToolbar"
+          growing="true"
+          growingThreshold="20"
+          class="sapUiSizeCompact">
+          <headerToolbar>
+            <Toolbar class="sapUiSizeCompact">
+              <Title text="Items ({= ${linkDoc>/filteredDocuments}.length})" level="H5" />
+              <ToolbarSpacer />
+              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onLinkDocTableSettings" />
+            </Toolbar>
+          </headerToolbar>
+          <columns>
+            <Column width="13rem"><Text text="Document No." /></Column>
+            <Column><Text text="Description" /></Column>
+            <Column width="9rem"><Text text="Document Type" /></Column>
+            <Column width="7rem"><Text text="Document Part" /></Column>
+            <Column width="9rem"><Text text="Document Versi..." /></Column>
+            <Column width="9rem"><Text text="Document Status" /></Column>
+          </columns>
           <items>
-            <IconTabFilter text="Search and Select" key="search">
-              <VBox>
-
-                <!-- Search toolbar -->
-                <Toolbar id="linkDocSearchToolbar" class="sapUiSizeCompact sapMTBTransparent linkDocSearchBar">
-                  <SearchField
-                    id="linkDocSearchField"
-                    placeholder="Search"
-                    search=".onLinkDocSearch" />
-                  <ToolbarSpacer />
-                  <Button text="Go" type="Emphasized" press=".onLinkDocSearch" />
-                  <Button text="Show Filters" type="Transparent" press=".onLinkDocShowFilters" />
-                </Toolbar>
-
-                <!-- Results table -->
-                <Table
-                  id="linkDocResultTable"
-                  items="{linkDoc>/documents}"
-                  mode="MultiSelect"
-                  sticky="ColumnHeaders,HeaderToolbar"
-                  growing="true"
-                  growingThreshold="20"
-                  class="sapUiSizeCompact">
-                  <headerToolbar>
-                    <Toolbar class="sapUiSizeCompact sapMTBTransparent">
-                      <Title text="Items ({= ${linkDoc>/documents}.length})" level="H5" />
-                      <ToolbarSpacer />
-                      <Button icon="sap-icon://copy" type="Transparent" />
-                    </Toolbar>
-                  </headerToolbar>
-                  <columns>
-                    <Column width="13rem"><Text text="Document No." /></Column>
-                    <Column><Text text="Description" /></Column>
-                    <Column width="9rem"><Text text="Document Type" /></Column>
-                    <Column width="7rem"><Text text="Document Part" /></Column>
-                    <Column width="8rem"><Text text="Document Version" /></Column>
-                    <Column width="9rem"><Text text="Document Status" /></Column>
-                  </columns>
-                  <items>
-                    <ColumnListItem>
-                      <cells>
-                        <Text text="{linkDoc>docNumber}" wrapping="false" />
-                        <Text text="{linkDoc>description}" wrapping="false" />
-                        <Text text="{linkDoc>type}" wrapping="false" />
-                        <Text text="{linkDoc>part}" wrapping="false" />
-                        <Text text="{linkDoc>version}" wrapping="false" />
-                        <Text text="{linkDoc>status}" wrapping="false" />
-                      </cells>
-                    </ColumnListItem>
-                  </items>
-                </Table>
-
-              </VBox>
-            </IconTabFilter>
-
-            <IconTabFilter text="Define Conditions" key="conditions">
-              <VBox class="sapUiMediumMarginBeginEnd sapUiSmallMarginTop">
-                <Text text="Define search conditions here." />
-              </VBox>
-            </IconTabFilter>
+            <ColumnListItem>
+              <cells>
+                <Text text="{linkDoc>docNumber}" wrapping="false" />
+                <Text text="{linkDoc>description}" wrapping="false" />
+                <Text text="{linkDoc>type}" wrapping="false" />
+                <Text text="{linkDoc>part}" wrapping="false" />
+                <Text text="{linkDoc>version}" wrapping="false" />
+                <Text text="{linkDoc>status}" wrapping="false" />
+              </cells>
+            </ColumnListItem>
           </items>
-        </IconTabBar>
+        </Table>
 
       </VBox>
     </content>
 
     <beginButton>
-      <Button text="Select" type="Emphasized" press=".onLinkDocConfirm" class="sapUiSizeCompact" width="auto" />
+      <Button text="OK" type="Emphasized" press=".onLinkDocConfirm" width="auto" />
     </beginButton>
     <endButton>
-      <Button text="Cancel" press=".onLinkDocCancel" class="sapUiSizeCompact" width="auto" />
+      <Button text="Cancel" press=".onLinkDocCancel" width="auto" />
     </endButton>
 
   </Dialog>

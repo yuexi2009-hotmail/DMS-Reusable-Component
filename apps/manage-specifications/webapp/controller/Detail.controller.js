@@ -380,24 +380,27 @@ sap.ui.define([
       }).then(function (oDialog) {
         this._oLinkDocDialogInst = oDialog;
         oView.addDependent(oDialog);
+        var aAllDocs = [
+              { description: "Valve-Assembly-2026",       docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
+              { description: "Surface-Treatment-Spec",    docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
+              { description: "Gearbox-Housing-Design",    docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
+              { description: "Frame-Welding-Procedure",   docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
+              { description: "Fastener-Torque-Spec",      docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
+              { description: "Final-Assembly-Guide",      docNumber: "200000002050", type: "DFT", part: "000", version: "02", status: "Released" },
+              { description: "Cooling-System-Layout",     docNumber: "200000002060", type: "DRW", part: "000", version: "01", status: "New" },
+              { description: "Hydraulic-Line-Spec",       docNumber: "200000002070", type: "DFT", part: "002", version: "01", status: "In Work" },
+              { description: "Pump-Assembly-Drawing",     docNumber: "200000002080", type: "DRW", part: "000", version: "04", status: "Released" },
+              { description: "Seal-Replacement-Guide",    docNumber: "200000002090", type: "IMU", part: "000", version: "02", status: "New" },
+              { description: "Motor-Mount-Design",        docNumber: "200000002100", type: "DRW", part: "001", version: "01", status: "In Work" },
+              { description: "Electrical-Wiring-Spec",    docNumber: "200000002110", type: "DFT", part: "000", version: "03", status: "Released" },
+              { description: "Cable-Routing-Diagram",     docNumber: "200000002120", type: "DRW", part: "000", version: "01", status: "New" },
+              { description: "Brake-System-Spec",         docNumber: "200000002130", type: "TST", part: "000", version: "02", status: "In Work" },
+              { description: "Fuel-Injection-Design",     docNumber: "200000002140", type: "DFT", part: "002", version: "01", status: "New" },
+              { description: "Exhaust-Pipe-Drawing",      docNumber: "200000002150", type: "DRW", part: "000", version: "01", status: "Released" }
+            ];
         var oLinkDocModel = new JSONModel({
-            documents: [
-              { description: "Car-Body-Design",         docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { description: "Body-Material-Spec",      docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { description: "Car-Wheel-Design",        docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
-              { description: "Engine-Design-v2",        docNumber: "100000000195", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { description: "Engine-Block-Spec",       docNumber: "100000000197", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { description: "Cylinder-Head-Drawing",   docNumber: "100000000198", type: "DFT", part: "000", version: "00", status: "New" },
-              { description: "Chassis-Design",          docNumber: "100000000200", type: "TST", part: "000", version: "00", status: "New" },
-              { description: "Frame-Material-Spec",     docNumber: "100000000202", type: "TST", part: "000", version: "00", status: "New" },
-              { description: "Suspension-Assembly",     docNumber: "100000000203", type: "DRW", part: "001", version: "01", status: "Released" },
-              { description: "Brake-System-Spec",       docNumber: "100000000204", type: "DFT", part: "000", version: "02", status: "In Work" },
-              { description: "Gearbox-Design",          docNumber: "100000000205", type: "DRW", part: "000", version: "01", status: "New" },
-              { description: "Exhaust-Pipe-Drawing",    docNumber: "100000000206", type: "DRW", part: "000", version: "01", status: "Released" },
-              { description: "Cooling-System-Spec",     docNumber: "100000000207", type: "TST", part: "000", version: "03", status: "In Work" },
-              { description: "Fuel-Injection-System",   docNumber: "100000000208", type: "DFT", part: "002", version: "01", status: "New" },
-              { description: "Electrical-Wiring-Plan",  docNumber: "100000000209", type: "DFT", part: "000", version: "02", status: "Released" }
-            ]
+            documents: aAllDocs,
+            filteredDocuments: aAllDocs.slice()
         });
         oDialog.setModel(oLinkDocModel, "linkDoc");
         oDialog.open();
@@ -771,86 +774,87 @@ sap.ui.define([
     },
 
     onLinkDocSearch: function () {
+      this._applyLinkDocFilters();
     },
 
-    onLinkDocTreeToggle: function () {
-      var oTable = this.getView().byId("linkDocResultTable");
-      if (!oTable) { return; }
-      setTimeout(function () {
-        var oBinding = oTable.getBinding("rows");
-        if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-      }, 0);
+    onLinkDocGo: function () {
+      this._applyLinkDocFilters();
+    },
+
+    onLinkDocToggleFilters: function () {
+      var oView = this.getView();
+      var oFragId = "linkDocFrag" + (this._iLinkDocFragIdx || 1);
+      var oFilterBar = sap.ui.core.Fragment.byId(oFragId, "linkDocFilterBar");
+      var oBtn = sap.ui.core.Fragment.byId(oFragId, "linkDocToggleFiltersBtn");
+      if (!oFilterBar) { return; }
+      var bVisible = oFilterBar.getVisible();
+      oFilterBar.setVisible(!bVisible);
+      oBtn.setText(bVisible ? "Show Filters" : "Hide Filters");
+    },
+
+    onLinkDocFilterChange: function () {
+      this._applyLinkDocFilters();
+    },
+
+    onLinkDocTableSettings: function () {
+      MessageToast.show("Table Settings");
+    },
+
+    _applyLinkDocFilters: function () {
+      if (!this._oLinkDocDialogInst) { return; }
+      var oFragId = "linkDocFrag" + (this._iLinkDocFragIdx || 1);
+      var oModel = this._oLinkDocDialogInst.getModel("linkDoc");
+      if (!oModel) { return; }
+
+      var oSearchField = sap.ui.core.Fragment.byId(oFragId, "linkDocSearchField");
+      var oTypeFilter  = sap.ui.core.Fragment.byId(oFragId, "linkDocTypeFilter");
+      var oStatusFilter = sap.ui.core.Fragment.byId(oFragId, "linkDocStatusFilter");
+
+      var sSearch = oSearchField ? oSearchField.getValue().toLowerCase() : "";
+      var sType   = oTypeFilter  ? oTypeFilter.getSelectedKey()  : "";
+      var sStatus = oStatusFilter ? oStatusFilter.getSelectedKey() : "";
+
+      var aAll = oModel.getProperty("/documents") || [];
+      var aFiltered = aAll.filter(function (oDoc) {
+        var bType   = !sType   || oDoc.type === sType;
+        var bStatus = !sStatus || oDoc.status === sStatus;
+        var bSearch = !sSearch || oDoc.docNumber.toLowerCase().indexOf(sSearch) !== -1
+                               || oDoc.description.toLowerCase().indexOf(sSearch) !== -1;
+        return bType && bStatus && bSearch;
+      });
+      oModel.setProperty("/filteredDocuments", aFiltered);
     },
 
     onLinkDocShowFilters: function () {
-      MessageToast.show("Show Filters");
+      this.onLinkDocToggleFilters();
     },
 
     onLinkDocConfirm: function () {
       var oView = this.getView();
-      var oTable = oView.byId("linkDocResultTable");
+      var oFragId = "linkDocFrag" + (this._iLinkDocFragIdx || 1);
+      var oTable = sap.ui.core.Fragment.byId(oFragId, "linkDocResultTable");
       if (!oTable) {
-        if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); };
+        if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); }
         return;
       }
 
-      // Get selected indices and find their parent docs with full children intact
-      var oBinding = oTable.getBinding("rows");
-      var aSelectedIndices = oTable.getSelectedIndices();
-      var aNewDocs = [];
-      var aSeenNumbers = [];
-
-      aSelectedIndices.forEach(function (iIndex) {
-        var oCtx = oBinding.getContextByIndex(iIndex);
-        if (!oCtx) { return; }
-        var oDoc = oCtx.getObject();
-        if (!oDoc) { return; }
-
-        // Walk up to find the parent doc from the linkDoc model
-        var oLinkDocModel = oView.byId("linkDocResultTable").getModel("linkDoc");
-        var aAllDocs = oLinkDocModel ? oLinkDocModel.getProperty("/documents") : [];
-
-        if (oDoc.isParent) {
-          // Directly a parent — add with its children
-          if (aSeenNumbers.indexOf(oDoc.docNumber) === -1) {
-            aSeenNumbers.push(oDoc.docNumber);
-            aNewDocs.push(JSON.parse(JSON.stringify(oDoc)));
-          }
-        } else {
-          // Child row — find its parent and add the whole parent+children
-          aAllDocs.forEach(function (oParent) {
-            if (oParent.children && oParent.children.some(function (c) { return c.docNumber === oDoc.docNumber; })) {
-              if (aSeenNumbers.indexOf(oParent.docNumber) === -1) {
-                aSeenNumbers.push(oParent.docNumber);
-                aNewDocs.push(JSON.parse(JSON.stringify(oParent)));
-              }
-            }
-          });
-        }
+      var aSelectedItems = oTable.getSelectedItems();
+      var aNewDocs = aSelectedItems.map(function (oItem) {
+        return oItem.getBindingContext("linkDoc").getObject();
       });
 
       if (aNewDocs.length > 0) {
         var oDetailModel = oView.getModel("detail");
         var aDocs = oDetailModel.getProperty("/documents") || [];
         oDetailModel.setProperty("/documents", aDocs.concat(aNewDocs));
-
-        setTimeout(function () {
-          ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
-            var oT = oView.byId(sId);
-            if (!oT) { return; }
-            var oB = oT.getBinding("rows");
-            if (oB) { oT.setVisibleRowCount(oB.getLength()); }
-          });
-        }, 0);
-
         MessageToast.show(aNewDocs.length + " document(s) linked");
       }
 
-      if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); };
+      if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); }
     },
 
     onLinkDocCancel: function () {
-      if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); };
+      if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); }
     },
 
     onDocTreeToggle: function () {
