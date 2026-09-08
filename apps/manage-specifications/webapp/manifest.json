@@ -16,6 +16,10 @@
     }
   },
   "sap.ui5": {
+    "resourceRoots": {
+      "com.sap.demo.managespec": "./",
+      "com.sap.demo.managespec.delegate": "./delegate/"
+    },
     "rootView": {
       "viewName": "com.sap.demo.managespec.view.App",
       "type": "XML",
@@ -76,7 +80,8 @@
         "sap.ui.layout": {},
         "sap.ui.table": {},
         "sap.uxap": {},
-        "sap.ui.mdc": {}
+        "sap.ui.mdc": {},
+        "sap.ui.fl": {}
       }
     },
     "contentDensities": {

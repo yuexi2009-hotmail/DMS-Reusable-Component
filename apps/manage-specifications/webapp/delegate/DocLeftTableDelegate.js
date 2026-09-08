@@ -1,0 +1,60 @@
+sap.ui.define([
+  "sap/ui/mdc/TableDelegate",
+  "sap/ui/mdc/table/Column",
+  "sap/m/Text"
+], function (TableDelegate, Column, Text) {
+  "use strict";
+
+  var aPropertyInfos = [
+    { key: "docId",        label: "Document",      path: "docId",        dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "type",         label: "Type",          path: "type",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: true },
+    { key: "part",         label: "Part",          path: "part",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "version",      label: "Ver.",          path: "version",      dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "status",       label: "Status",        path: "status",       dataType: "sap.ui.model.type.String", sortable: true, filterable: true, groupable: true },
+    { key: "category",     label: "S4HANA Info",   path: "category",     dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "description",  label: "Description",   path: "description",  dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "createdBy",    label: "Created By",    path: "createdBy",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "changedBy",    label: "Changed By",    path: "changedBy",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "changedOn",    label: "Changed On",    path: "changedOn",    dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "lab",          label: "Lab/Office",    path: "lab",          dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+    { key: "changeNumber", label: "Change Number", path: "changeNumber", dataType: "sap.ui.model.type.String", sortable: true, filterable: true }
+  ];
+
+  var oDelegate = Object.assign({}, TableDelegate);
+
+  oDelegate.fetchProperties = async function () {
+    return aPropertyInfos;
+  };
+
+  oDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
+    TableDelegate.updateBindingInfo.call(oDelegate, oTable, oBindingInfo);
+    oBindingInfo.path = oTable.getPayload().bindingPath;
+    oBindingInfo.model = "detail";
+  };
+
+  oDelegate.addItem = async function (oTable, sPropertyKey) {
+    var oPI = aPropertyInfos.find(function (p) { return p.key === sPropertyKey; });
+    if (!oPI) { return null; }
+    var sId = oTable.getId() + "---col-" + sPropertyKey;
+    var oExisting = sap.ui.getCore().byId(sId);
+    if (oExisting) { return oExisting; }
+    var oTemplate = new Text({ text: "{detail>" + oPI.path + "}", wrapping: false });
+    return new Column(sId, {
+      propertyKey: oPI.key,
+      header: oPI.label,
+      template: oTemplate,
+      width: _getColWidth(sPropertyKey)
+    });
+  };
+
+  function _getColWidth(sKey) {
+    var mWidths = {
+      type: "4rem", part: "4rem", version: "4rem", status: "5.5rem",
+      category: "7rem", createdBy: "10rem", changedBy: "10rem",
+      changedOn: "7rem", lab: "6rem", changeNumber: "8rem", description: "12rem"
+    };
+    return mWidths[sKey] || undefined;
+  }
+
+  return oDelegate;
+});

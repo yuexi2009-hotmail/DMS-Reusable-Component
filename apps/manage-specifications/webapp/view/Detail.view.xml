@@ -287,62 +287,35 @@
                         <l:layoutData>
                           <l:SplitterLayoutData size="30%" minSize="160" />
                         </l:layoutData>
-                        <Table
-                          id="doc9DocTable"
+                        <Table id="doc9DocTable"
                           items="{detail>/doc9LeftRows}"
-                          mode="SingleSelectMaster"
-                          noDataText="{= ${detail>/doc9EverLoaded} ? 'No documents' : '' }"
-                          selectionChange=".onDoc9DocSelect"
-                          itemPress=".onDoc9DocSelect"
-                          class="sapUiSizeCompact detailTable doc9DocTable"
-                          fixedLayout="false">
+                          mode="SingleSelectLeft"
+                          growing="true"
+                          growingThreshold="20"
+                          class="sapUiSizeCompact"
+                          selectionChange=".onDoc9DocSelect">
                           <headerToolbar>
-                            <OverflowToolbar class="doc9LeftToolbar">
-                              <Title text="Items" level="H4" class="doc9LeftTitle" />
-                              <Text id="doc9LeftCount" text="({= ${detail>/doc9LeftRows}.length})" class="doc9LeftCount" />
+                            <OverflowToolbar>
+                              <Title text="Items" titleStyle="H5" />
                               <ToolbarSpacer />
-                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc9LeftTableSettings" class="doc9SettingsBtn" />
+                              <Button icon="sap-icon://action-settings" press=".onDoc9LeftTableSettings" type="Transparent" tooltip="View Settings"/>
                             </OverflowToolbar>
                           </headerToolbar>
                           <columns>
-                            <Column id="doc9ColDocument"><Text text="Document" /></Column>
-                            <Column id="doc9ColType" width="4rem"><Text text="Type" /></Column>
-                            <Column id="doc9ColPart" width="4rem"><Text text="Part" /></Column>
-                            <Column id="doc9ColVer" width="4rem"><Text text="Ver." /></Column>
+                            <Column id="doc9ColDocId"  ><Text text="Document" /></Column>
+                            <Column id="doc9ColType"   width="4rem"  ><Text text="Type" /></Column>
+                            <Column id="doc9ColPart"   width="4rem"  ><Text text="Part" /></Column>
+                            <Column id="doc9ColVer"    width="4rem"  ><Text text="Ver." /></Column>
                             <Column id="doc9ColStatus" width="5.5rem"><Text text="Status" /></Column>
-                            <Column id="doc9ColCategory" width="7rem" visible="false"><Text text="S4HANA Info" /></Column>
-                            <Column id="doc9ColDescription" width="12rem" visible="false"><Text text="Description" /></Column>
-                            <Column id="doc9ColCreatedBy" width="10rem" visible="false"><Text text="Created By" /></Column>
-                            <Column id="doc9ColChangedBy" width="10rem" visible="false"><Text text="Changed By" /></Column>
-                            <Column id="doc9ColChangedOn" width="7rem" visible="false"><Text text="Changed On" /></Column>
-                            <Column id="doc9ColLab" width="6rem" visible="false"><Text text="Lab/Office" /></Column>
-                            <Column id="doc9ColChangeNo" width="8rem" visible="false"><Text text="Change Number" /></Column>
                           </columns>
                           <items>
-                            <ColumnListItem type="Active" visible="{detail>/doc9EverLoaded}">
+                            <ColumnListItem type="Active">
                               <cells>
-                                <HBox alignItems="Center" renderType="Bare">
-                                  <Text text="{detail>docId}"
-                                        visible="{= !${detail>isLinked} &amp;&amp; ${detail>type} === 'ATT' }"
-                                        class="doc9DocIdBold"
-                                        wrapping="false" />
-                                  <Link text="{= ${detail>isLinked} ? ${detail>docNumber} : ${detail>docId} }"
-                                        visible="{= ${detail>isLinked} || ${detail>type} !== 'ATT' }"
-                                        press=".onDoc9LinkedDocPress"
-                                        class="doc9DocIdLinked"
-                                        wrapping="false" />
-                                </HBox>
-                                <Text text="{detail>type}" wrapping="false" />
-                                <Text text="{detail>part}" wrapping="false" />
-                                <Text text="{detail>version}" wrapping="false" />
-                                <Text text="{detail>status}" wrapping="false" />
-                                <Text text="{detail>category}" wrapping="false" />
-                                <Text text="{detail>description}" wrapping="false" />
-                                <Text text="{detail>createdBy}" wrapping="false" />
-                                <Text text="{detail>changedBy}" wrapping="false" />
-                                <Text text="{detail>changedOn}" wrapping="false" />
-                                <Text text="{detail>lab}" wrapping="false" />
-                                <Text text="{detail>changeNumber}" wrapping="false" />
+                                <Text text="{detail>docId}" wrapping="false"/>
+                                <Text text="{detail>type}" wrapping="false"/>
+                                <Text text="{detail>part}" wrapping="false"/>
+                                <Text text="{detail>version}" wrapping="false"/>
+                                <Text text="{detail>status}" wrapping="false"/>
                               </cells>
                             </ColumnListItem>
                           </items>
@@ -542,62 +515,35 @@
                         <l:layoutData>
                           <l:SplitterLayoutData size="30%" minSize="160" />
                         </l:layoutData>
-                        <Table
-                          id="doc7DocTable"
+                        <Table id="doc7DocTable"
                           items="{detail>/doc7LeftRows}"
-                          mode="SingleSelectMaster"
-                          noDataText="No documents"
-                          selectionChange=".onDoc7DocSelect"
-                          itemPress=".onDoc7DocSelect"
-                          class="sapUiSizeCompact detailTable doc7DocTable"
-                          fixedLayout="false">
+                          mode="SingleSelectLeft"
+                          growing="true"
+                          growingThreshold="20"
+                          class="sapUiSizeCompact"
+                          selectionChange=".onDoc7DocSelect">
                           <headerToolbar>
-                            <OverflowToolbar class="doc7LeftToolbar">
-                              <Title text="Items" level="H4" class="doc7LeftTitle" />
-                              <Text id="doc7LeftCount" text="({= ${detail>/doc7LeftRows}.length})" class="doc7LeftCount" />
+                            <OverflowToolbar>
+                              <Title text="Items" titleStyle="H5" />
                               <ToolbarSpacer />
-                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7LeftTableSettings" class="doc7SettingsBtn" />
+                              <Button icon="sap-icon://action-settings" press=".onDoc7LeftTableSettings" type="Transparent" tooltip="View Settings"/>
                             </OverflowToolbar>
                           </headerToolbar>
                           <columns>
-                            <Column id="doc7ColDocument"><Text text="Document" /></Column>
-                            <Column id="doc7ColType" width="4rem"><Text text="Type" /></Column>
-                            <Column id="doc7ColPart" width="4rem"><Text text="Part" /></Column>
-                            <Column id="doc7ColVer" width="4rem"><Text text="Ver." /></Column>
+                            <Column id="doc7ColDocId"  ><Text text="Document" /></Column>
+                            <Column id="doc7ColType"   width="4rem"  ><Text text="Type" /></Column>
+                            <Column id="doc7ColPart"   width="4rem"  ><Text text="Part" /></Column>
+                            <Column id="doc7ColVer"    width="4rem"  ><Text text="Ver." /></Column>
                             <Column id="doc7ColStatus" width="5.5rem"><Text text="Status" /></Column>
-                            <Column id="doc7ColCategory" width="7rem" visible="false"><Text text="S4HANA Info" /></Column>
-                            <Column id="doc7ColDescription" width="12rem" visible="false"><Text text="Description" /></Column>
-                            <Column id="doc7ColCreatedBy" width="10rem" visible="false"><Text text="Created By" /></Column>
-                            <Column id="doc7ColChangedBy" width="10rem" visible="false"><Text text="Changed By" /></Column>
-                            <Column id="doc7ColChangedOn" width="7rem" visible="false"><Text text="Changed On" /></Column>
-                            <Column id="doc7ColLab" width="6rem" visible="false"><Text text="Lab/Office" /></Column>
-                            <Column id="doc7ColChangeNo" width="8rem" visible="false"><Text text="Change Number" /></Column>
                           </columns>
                           <items>
                             <ColumnListItem type="Active">
                               <cells>
-                                <HBox alignItems="Center" renderType="Bare">
-                                  <Text text="{detail>docId}"
-                                        visible="{= !${detail>isLinked} &amp;&amp; ${detail>type} === 'ATT' }"
-                                        class="doc7DocIdBold"
-                                        wrapping="false" />
-                                  <Link text="{= ${detail>isLinked} ? ${detail>docNumber} : ${detail>docId} }"
-                                        visible="{= ${detail>isLinked} || ${detail>type} !== 'ATT' }"
-                                        press=".onDoc7LinkedDocPress"
-                                        class="doc7DocIdLinked"
-                                        wrapping="false" />
-                                </HBox>
-                                <Text text="{detail>type}" wrapping="false" />
-                                <Text text="{detail>part}" wrapping="false" />
-                                <Text text="{detail>version}" wrapping="false" />
-                                <Text text="{detail>status}" wrapping="false" />
-                                <Text text="{detail>category}" wrapping="false" />
-                                <Text text="{detail>description}" wrapping="false" />
-                                <Text text="{detail>createdBy}" wrapping="false" />
-                                <Text text="{detail>changedBy}" wrapping="false" />
-                                <Text text="{detail>changedOn}" wrapping="false" />
-                                <Text text="{detail>lab}" wrapping="false" />
-                                <Text text="{detail>changeNumber}" wrapping="false" />
+                                <Text text="{detail>docId}" wrapping="false"/>
+                                <Text text="{detail>type}" wrapping="false"/>
+                                <Text text="{detail>part}" wrapping="false"/>
+                                <Text text="{detail>version}" wrapping="false"/>
+                                <Text text="{detail>status}" wrapping="false"/>
                               </cells>
                             </ColumnListItem>
                           </items>

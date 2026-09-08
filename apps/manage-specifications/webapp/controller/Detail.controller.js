@@ -6,13 +6,8 @@ sap.ui.define([
   "sap/ui/core/Fragment",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/ui/model/Sorter",
-  "sap/m/p13n/Engine",
-  "sap/m/p13n/SelectionController",
-  "sap/m/p13n/MetadataHelper"
-], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter,
-             Engine, SelectionController, MetadataHelper) {
-  "use strict";
+  "sap/ui/model/Sorter"
+], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter) {
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
 
@@ -886,10 +881,50 @@ sap.ui.define([
     },
 
         // ---- Documents 7 ----
+    onDoc7LeftTableSettings: function () {
+      var oTable = this.byId("doc7DocTable");
+      if (!oTable) { return; }
+      var that = this;
+      sap.ui.require([
+        "sap/m/p13n/Engine",
+        "sap/m/p13n/SelectionController",
+        "sap/m/p13n/SortController",
+        "sap/m/p13n/FilterController",
+        "sap/m/p13n/GroupController"
+      ], function (Engine, SelectionController, SortController, FilterController, GroupController) {
+        var oEngine = Engine.getInstance();
+        if (!oEngine.isRegistered(oTable)) {
+          var aProps = [
+            { name: "docId",        label: "Document" },
+            { name: "type",         label: "Type" },
+            { name: "part",         label: "Part" },
+            { name: "version",      label: "Ver." },
+            { name: "status",       label: "Status" },
+            { name: "category",     label: "S4HANA Info" },
+            { name: "description",  label: "Description" },
+            { name: "createdBy",    label: "Created By" },
+            { name: "changedBy",    label: "Changed By" },
+            { name: "changedOn",    label: "Changed On" },
+            { name: "lab",          label: "Lab/Office" },
+            { name: "changeNumber", label: "Change Number" }
+          ];
+          oEngine.register(oTable, {
+            helper: { getProperties: function () { return aProps; } },
+            controller: {
+              Columns: new SelectionController({ control: oTable, targetAggregation: "columns" }),
+              Sort:    new SortController({ control: oTable }),
+              Filter:  new FilterController({ control: oTable }),
+              Group:   new GroupController({ control: oTable })
+            }
+          });
+        }
+        oEngine.show(oTable, ["Columns", "Sort", "Filter", "Group"]);
+      });
+    },
+
     onDoc7DocSelect: function (oEvent) {
-      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-      if (!oItem || oItem.isA("sap.m.Table")) { return; }
-      var oCtx = oItem.getBindingContext("detail");
+      var oCtx = oEvent.getParameter("bindingContext") ||
+                 (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
       if (!oCtx) { return; }
       var oDoc = oCtx.getObject();
       var oDetailModel = this.getView().getModel("detail");
@@ -1260,45 +1295,6 @@ sap.ui.define([
     onDoc7DocNumberPress: function () {},
     onDoc7RowMore:        function () {},
 
-    onDoc7LeftTableSettings: function (oEvent) {
-      var oView = this.getView();
-      var oTable = oView.byId("doc7DocTable");
-      if (!oTable) { return; }
-
-      var oEngine = Engine.getInstance();
-      var sTableId = oTable.getId();
-
-      if (!this._bDoc7P13nRegistered) {
-        this._bDoc7P13nRegistered = true;
-        var oHelper = new MetadataHelper([
-          { key: "doc7ColDocument",    label: "Document",      path: "docId" },
-          { key: "doc7ColType",        label: "Type",          path: "type" },
-          { key: "doc7ColPart",        label: "Part",          path: "part" },
-          { key: "doc7ColVer",         label: "Ver.",          path: "version" },
-          { key: "doc7ColStatus",      label: "Status",        path: "status" },
-          { key: "doc7ColCategory",    label: "S4HANA Info",   path: "category" },
-          { key: "doc7ColDescription", label: "Description",   path: "description" },
-          { key: "doc7ColCreatedBy",   label: "Created By",    path: "createdBy" },
-          { key: "doc7ColChangedBy",   label: "Changed By",    path: "changedBy" },
-          { key: "doc7ColChangedOn",   label: "Changed On",    path: "changedOn" },
-          { key: "doc7ColLab",         label: "Lab/Office",    path: "lab" },
-          { key: "doc7ColChangeNo",    label: "Change Number", path: "changeNumber" }
-        ]);
-
-        oEngine.register(oTable, {
-          helper: oHelper,
-          controller: {
-            Columns: new SelectionController({
-              control: oTable,
-              targetAggregation: "columns"
-            })
-          }
-        });
-      }
-
-      oEngine.show(oTable, ["Columns"], { contentHeight: "35rem", contentWidth: "25rem", source: oEvent.getSource() });
-    },
-
     _onDoc7DragOver: function (oEvent) {
       oEvent.preventDefault();
       oEvent.stopPropagation();
@@ -1383,10 +1379,49 @@ sap.ui.define([
     },
 
     // ---- Documents 9 (Document Empty state — duplicate of Doc7) ----
+    onDoc9LeftTableSettings: function () {
+      var oTable = this.byId("doc9DocTable");
+      if (!oTable) { return; }
+      sap.ui.require([
+        "sap/m/p13n/Engine",
+        "sap/m/p13n/SelectionController",
+        "sap/m/p13n/SortController",
+        "sap/m/p13n/FilterController",
+        "sap/m/p13n/GroupController"
+      ], function (Engine, SelectionController, SortController, FilterController, GroupController) {
+        var oEngine = Engine.getInstance();
+        if (!oEngine.isRegistered(oTable)) {
+          var aProps = [
+            { name: "docId",        label: "Document" },
+            { name: "type",         label: "Type" },
+            { name: "part",         label: "Part" },
+            { name: "version",      label: "Ver." },
+            { name: "status",       label: "Status" },
+            { name: "category",     label: "S4HANA Info" },
+            { name: "description",  label: "Description" },
+            { name: "createdBy",    label: "Created By" },
+            { name: "changedBy",    label: "Changed By" },
+            { name: "changedOn",    label: "Changed On" },
+            { name: "lab",          label: "Lab/Office" },
+            { name: "changeNumber", label: "Change Number" }
+          ];
+          oEngine.register(oTable, {
+            helper: { getProperties: function () { return aProps; } },
+            controller: {
+              Columns: new SelectionController({ control: oTable, targetAggregation: "columns" }),
+              Sort:    new SortController({ control: oTable }),
+              Filter:  new FilterController({ control: oTable }),
+              Group:   new GroupController({ control: oTable })
+            }
+          });
+        }
+        oEngine.show(oTable, ["Columns", "Sort", "Filter", "Group"]);
+      });
+    },
+
     onDoc9DocSelect: function (oEvent) {
-      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-      if (!oItem || oItem.isA("sap.m.Table")) { return; }
-      var oCtx = oItem.getBindingContext("detail");
+      var oCtx = oEvent.getParameter("bindingContext") ||
+                 (oEvent.getParameter("listItem") && oEvent.getParameter("listItem").getBindingContext("detail"));
       if (!oCtx) { return; }
       var oDoc = oCtx.getObject();
       var oDetailModel = this.getView().getModel("detail");
@@ -1615,37 +1650,6 @@ sap.ui.define([
       oModel.setProperty("/doc9Attachments", aAtts);
       oModel.setProperty("/doc9HasData", true);
       MessageToast.show("File uploaded successfully");
-    },
-
-    onDoc9LeftTableSettings: function (oEvent) {
-      var oView = this.getView();
-      var oTable = oView.byId("doc9DocTable");
-      if (!oTable) { return; }
-      var oEngine = Engine.getInstance();
-      if (!this._bDoc9P13nRegistered) {
-        this._bDoc9P13nRegistered = true;
-        var oHelper = new MetadataHelper([
-          { key: "doc9ColDocument",    label: "Document",      path: "docId" },
-          { key: "doc9ColType",        label: "Type",          path: "type" },
-          { key: "doc9ColPart",        label: "Part",          path: "part" },
-          { key: "doc9ColVer",         label: "Ver.",          path: "version" },
-          { key: "doc9ColStatus",      label: "Status",        path: "status" },
-          { key: "doc9ColCategory",    label: "S4HANA Info",   path: "category" },
-          { key: "doc9ColDescription", label: "Description",   path: "description" },
-          { key: "doc9ColCreatedBy",   label: "Created By",    path: "createdBy" },
-          { key: "doc9ColChangedBy",   label: "Changed By",    path: "changedBy" },
-          { key: "doc9ColChangedOn",   label: "Changed On",    path: "changedOn" },
-          { key: "doc9ColLab",         label: "Lab/Office",    path: "lab" },
-          { key: "doc9ColChangeNo",    label: "Change Number", path: "changeNumber" }
-        ]);
-        oEngine.register(oTable, {
-          helper: oHelper,
-          controller: {
-            Columns: new SelectionController({ control: oTable, targetAggregation: "columns" })
-          }
-        });
-      }
-      oEngine.show(oTable, ["Columns"], { contentHeight: "35rem", contentWidth: "25rem", source: oEvent.getSource() });
     },
 
     // ---- Documents 8 (mirrors Doc7) ----
