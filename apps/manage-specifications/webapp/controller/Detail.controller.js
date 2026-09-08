@@ -1074,6 +1074,10 @@ sap.ui.define([
       oDetailModel.setProperty("/doc7ShowUploadState", true);
       oDetailModel.setProperty("/doc7Attachments", []);
 
+      // Enable Create button in right toolbar
+      var oCreateBtn = this.getView().byId("doc7CreateBtn");
+      if (oCreateBtn) { oCreateBtn.setEnabled(true); }
+
       // Hide "Create Local Document" button after creation
       oDetailModel.setProperty("/doc7ShowCreateLocal", false);
     },
@@ -1373,7 +1377,7 @@ sap.ui.define([
       oModel.setProperty("/doc7Attachments", aAtts);
       oModel.setProperty("/doc7HasData", true);
       oModel.setProperty("/doc7ShowSwitchType", true);
-      oModel.setProperty("/doc7LeftRows", [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]);
+      oModel.setProperty("/doc7LeftRows", [{ docId: "100000000913", type: "ATT", part: "000", version: "-", status: "-" }]);
 
       var oDocTable = this.getView().byId("doc7DocTable");
       if (oDocTable && oDocTable.getItems().length > 0) {
@@ -1833,7 +1837,7 @@ sap.ui.define([
         doc7AttLoaded: false,
         doc7SelectedDocId: null,
         doc7LeftRows: [
-          { docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-",        isLinked: false, category: "Technical", description: "ATT-Document",              createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
+          { docId: "100000000913", type: "ATT", part: "000", version: "-", status: "-",        isLinked: false, category: "Technical", description: "ATT-Document",              createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
           { docId: "200000002010", type: "TST", part: "000", version: "02", status: "In Work",  isLinked: false, category: "Technical", description: "Surface-Treatment-Spec",  createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026",  lab: "LAB01", changeNumber: "" },
           { docId: "200000002020", type: "DRW", part: "001", version: "03", status: "Released", isLinked: false, category: "Technical", description: "Gearbox-Housing-Design",  createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 5, 2026",  lab: "LAB01", changeNumber: "" },
           { docId: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work",  isLinked: false, category: "Technical", description: "Frame-Welding-Procedure", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 4, 2026",  lab: "LAB01", changeNumber: "" }
