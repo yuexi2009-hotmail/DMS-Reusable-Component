@@ -536,23 +536,15 @@
                           updateFinished=".onDoc7AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="sapIllus-Tent"
-                              illustrationSize="Dialog"
-                              title='Click "Load Files" to load documents.'
-                              description="Select a document row or click Load Files below."
-                              visible="{= !${detail>/doc7AttLoaded} }">
+                              id="doc7NoDataMsg"
+                              illustrationType="{= ${detail>/doc7ShowUploadState} ? 'sapIllus-UploadCollection' : (!${detail>/doc7AttLoaded} ? 'sapIllus-Tent' : 'sapIllus-NoSavedItems') }"
+                              illustrationSize="{= ${detail>/doc7ShowUploadState} ? 'Scene' : 'Dialog' }"
+                              title="{= ${detail>/doc7ShowUploadState} ? 'Drag and drop documents here to upload them.' : (!${detail>/doc7AttLoaded} ? 'Click &quot;Load Files&quot; to load documents.' : 'No files found.') }"
+                              description="{= ${detail>/doc7ShowUploadState} ? 'Click Upload new or drag files here.' : (!${detail>/doc7AttLoaded} ? 'Select a document row or click Load Files below.' : 'Go to Document Management to upload and manage files.') }">
                               <additionalContent>
-                                <Button text="Load Files" type="Default" press=".onDoc7LoadFiles" />
-                              </additionalContent>
-                            </IllustratedMessage>
-                            <IllustratedMessage
-                              illustrationType="sapIllus-NoSavedItems"
-                              illustrationSize="Dialog"
-                              title="No files found."
-                              description="Go to Document Management to upload and manage files."
-                              visible="{= ${detail>/doc7AttLoaded} &amp;&amp; ${detail>/doc7Attachments}.length === 0 }">
-                              <additionalContent>
-                                <Button text="Navigate to DMS" type="Default" press=".onDoc7NavigateToDMS" />
+                                <Button text="Upload"          type="Emphasized" press=".onDoc7UploadNew"       visible="{detail>/doc7ShowUploadState}" />
+                                <Button text="Load Files"      type="Default"    press=".onDoc7LoadFiles"       visible="{= !${detail>/doc7ShowUploadState} &amp;&amp; !${detail>/doc7AttLoaded} }" />
+                                <Button text="Navigate to DMS" type="Default"    press=".onDoc7NavigateToDMS"   visible="{= !${detail>/doc7ShowUploadState} &amp;&amp; ${detail>/doc7AttLoaded} }" />
                               </additionalContent>
                             </IllustratedMessage>
                           </noData>

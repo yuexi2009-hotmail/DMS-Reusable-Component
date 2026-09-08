@@ -1036,7 +1036,50 @@ sap.ui.define([
     },
 
     onDoc7CreateLocalDocument: function () {
-      MessageToast.show("Create Local Document");
+      var oView = this.getView();
+      var that = this;
+      if (!this._oCreateLocalDocDialog) {
+        Fragment.load({
+          id: oView.getId(),
+          name: "com.sap.demo.managespec.view.CreateLocalDocumentDialog",
+          controller: this
+        }).then(function (oDialog) {
+          oView.addDependent(oDialog);
+          that._oCreateLocalDocDialog = oDialog;
+          oDialog.open();
+        });
+      } else {
+        this._oCreateLocalDocDialog.open();
+      }
+    },
+
+    onCreateLocalDocumentConfirm: function () {
+      if (this._oCreateLocalDocDialog) { this._oCreateLocalDocDialog.close(); }
+
+      var oDetailModel = this.getView().getModel("detail");
+
+      // Insert new ATT row at the top of the left table
+      var aRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+      var oNewRow = {
+        docId: "100000000913", type: "ATT", part: "000",
+        version: "-", status: "-", isLinked: false,
+        category: "", description: "Local Document",
+        createdBy: "", changedBy: "", changedOn: "", lab: "", changeNumber: ""
+      };
+      oDetailModel.setProperty("/doc7LeftRows", [oNewRow].concat(aRows));
+
+      // Show splitter (left Items table) + upload empty state on right
+      oDetailModel.setProperty("/doc7HasData", true);
+      oDetailModel.setProperty("/doc7AttLoaded", false);
+      oDetailModel.setProperty("/doc7ShowUploadState", true);
+      oDetailModel.setProperty("/doc7Attachments", []);
+
+      // Hide "Create Local Document" button after creation
+      oDetailModel.setProperty("/doc7ShowCreateLocal", false);
+    },
+
+    onCreateLocalDocumentCancel: function () {
+      if (this._oCreateLocalDocDialog) { this._oCreateLocalDocDialog.close(); }
     },
 
     onDoc7LinkedDocPress: function () {
@@ -1786,6 +1829,7 @@ sap.ui.define([
         doc7ShowSwitchType: false,
         doc7ActionBtnText: "Change Type",
         doc7ShowCreateLocal: false,
+        doc7ShowUploadState: false,
         doc7AttLoaded: false,
         doc7SelectedDocId: null,
         doc7LeftRows: [
