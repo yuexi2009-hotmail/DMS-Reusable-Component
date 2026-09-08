@@ -1020,6 +1020,11 @@ sap.ui.define([
             });
             var oUnlinkBtn = oView.byId("unlinkBtn7");
             if (oUnlinkBtn) { oUnlinkBtn.setEnabled(true); }
+
+            // Show "Create Local Document" if no ATT rows remain in the left table
+            var aRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+            var bHasAtt = aRows.some(function (r) { return r.type === "ATT"; });
+            oDetailModel.setProperty("/doc7ShowCreateLocal", !bHasAtt);
           }
         }
       }
@@ -1028,6 +1033,10 @@ sap.ui.define([
 
     onSwitchTypeCancel: function () {
       if (this._oSwitchTypeDialog) { this._oSwitchTypeDialog.close(); }
+    },
+
+    onDoc7CreateLocalDocument: function () {
+      MessageToast.show("Create Local Document");
     },
 
     onDoc7LinkedDocPress: function () {
@@ -1776,6 +1785,7 @@ sap.ui.define([
         doc7EverLoaded: false,
         doc7ShowSwitchType: false,
         doc7ActionBtnText: "Change Type",
+        doc7ShowCreateLocal: false,
         doc7AttLoaded: false,
         doc7SelectedDocId: null,
         doc7LeftRows: [

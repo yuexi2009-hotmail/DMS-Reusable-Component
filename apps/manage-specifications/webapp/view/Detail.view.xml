@@ -424,6 +424,7 @@
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Documents" level="H4" />
                     <ToolbarSpacer />
+                    <Button text="Create Local Document" type="Transparent" visible="{detail>/doc7ShowCreateLocal}" press=".onDoc7CreateLocalDocument" />
                     <Button text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
                     <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
                       <menu>
