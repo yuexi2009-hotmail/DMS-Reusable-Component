@@ -2,8 +2,11 @@ sap.ui.define([
   "sap/ui/mdc/TableDelegate",
   "sap/ui/mdc/table/Column",
   "sap/m/Text",
-  "sap/ui/mdc/FilterField"
-], function (TableDelegate, Column, Text, FilterField) {
+  "sap/ui/mdc/FilterField",
+  "sap/ui/model/Filter",
+  "sap/ui/model/FilterOperator",
+  "sap/ui/model/Sorter"
+], function (TableDelegate, Column, Text, FilterField, Filter, FilterOperator, Sorter) {
   "use strict";
 
   var aPropertyInfos = [
@@ -31,7 +34,64 @@ sap.ui.define([
     TableDelegate.updateBindingInfo.call(oDelegate, oTable, oBindingInfo);
     oBindingInfo.path = oTable.getPayload().bindingPath;
     oBindingInfo.model = "detail";
+
+    // Apply Sort
+    var oState = oTable.getCurrentState ? oTable.getCurrentState() : {};
+    var aSortConditions = (oState.sorters) || [];
+    if (aSortConditions.length > 0) {
+      oBindingInfo.sorter = aSortConditions.map(function (oSortCond) {
+        return new Sorter(oSortCond.key, oSortCond.descending);
+      });
+    }
+
+    // Apply Group (prepend group sorter)
+    var aGroupConditions = (oState.groupLevels) || [];
+    if (aGroupConditions.length > 0) {
+      var aGroupSorters = aGroupConditions.map(function (oGrp) {
+        return new Sorter(oGrp.key, false, true);
+      });
+      oBindingInfo.sorter = aGroupSorters.concat(oBindingInfo.sorter || []);
+    }
+
+    // Apply Filter
+    var oFilterConditions = (oState.filter) || {};
+    var aFilters = [];
+    Object.keys(oFilterConditions).forEach(function (sKey) {
+      var aConditions = oFilterConditions[sKey];
+      if (!aConditions || !aConditions.length) { return; }
+      var oPI = aPropertyInfos.find(function (p) { return p.key === sKey; });
+      if (!oPI) { return; }
+      aConditions.forEach(function (oCond) {
+        var sOperator = oCond.operator;
+        var sValue = oCond.values && oCond.values[0];
+        if (sValue === undefined || sValue === null) { return; }
+        var sFilterOp = _mapOperator(sOperator);
+        aFilters.push(new Filter({ path: oPI.path, operator: sFilterOp, value1: sValue }));
+      });
+    });
+    if (aFilters.length > 0) {
+      oBindingInfo.filters = aFilters;
+    }
   };
+
+  function _mapOperator(sOp) {
+    var mMap = {
+      "Contains":           FilterOperator.Contains,
+      "StartsWith":         FilterOperator.StartsWith,
+      "EndsWith":           FilterOperator.EndsWith,
+      "EQ":                 FilterOperator.EQ,
+      "NE":                 FilterOperator.NE,
+      "LT":                 FilterOperator.LT,
+      "LE":                 FilterOperator.LE,
+      "GT":                 FilterOperator.GT,
+      "GE":                 FilterOperator.GE,
+      "BT":                 FilterOperator.BT,
+      "NotContains":        FilterOperator.NotContains,
+      "NotStartsWith":      FilterOperator.NotStartsWith,
+      "NotEndsWith":        FilterOperator.NotEndsWith
+    };
+    return mMap[sOp] || FilterOperator.Contains;
+  }
 
   oDelegate.addItem = async function (oTable, sPropertyKey) {
     var oPI = aPropertyInfos.find(function (p) { return p.key === sPropertyKey; });

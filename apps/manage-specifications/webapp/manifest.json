@@ -64,10 +64,12 @@
       "targets": {
         "main": {
           "viewName": "Main",
+          "viewId": "main",
           "viewLevel": 1
         },
         "detail": {
           "viewName": "Detail",
+          "viewId": "detail",
           "viewLevel": 2
         }
       }
