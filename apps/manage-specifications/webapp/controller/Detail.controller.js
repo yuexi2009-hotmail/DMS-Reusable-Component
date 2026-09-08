@@ -1386,6 +1386,13 @@ sap.ui.define([
       var oDetailModel = oView.getModel("detail");
       var oLeftTable = oView.byId("doc9DocTable");
 
+      // Populate left table rows on first load
+      if (!oDetailModel.getProperty("/doc9EverLoaded")) {
+        oDetailModel.setProperty("/doc9LeftRows", [
+          { docId: "100000000913", type: "ATT", part: "000", version: "-", status: "-", isLinked: false, category: "Technical", description: "ATT-Document", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }
+        ]);
+      }
+
       oDetailModel.setProperty("/doc9EverLoaded", true);
       oDetailModel.setProperty("/doc9HasData", true);
 
@@ -1394,15 +1401,12 @@ sap.ui.define([
         oDetailModel.setProperty("/doc9Attachments", []);
         oDetailModel.setProperty("/doc9RightState", "upload");
         setTimeout(function () {
-          var aItems = oLeftTable ? oLeftTable.getItems() : [];
-          if (aItems.length > 0) {
-            oLeftTable.setSelectedItem(aItems[0], true);
-            var oCtx = aItems[0].getBindingContext("detail");
-            if (oCtx) {
-              var oDoc = oCtx.getObject();
-              oDetailModel.setProperty("/doc9ShowSwitchType", true);
-              oDetailModel.setProperty("/doc9ActionBtnText", oDoc.isLinked ? "Sync" : oDoc.type === "ATT" ? "Change Type" : "Sync");
-            }
+          var oBinding = oLeftTable && oLeftTable.getRowBinding && oLeftTable.getRowBinding();
+          var aContexts = oBinding ? (oBinding.getCurrentContexts ? oBinding.getCurrentContexts() : []) : [];
+          if (aContexts.length > 0) {
+            var oDoc = aContexts[0].getObject();
+            oDetailModel.setProperty("/doc9ShowSwitchType", true);
+            oDetailModel.setProperty("/doc9ActionBtnText", oDoc.isLinked ? "Sync" : oDoc.type === "ATT" ? "Change Type" : "Sync");
           }
           this._setupDoc9DropZone();
         }.bind(this), 0);
@@ -1777,16 +1781,14 @@ sap.ui.define([
         doc7StripVisible: false,
         doc7Uuid: "",
         doc9Attachments: [],
-        doc9HasData: true,
+        doc9HasData: false,
         doc9EverLoaded: false,
         doc9RightState: "initial",
         doc9ShowSwitchType: false,
         doc9ActionBtnText: "Change Type",
         doc9AttLoaded: false,
         doc9SelectedDocId: null,
-        doc9LeftRows: [
-          { docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-", isLinked: false, category: "Technical", description: "ATT-Document", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }
-        ],
+        doc9LeftRows: [],
         doc8Attachments: [],
         doc8HasData: false,
         doc8LeftRows: [{ docId: "100000000913", type: "ATT", part: "000", version: "00", status: "-" }]

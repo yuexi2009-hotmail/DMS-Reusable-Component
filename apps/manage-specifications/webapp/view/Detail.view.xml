@@ -254,7 +254,7 @@
                   </Toolbar>
 
                   <!-- Empty state: full-width table + illustration inside noData (default) -->
-                  <VBox id="doc9DropZone" visible="{= !${detail>/doc9HasData} }" class="doc9DropZone">
+                  <VBox id="doc9DropZone" visible="false" class="doc9DropZone">
                     <Table id="doc9AttTableEmpty"
                       class="sapUiSizeCompact doc9AttTableEmpty">
                       <columns>
@@ -281,7 +281,7 @@
                   </VBox>
 
                   <!-- Data state: left/right splitter (shown after upload) -->
-                  <l:ResponsiveSplitter id="doc9Splitter" class="doc9Splitter doc7SplitterPanel" visible="{detail>/doc9HasData}">
+                  <l:ResponsiveSplitter id="doc9Splitter" class="doc9Splitter doc7SplitterPanel">
                     <l:PaneContainer>
                       <l:SplitPane id="doc9PaneLeft" requiredParentWidth="300">
                         <l:layoutData>
