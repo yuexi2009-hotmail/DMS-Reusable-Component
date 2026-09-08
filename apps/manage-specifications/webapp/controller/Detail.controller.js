@@ -1153,9 +1153,16 @@ sap.ui.define([
       var oDetailModel = oView.getModel("detail");
       var oLeftTable = oView.byId("doc9DocTable");
 
-      // doc9: proceed to upload/drag-drop state
+      // doc9: populate left table then proceed to upload/drag-drop state
       this._pendingDoc9LoadFiles = false;
-      oDetailModel.setProperty("/doc9Attachments", []);
+      var oDetailModel = oView.getModel("detail");
+      if (!oDetailModel.getProperty("/doc9EverLoaded")) {
+        oDetailModel.setProperty("/doc9LeftRows", [
+          { docId: "100000000913", type: "ATT", part: "000", version: "-", status: "-", isLinked: false, category: "Technical", description: "ATT-Document", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }
+        ]);
+      }
+      oDetailModel.setProperty("/doc9EverLoaded", true);
+      oDetailModel.setProperty("/doc9HasData", true);
       oDetailModel.setProperty("/doc9RightState", "upload");
       setTimeout(function () {
         var oBinding = oLeftTable && oLeftTable.getRowBinding && oLeftTable.getRowBinding();
@@ -1477,16 +1484,6 @@ sap.ui.define([
       var oDetailModel = oView.getModel("detail");
       var oLeftTable = oView.byId("doc9DocTable");
 
-      // Populate left table rows on first load
-      if (!oDetailModel.getProperty("/doc9EverLoaded")) {
-        oDetailModel.setProperty("/doc9LeftRows", [
-          { docId: "100000000913", type: "ATT", part: "000", version: "-", status: "-", isLinked: false, category: "Technical", description: "ATT-Document", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }
-        ]);
-      }
-
-      oDetailModel.setProperty("/doc9EverLoaded", true);
-      oDetailModel.setProperty("/doc9HasData", true);
-
       // Called from button (no docId, or event object passed) → show "No local file type" dialog first
       if (typeof sDocId !== "string") {
         var that9 = this;
@@ -1506,6 +1503,16 @@ sap.ui.define([
         }
         return;
       }
+
+      // Populate left table rows on first load
+      if (!oDetailModel.getProperty("/doc9EverLoaded")) {
+        oDetailModel.setProperty("/doc9LeftRows", [
+          { docId: "100000000913", type: "ATT", part: "000", version: "-", status: "-", isLinked: false, category: "Technical", description: "ATT-Document", createdBy: "yue.xi01@sap.com", changedBy: "yue.xi01@sap.com", changedOn: "Aug 6, 2026", lab: "LAB01", changeNumber: "" }
+        ]);
+      }
+
+      oDetailModel.setProperty("/doc9EverLoaded", true);
+      oDetailModel.setProperty("/doc9HasData", true);
 
       // Called from row click → linked doc or non-ATT shows files; ATT non-linked shows upload state
       var aLeftRows = oDetailModel.getProperty("/doc9LeftRows") || [];
