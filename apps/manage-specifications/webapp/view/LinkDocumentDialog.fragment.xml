@@ -2,19 +2,20 @@
   xmlns="sap.m"
   xmlns:core="sap.ui.core"
   xmlns:l="sap.ui.layout"
-  xmlns:f="sap.ui.layout.form">
+  xmlns:mdc="sap.ui.mdc"
+  xmlns:mdct="sap.ui.mdc.table">
 
   <Dialog
     id="linkDocumentDialog"
     title="Link Documents"
-    contentWidth="72rem"
+    contentWidth="80rem"
     contentHeight="44rem"
     resizable="true"
     draggable="true"
     class="sapUiSizeCompact linkDocumentDialog">
 
     <content>
-      <VBox fitContainer="true" class="sapUiNoMargin">
+      <VBox fitContainer="true">
 
         <!-- Search bar -->
         <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDocSearchBar">
@@ -25,13 +26,13 @@
             search=".onLinkDocSearch" />
           <ToolbarSpacer />
           <Button id="linkDocGoBtn" text="Go" type="Emphasized" press=".onLinkDocGo" />
-          <Button id="linkDocToggleFiltersBtn" text="Hide Filters" type="Transparent" press=".onLinkDocToggleFilters" />
+          <Button id="linkDocToggleFiltersBtn" text="Hide Filters" type="Transparent" press=".onLinkDocToggleFilters" style="margin-left:0.5rem" />
         </Toolbar>
 
         <!-- Filter bar -->
-        <VBox id="linkDocFilterBar" visible="true" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
-          <f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsL="2" columnsM="2">
-            <f:content>
+        <VBox id="linkDocFilterBar" visible="true" class="sapUiSmallMarginBottom">
+          <HBox wrap="Wrap" class="sapUiSmallMarginTop">
+            <VBox class="sapUiSmallMarginEnd" width="14rem">
               <Label text="Document Type:" />
               <Select id="linkDocTypeFilter" width="100%" change=".onLinkDocFilterChange">
                 <core:Item key="" text="All" />
@@ -40,6 +41,8 @@
                 <core:Item key="TST" text="TST" />
                 <core:Item key="IMU" text="IMU" />
               </Select>
+            </VBox>
+            <VBox width="14rem">
               <Label text="Status:" />
               <Select id="linkDocStatusFilter" width="100%" change=".onLinkDocFilterChange">
                 <core:Item key="" text="All" />
@@ -47,47 +50,34 @@
                 <core:Item key="In Work" text="In Work" />
                 <core:Item key="Released" text="Released" />
               </Select>
-            </f:content>
-          </f:SimpleForm>
+            </VBox>
+          </HBox>
         </VBox>
 
-        <!-- Results table -->
-        <Table
+        <!-- Results table (mdc.Table with p13n settings) -->
+        <VBox>
+        <mdc:Table
           id="linkDocResultTable"
-          items="{linkDoc>/filteredDocuments}"
-          mode="MultiSelect"
-          sticky="ColumnHeaders,HeaderToolbar"
-          growing="true"
-          growingThreshold="20"
-          class="sapUiSizeCompact">
-          <headerToolbar>
-            <Toolbar class="sapUiSizeCompact">
-              <Title text="Items ({= ${linkDoc>/filteredDocuments}.length})" level="H5" />
-              <ToolbarSpacer />
-              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onLinkDocTableSettings" />
-            </Toolbar>
-          </headerToolbar>
-          <columns>
-            <Column width="13rem"><Text text="Document No." /></Column>
-            <Column><Text text="Description" /></Column>
-            <Column width="9rem"><Text text="Document Type" /></Column>
-            <Column width="7rem"><Text text="Document Part" /></Column>
-            <Column width="9rem"><Text text="Document Versi..." /></Column>
-            <Column width="9rem"><Text text="Document Status" /></Column>
-          </columns>
-          <items>
-            <ColumnListItem>
-              <cells>
-                <Text text="{linkDoc>docNumber}" wrapping="false" />
-                <Text text="{linkDoc>description}" wrapping="false" />
-                <Text text="{linkDoc>type}" wrapping="false" />
-                <Text text="{linkDoc>part}" wrapping="false" />
-                <Text text="{linkDoc>version}" wrapping="false" />
-                <Text text="{linkDoc>status}" wrapping="false" />
-              </cells>
-            </ColumnListItem>
-          </items>
-        </Table>
+          header="Items"
+          p13nMode="Column,Sort,Filter,Group"
+          selectionMode="Multi"
+          showRowCount="true"
+          class="sapUiSizeCompact"
+          delegate="{
+            name: 'com/sap/demo/managespec/delegate/LinkDocTableDelegate',
+            payload: {}
+          }">
+          <mdc:type>
+            <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
+          </mdc:type>
+          <mdct:Column propertyKey="docNumber"   header="Document No."     width="13rem"><Text text="{linkDoc>docNumber}"   wrapping="false" /></mdct:Column>
+          <mdct:Column propertyKey="description" header="Description"                  ><Text text="{linkDoc>description}" wrapping="false" /></mdct:Column>
+          <mdct:Column propertyKey="type"        header="Document Type"    width="9rem"><Text text="{linkDoc>type}"        wrapping="false" /></mdct:Column>
+          <mdct:Column propertyKey="part"        header="Document Part"    width="7rem"><Text text="{linkDoc>part}"        wrapping="false" /></mdct:Column>
+          <mdct:Column propertyKey="version"     header="Document Version" width="9rem"><Text text="{linkDoc>version}"     wrapping="false" /></mdct:Column>
+          <mdct:Column propertyKey="status"      header="Document Status"  width="9rem"><Text text="{linkDoc>status}"      wrapping="false" /></mdct:Column>
+        </mdc:Table>
+        </VBox>
 
       </VBox>
     </content>

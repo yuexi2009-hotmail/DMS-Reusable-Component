@@ -870,9 +870,7 @@ button[id$="linkDoc3ShowFiltersBtn"],
 
 /* MDC p13n dialog: compact OK/Cancel buttons + tight gap */
 button[id$="-confirmBtn"],
-button[id$="-cancelBtn"],
-button.sapMBtnBase.sapMBtn.sapMBtnInverted.sapMBarChild,
-button.sapMBtnBase.sapMBtn.sapMBarChild:not(.sapMBtnEmphasized) {
+button[id$="-cancelBtn"] {
   height: 2rem !important;
   min-height: 2rem !important;
   padding: 0.1875rem 0 !important;
@@ -1278,7 +1276,20 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
   height: 450px !important;
 }
 
-.docIdBold,
+/* Link Document dialog (new mdc Table version): table + filter padding */
+.linkDocumentDialog .sapUiMdcTable {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+.linkDocumentDialog [id$="linkDocFilterBar"] {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+.linkDocumentDialog [id$="linkDocSearchBar"],
+.linkDocumentDialog .linkDocSearchBar.sapMTB {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
 .docIdBold .sapMLnk {
   font-weight: bold !important;
 }

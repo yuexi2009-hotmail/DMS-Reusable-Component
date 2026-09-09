@@ -366,7 +366,8 @@ sap.ui.define([
       oDialog.open();
     },
 
-    onLinkExistingDocument: function () {
+    onLinkExistingDocument: function (sCaller) {
+      this._linkDocCaller = sCaller || "doc7";
       var oView = this.getView();
       if (this._oLinkDocDialogInst) {
         this._oLinkDocDialogInst.destroy();
@@ -556,61 +557,11 @@ sap.ui.define([
     onDoc4AttCopy:      function () { MessageToast.show("Copy"); },
 
     onLinkExistingDoc9: function () {
-      this._doc3LinkCaller = "doc9";
-      this.onLinkExistingDoc3();
+      this.onLinkExistingDocument("doc9");
     },
 
     onLinkExistingDoc3: function () {
-      this._doc3LinkCaller = this._doc3LinkCaller || "doc7";
-      var oView = this.getView();
-      var oDetailModel = oView.getModel("detail");
-      var sPrefix = this._doc3LinkCaller === "doc9" ? "doc9" : "doc7";
-      var aLeftRows = oDetailModel.getProperty("/" + sPrefix + "LeftRows") || [];
-      var oLinkedSet = {};
-      aLeftRows.forEach(function (r) { oLinkedSet[r.docId] = true; });
-
-      var aDocuments = [
-        { description: "Valve-Assembly-2026",     docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New" },
-        { description: "Surface-Treatment-Spec",  docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work" },
-        { description: "Gearbox-Housing-Design",  docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
-        { description: "Frame-Welding-Procedure", docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work" },
-        { description: "Fastener-Torque-Spec",    docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New" },
-        { description: "Final-Assembly-Guide",    docNumber: "200000002050", type: "DFT", part: "000", version: "02", status: "Released" },
-        { description: "Cooling-System-Layout",   docNumber: "200000002060", type: "DRW", part: "000", version: "01", status: "New" },
-        { description: "Hydraulic-Line-Spec",     docNumber: "200000002070", type: "DFT", part: "002", version: "01", status: "In Work" },
-        { description: "Pump-Assembly-Drawing",   docNumber: "200000002080", type: "DRW", part: "000", version: "04", status: "Released" },
-        { description: "Seal-Replacement-Guide",  docNumber: "200000002090", type: "IMU", part: "000", version: "02", status: "New" },
-        { description: "Motor-Mount-Design",      docNumber: "200000002100", type: "DRW", part: "001", version: "01", status: "In Work" },
-        { description: "Electrical-Wiring-Spec",  docNumber: "200000002110", type: "DFT", part: "000", version: "03", status: "Released" },
-        { description: "Cable-Routing-Diagram",   docNumber: "200000002120", type: "DRW", part: "000", version: "01", status: "New" },
-        { description: "Sensor-Calibration-Proc", docNumber: "200000002130", type: "TST", part: "000", version: "02", status: "In Work" },
-        { description: "Control-Panel-Layout",    docNumber: "200000002140", type: "DFT", part: "000", version: "01", status: "Released" },
-        { description: "Empty-Doc-No-Files",      docNumber: "200000002150", type: "DFT", part: "000", version: "01", status: "New" }
-      ].map(function (d) {
-        return Object.assign({}, d, { alreadyLinked: !!oLinkedSet[d.docNumber] });
-      });
-
-      this._oLinkDoc3AllDocs = aDocuments;
-
-      var oModel = new JSONModel({ documents: aDocuments });
-
-      var that = this;
-      if (this._oLinkDoc3Dialog) {
-        this._oLinkDoc3Dialog.setModel(oModel, "linkDoc3");
-        this._oLinkDoc3Dialog.open();
-        return;
-      }
-
-      Fragment.load({
-        id: oView.getId(),
-        name: "com.sap.demo.managespec.view.LinkDoc3Dialog",
-        controller: this
-      }).then(function (oDialog) {
-        oView.addDependent(oDialog);
-        oDialog.setModel(oModel, "linkDoc3");
-        that._oLinkDoc3Dialog = oDialog;
-        oDialog.open();
-      });
+      this.onLinkExistingDocument("doc7");
     },
 
     onLinkDoc3RowSelectionChange: function (oEvent) {
@@ -838,16 +789,25 @@ sap.ui.define([
         return;
       }
 
-      var aSelectedItems = oTable.getSelectedItems();
-      var aNewDocs = aSelectedItems.map(function (oItem) {
-        return oItem.getBindingContext("linkDoc").getObject();
+      var aSelectedContexts = oTable.getSelectedContexts ? oTable.getSelectedContexts() : [];
+      var aNewDocs = aSelectedContexts.map(function (oCtx) {
+        return oCtx.getObject();
       });
 
       if (aNewDocs.length > 0) {
         var oDetailModel = oView.getModel("detail");
-        var aDocs = oDetailModel.getProperty("/documents") || [];
-        oDetailModel.setProperty("/documents", aDocs.concat(aNewDocs));
-        MessageToast.show(aNewDocs.length + " document(s) linked");
+        var sPrefix = this._linkDocCaller === "doc9" ? "doc9" : "doc7";
+        var sRowsProp = "/" + sPrefix + "LeftRows";
+        var aExisting = oDetailModel.getProperty(sRowsProp) || [];
+        var aExistingIds = aExisting.map(function (r) { return r.docNumber || r.docId; });
+        var aToAdd = aNewDocs.filter(function (d) { return aExistingIds.indexOf(d.docNumber) === -1; }).map(function (d) {
+          return { docId: d.docNumber, type: d.type, part: d.part, version: d.version, status: d.status, description: d.description };
+        });
+        if (aToAdd.length > 0) {
+          oDetailModel.setProperty(sRowsProp, aExisting.concat(aToAdd));
+          oDetailModel.setProperty("/" + sPrefix + "HasData", true);
+        }
+        MessageToast.show(aToAdd.length + " document(s) linked");
       }
 
       if (this._oLinkDocDialogInst) { this._oLinkDocDialogInst.close(); }
