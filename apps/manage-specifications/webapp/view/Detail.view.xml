@@ -268,7 +268,7 @@
                       </columns>
                       <noData>
                         <IllustratedMessage
-                          illustrationType="sapIllus-Tent"
+                          illustrationType="sapIllus-NoData"
                           illustrationSize="Dialog"
                           title='Click "Load Files" to load documents.'
                           description="Select a document row or click Load Files below.">
@@ -314,7 +314,7 @@
                         <!-- initial state: full illustration only, no table chrome -->
                         <IllustratedMessage
                           visible="{= ${detail>/doc9RightState} === 'initial' }"
-                          illustrationType="sapIllus-Tent"
+                          illustrationType="sapIllus-NoData"
                           illustrationSize="Dialog"
                           title='Click "Load Files" to load documents.'
                           description="Select a document row or click Load Files below.">
@@ -333,7 +333,7 @@
                           updateFinished=".onDoc9AttTableUpdated">
                           <noData>
                             <IllustratedMessage
-                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-NoSavedItems' }"
+                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-NoData' }"
                               illustrationSize="Dialog"
                               title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : 'No files found.' }"
                               description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : 'Go to Document Management to upload and manage files.' }">
@@ -537,7 +537,7 @@
                           <noData>
                             <IllustratedMessage
                               id="doc7NoDataMsg"
-                              illustrationType="{= ${detail>/doc7ShowUploadState} ? 'sapIllus-UploadCollection' : (!${detail>/doc7AttLoaded} ? 'sapIllus-Tent' : 'sapIllus-NoSavedItems') }"
+                              illustrationType="{= ${detail>/doc7ShowUploadState} ? 'sapIllus-UploadCollection' : 'sapIllus-NoData' }"
                               illustrationSize="Dialog"
                               title="{= ${detail>/doc7ShowUploadState} ? 'Drag and drop documents here to upload them.' : (!${detail>/doc7AttLoaded} ? 'Click &quot;Load Files&quot; to load documents.' : 'No files found.') }"
                               description="{= ${detail>/doc7ShowUploadState} ? 'Click Upload new or drag files here.' : (!${detail>/doc7AttLoaded} ? 'Select a document row or click Load Files below.' : 'Go to Document Management to upload and manage files.') }">
