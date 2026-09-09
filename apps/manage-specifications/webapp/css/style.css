@@ -74,9 +74,6 @@
 .sapFDynamicPageTitleMainActions .sapMBarChild:first-child {
   margin-left: 0 !important;
 }
-.sapFDynamicPageTitleMainActions .sapMTB {
-  gap: 0.5rem !important;
-}
 /* MenuButton: remove extra arrow padding so gap matches regular buttons */
 .sapFDynamicPageTitleMainActions .sapMMenuBtn .sapMBtnInner {
   padding-right: 0.5rem !important;
