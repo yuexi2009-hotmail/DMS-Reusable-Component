@@ -1166,15 +1166,20 @@ sap.ui.define([
 
     onDoc7Unlink: function () {
       var oView = this.getView();
-      var oLeftTable = oView.byId("doc7DocTable");
-      var aSelCtx = oLeftTable && oLeftTable.getSelectedContexts ? oLeftTable.getSelectedContexts() : [];
-      if (!aSelCtx.length) { return; }
-      var oDoc = aSelCtx[0].getObject();
-      if (!oDoc || !oDoc.isLinked) { return; }
+      var oDetailModel = oView.getModel("detail");
+      var sPath = this._sDoc7SelectedPath;
+      if (!sPath) { return; }
+      var oDoc = oDetailModel.getProperty(sPath);
+      if (!oDoc) { return; }
 
-      this._sDoc7UnlinkDocNumber = oDoc.docNumber;
+      this._sUnlinkDocNumber = oDoc.docNumber || oDoc.docId;
+      this._sUnlinkCaller = "doc7";
+      this._openUnlinkDialog();
+    },
+
+    _openUnlinkDialog: function () {
+      var oView = this.getView();
       var that = this;
-
       if (!this._oUnlinkDialog) {
         Fragment.load({ id: oView.getId(), name: "com.sap.demo.managespec.view.UnlinkDialog", controller: this })
           .then(function (oDialog) {
@@ -1190,14 +1195,23 @@ sap.ui.define([
     onDoc7UnlinkConfirm: function () {
       var oView = this.getView();
       var oDetailModel = oView.getModel("detail");
-      var sDocNumber = this._sDoc7UnlinkDocNumber;
-      var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
-      aLeftRows = aLeftRows.filter(function (r) { return r.docNumber !== sDocNumber; });
-      oDetailModel.setProperty("/doc7LeftRows", aLeftRows);
-      oDetailModel.setProperty("/doc7Attachments", []);
-      oDetailModel.setProperty("/doc7ShowSwitchType", false);
-      var oUnlinkBtn = oView.byId("unlinkBtn7");
-      if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
+      var sDocNumber = this._sUnlinkDocNumber;
+      var sCaller = this._sUnlinkCaller || "doc7";
+
+      if (sCaller === "doc9") {
+        var aDoc9Rows = oDetailModel.getProperty("/doc9LeftRows") || [];
+        aDoc9Rows = aDoc9Rows.filter(function (r) { return (r.docNumber || r.docId) !== sDocNumber; });
+        oDetailModel.setProperty("/doc9LeftRows", aDoc9Rows);
+      } else {
+        var aLeftRows = oDetailModel.getProperty("/doc7LeftRows") || [];
+        aLeftRows = aLeftRows.filter(function (r) { return r.docNumber !== sDocNumber; });
+        oDetailModel.setProperty("/doc7LeftRows", aLeftRows);
+        oDetailModel.setProperty("/doc7Attachments", []);
+        oDetailModel.setProperty("/doc7ShowSwitchType", false);
+        var oUnlinkBtn = oView.byId("unlinkBtn7");
+        if (oUnlinkBtn) { oUnlinkBtn.setEnabled(false); }
+      }
+
       this._oUnlinkDialog.close();
       MessageToast.show("Document unlinked");
     },
@@ -1555,12 +1569,15 @@ sap.ui.define([
 
     onDoc9Unlink: function () {
       var oView = this.getView();
-      var oLeftTable = oView.byId("doc9DocTable");
-      var aSelCtx = oLeftTable && oLeftTable.getSelectedContexts ? oLeftTable.getSelectedContexts() : [];
-      if (!aSelCtx.length) { return; }
-      var oDoc = aSelCtx[0].getObject();
-      if (!oDoc || !oDoc.isLinked) { return; }
-      MessageToast.show("Unlink: " + oDoc.docId);
+      var oDetailModel = oView.getModel("detail");
+      var sPath = this._sDoc9SelectedPath;
+      if (!sPath) { return; }
+      var oDoc = oDetailModel.getProperty(sPath);
+      if (!oDoc) { return; }
+
+      this._sUnlinkDocNumber = oDoc.docNumber || oDoc.docId;
+      this._sUnlinkCaller = "doc9";
+      this._openUnlinkDialog();
     },
 
     onDoc9NavigateToDMS: function () { MessageToast.show("Navigate to Document Management System"); },
