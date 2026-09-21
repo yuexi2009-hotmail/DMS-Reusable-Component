@@ -238,19 +238,6 @@
                   <!-- Title toolbar always visible -->
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Documents" level="H4" />
-                    <ToolbarSpacer />
-                    <Button text="{detail>/doc9ActionBtnText}" type="Transparent" visible="{detail>/doc9ShowSwitchType}" press=".onDoc9ActionBtn" />
-                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
-                      <menu>
-                        <Menu>
-                          <items>
-                            <MenuItem text="Link Existing" press=".onLinkExistingDoc9" />
-                            <MenuItem text="Link New" />
-                          </items>
-                        </Menu>
-                      </menu>
-                    </MenuButton>
-                    <Button id="unlinkBtn9" text="Unlink" type="Transparent" enabled="false" press=".onDoc9Unlink" />
                   </Toolbar>
 
                   <!-- Empty state: full-width table + illustration inside noData (default) -->
@@ -299,6 +286,20 @@
                             name: 'com/sap/demo/managespec/delegate/DocLeftTableDelegate',
                             payload: { bindingPath: '/doc9LeftRows' }
                           }">
+                          <mdc:actions>
+                            <Button text="{detail>/doc9ActionBtnText}" type="Transparent" visible="{detail>/doc9ShowSwitchType}" press=".onDoc9ActionBtn" />
+                            <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                              <menu>
+                                <Menu>
+                                  <items>
+                                    <MenuItem text="Link Existing" press=".onLinkExistingDoc9" />
+                                    <MenuItem text="Link New" />
+                                  </items>
+                                </Menu>
+                              </menu>
+                            </MenuButton>
+                            <Button id="unlinkBtn9" text="Unlink" type="Transparent" enabled="false" press=".onDoc9Unlink" />
+                          </mdc:actions>
                           <mdc:type>
                             <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
                           </mdc:type>
@@ -423,20 +424,6 @@
                   <!-- Title toolbar always visible -->
                   <Toolbar class="sapUiSizeCompact detailSectionToolbar">
                     <Title text="Documents" level="H4" />
-                    <ToolbarSpacer />
-                    <Button text="Create Local Document" type="Transparent" visible="{detail>/doc7ShowCreateLocal}" press=".onDoc7CreateLocalDocument" />
-                    <Button text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
-                    <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
-                      <menu>
-                        <Menu>
-                          <items>
-                            <MenuItem text="Link Existing" press=".onLinkExistingDoc3" />
-                            <MenuItem text="Link New" />
-                          </items>
-                        </Menu>
-                      </menu>
-                    </MenuButton>
-                    <Button id="unlinkBtn7" text="Unlink" type="Transparent" enabled="false" press=".onDoc7Unlink" />
                   </Toolbar>
 
                   <!-- Empty state: full-width table + illustration inside noData (default) -->
@@ -516,6 +503,21 @@
                             name: 'com/sap/demo/managespec/delegate/DocLeftTableDelegate',
                             payload: { bindingPath: '/doc7LeftRows' }
                           }">
+                          <mdc:actions>
+                            <Button text="Create Local Document" type="Transparent" visible="{detail>/doc7ShowCreateLocal}" press=".onDoc7CreateLocalDocument" />
+                            <Button text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
+                            <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
+                              <menu>
+                                <Menu>
+                                  <items>
+                                    <MenuItem text="Link Existing" press=".onLinkExistingDoc3" />
+                                    <MenuItem text="Link New" />
+                                  </items>
+                                </Menu>
+                              </menu>
+                            </MenuButton>
+                            <Button id="unlinkBtn7" text="Unlink" type="Transparent" enabled="false" press=".onDoc7Unlink" />
+                          </mdc:actions>
                           <mdc:type>
                             <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
                           </mdc:type>
