@@ -352,7 +352,7 @@
                               <Text id="doc9ItemCount" text="Items ({= ${detail>/doc9Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc9Search" width="15rem" placeholder="Search" search=".onDoc9Search" />
-                              <MenuButton id="doc9CreateBtn" text="Create" type="Emphasized" menuPosition="BeginBottom" enabled="false">
+                              <MenuButton id="doc9CreateBtn" text="Create" type="Default" menuPosition="BeginBottom" enabled="false">
                                 <menu>
                                   <Menu itemSelected=".onDoc9MenuItemSelected">
                                     <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc9CreateFolder" />
@@ -438,7 +438,7 @@
                           <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
                           <ToolbarSpacer />
                           <SearchField width="15rem" placeholder="Search" />
-                          <MenuButton id="doc7CreateEmpty" text="Create" type="Emphasized" menuPosition="BeginBottom">
+                          <MenuButton id="doc7CreateEmpty" text="Create" type="Default" menuPosition="BeginBottom">
                             <layoutData><OverflowToolbarLayoutData priority="NeverOverflow" /></layoutData>
                             <menu>
                               <Menu itemSelected=".onDoc7MenuItemSelected">
@@ -557,7 +557,7 @@
                               <Text id="doc7ItemCount" text="Items ({= ${detail>/doc7Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
                               <ToolbarSpacer />
                               <SearchField id="doc7Search" width="15rem" placeholder="Search" search=".onDoc7Search" />
-                              <MenuButton id="doc7CreateBtn" text="Create" type="Emphasized" menuPosition="BeginBottom" enabled="false">
+                              <MenuButton id="doc7CreateBtn" text="Create" type="Default" menuPosition="BeginBottom" enabled="false">
                                 <menu>
                                   <Menu itemSelected=".onDoc7MenuItemSelected">
                                     <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc7CreateFolder" />
