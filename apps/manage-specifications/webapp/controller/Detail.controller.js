@@ -6,8 +6,10 @@ sap.ui.define([
   "sap/ui/core/Fragment",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "sap/ui/model/Sorter"
-], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter) {
+  "sap/ui/model/Sorter",
+  "sap/m/Menu",
+  "sap/m/MenuItem"
+], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter, Menu, MenuItem) {
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
 
@@ -1345,7 +1347,7 @@ sap.ui.define([
     onDoc7Settings:       function () {},
     onDoc7Search:         function () {},
     onDoc7DocNumberPress: function () {},
-    onDoc7RowMore:        function () {},
+    onDoc7RowMore: function (oEvent) { this._openRowActionMenu(oEvent); },
 
     _onDoc7DragOver: function (oEvent) {
       oEvent.preventDefault();
@@ -1683,7 +1685,7 @@ sap.ui.define([
     onDoc9Sort:           function () {},
     onDoc9Settings:       function () {},
     onDoc9Search:         function () {},
-    onDoc9RowMore:        function () {},
+    onDoc9RowMore: function (oEvent) { this._openRowActionMenu(oEvent); },
 
     onDoc9UploadNew: function () {
       var oModel = this.getView().getModel("detail");
@@ -1955,7 +1957,106 @@ sap.ui.define([
 
       var oAppView = oRootView.getModel("appView");
       if (oAppView) { oAppView.setProperty("/showNavButton", true); }
-    }
+    },
+
+    _openRowActionMenu: function (oEvent) {
+      var oButton = oEvent.getSource();
+      var oView = this.getView();
+      var oCtx = oButton.getBindingContext("detail");
+      this._oCurrentRowData = oCtx ? oCtx.getObject() : null;
+
+      if (!this._oRowActionMenu) {
+        var that = this;
+        var oMenu = new Menu({
+          itemSelected: function (oMenuEvent) {
+            var sText = oMenuEvent.getParameter("item").getText();
+            if (sText === "Properties") {
+              that._openFilePropertiesDialog();
+            } else {
+              MessageToast.show(sText);
+            }
+          }
+        });
+        ["Properties", "Rename", "Share", "Preview"].forEach(function (sText) {
+          oMenu.addItem(new MenuItem({ text: sText }));
+        });
+        oView.addDependent(oMenu);
+        this._oRowActionMenu = oMenu;
+      }
+
+      this._oRowActionMenu.openBy(oButton);
+    },
+
+    _openFilePropertiesDialog: function () {
+      var oView = this.getView();
+      var oData = this._oCurrentRowData || {};
+
+      var oFilePropModel = new JSONModel({
+        name:                   oData.name       || "",
+        createdOn:              oData.modifiedOn || "",
+        createdBy:              oData.createdBy  || "",
+        modifiedOn:             oData.modifiedOn || "",
+        modifiedBy:             oData.modifiedBy || "",
+        type:                   this._iconToTypeName(oData.typeIcon || ""),
+        owner:                  oData.createdBy  || "",
+        description:            "",
+        setExpiration:          false,
+        expirationDate:         "",
+        setRetention:           false,
+        destructionDate:        "",
+        retentionExpirationDate: "",
+        retentionStartDate:     ""
+      });
+
+      var that = this;
+      if (!this._oFilePropertiesDialog) {
+        Fragment.load({
+          id: oView.getId(),
+          name: "com.sap.demo.managespec.view.FilePropertiesDialog",
+          controller: this
+        }).then(function (oDialog) {
+          that._oFilePropertiesDialog = oDialog;
+          oView.addDependent(oDialog);
+          oDialog.setModel(oFilePropModel, "fileProp");
+          oDialog.open();
+        });
+      } else {
+        this._oFilePropertiesDialog.setModel(oFilePropModel, "fileProp");
+        this._oFilePropertiesDialog.open();
+      }
+    },
+
+    _iconToTypeName: function (sIcon) {
+      var mMap = {
+        "sap-icon://pdf-attachment":   "PDF Document",
+        "sap-icon://excel-attachment":  "Excel Spreadsheet",
+        "sap-icon://doc-attachment":    "Word Document",
+        "sap-icon://ppt-attachment":    "PowerPoint Presentation",
+        "sap-icon://attachment-photo":  "Image",
+        "sap-icon://document-text":     "Text File",
+        "sap-icon://document":          "Document"
+      };
+      return mMap[sIcon] || "Document";
+    },
+
+    onSetExpirationChange: function (oEvent) {
+      var bSelected = oEvent.getParameter("selected");
+      this._oFilePropertiesDialog.getModel("fileProp").setProperty("/setExpiration", bSelected);
+    },
+
+    onSetRetentionChange: function (oEvent) {
+      var bSelected = oEvent.getParameter("selected");
+      this._oFilePropertiesDialog.getModel("fileProp").setProperty("/setRetention", bSelected);
+    },
+
+    onFilePropertiesSave: function () {
+      MessageToast.show("Properties saved");
+      if (this._oFilePropertiesDialog) { this._oFilePropertiesDialog.close(); }
+    },
+
+    onFilePropertiesClose: function () {
+      if (this._oFilePropertiesDialog) { this._oFilePropertiesDialog.close(); }
+    },
 
   });
 });
