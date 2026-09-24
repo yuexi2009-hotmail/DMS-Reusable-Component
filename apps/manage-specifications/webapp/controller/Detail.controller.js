@@ -1086,9 +1086,9 @@ sap.ui.define([
 
       var mFiles = {
         "100000000913": [
-          { typeIcon: "sap-icon://pdf-attachment", name: "ATT-Technical-Spec.pdf",         docNumber: "100000000181", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },
-          { typeIcon: "sap-icon://document",        name: "ATT-Assembly-Guide.docx",        docNumber: "100000000182", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB"  },
-          { typeIcon: "sap-icon://document",        name: "ATT-Test-Report.xlsx",           docNumber: "100000000183", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB"  }
+          { typeIcon: "sap-icon://pdf-attachment", name: "ATT-Technical-Spec.pdf",         docNumber: "100000000181", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB", expireOn: "Dec 31, 2026" },
+          { typeIcon: "sap-icon://document",        name: "ATT-Assembly-Guide.docx",        docNumber: "100000000182", modifiedOn: "Aug 5, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "43 KB", expireOn: "Jun 30, 2027" },
+          { typeIcon: "sap-icon://document",        name: "ATT-Test-Report.xlsx",           docNumber: "100000000183", modifiedOn: "Aug 4, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "18 KB", expireOn: "" }
         ],
         "200000002010": [
           { typeIcon: "sap-icon://pdf-attachment", name: "Surface-Treatment-Spec.pdf",    docNumber: "100000000191", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com", modifiedBy: "yue.xi01@sap.com", size: "96 KB"  },

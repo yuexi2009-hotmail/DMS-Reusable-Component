@@ -10,7 +10,8 @@
     resizable="true"
     draggable="true"
     contentWidth="44rem"
-    contentHeight="30rem">
+    contentHeight="30rem"
+    class="sapUiSizeCompact">
 
     <content>
       <IconTabBar class="sapUiNoContentPadding">

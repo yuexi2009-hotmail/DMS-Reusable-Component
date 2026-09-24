@@ -396,6 +396,7 @@
                             <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Created By" /></Column>
                             <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Modified By" /></Column>
                             <Column minScreenWidth="Desktop" demandPopin="true" width="6rem"><Text text="Size" /></Column>
+                            <Column minScreenWidth="Desktop" demandPopin="true" width="8rem"><Text text="Expire On" /></Column>
                             <Column width="4rem"><Text text="" /></Column>
                           </columns>
                           <items>
@@ -407,6 +408,7 @@
                                 <Text text="{detail>createdBy}" wrapping="false" />
                                 <Text text="{detail>modifiedBy}" wrapping="false" />
                                 <Text text="{detail>size}" wrapping="false" />
+                                <Text text="{detail>expireOn}" wrapping="false" />
                                 <Button icon="sap-icon://overflow" type="Transparent" press=".onDoc9RowMore" tooltip="More" />
                               </cells>
                             </ColumnListItem>
@@ -601,6 +603,7 @@
                             <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Created By" /></Column>
                             <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Modified By" /></Column>
                             <Column minScreenWidth="Desktop" demandPopin="true" width="6rem"><Text text="Size" /></Column>
+                            <Column minScreenWidth="Desktop" demandPopin="true" width="8rem"><Text text="Expire On" /></Column>
                             <Column width="4rem"><Text text="" /></Column>
                           </columns>
                           <items>
@@ -612,6 +615,7 @@
                                 <Text text="{detail>createdBy}" wrapping="false" />
                                 <Text text="{detail>modifiedBy}" wrapping="false" />
                                 <Text text="{detail>size}" wrapping="false" />
+                                <Text text="{detail>expireOn}" wrapping="false" />
                                 <Button icon="sap-icon://overflow" type="Transparent" press=".onDoc7RowMore" tooltip="More" />
                               </cells>
                             </ColumnListItem>

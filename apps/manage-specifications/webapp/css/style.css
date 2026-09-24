@@ -884,6 +884,19 @@ button[id$="-cancelBtn"] {
   padding: 0 0.5rem !important;
   font-size: var(--sapFontSize) !important;
 }
+/* File Properties dialog: compact button size (override p13n global rules) */
+#container-managespec---detail--filePropertiesDialog .sapMDialogFooter .sapMBtnInner {
+  height: 1.625rem !important;
+  min-height: 1.625rem !important;
+  line-height: 1.625rem !important;
+  padding: 0 0.75rem !important;
+}
+#container-managespec---detail--filePropertiesDialog .sapMDialogFooter .sapMBtn {
+  height: 1.625rem !important;
+  min-height: 1.625rem !important;
+  padding: 0 !important;
+}
+
 span[id$="-confirmBtn-inner"],
 span[id$="-cancelBtn-inner"] {
   height: 1.625rem !important;
@@ -1285,4 +1298,26 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 .docIdBold .sapMLnk,
 .docIdBold .sapMText {
   font-weight: bold !important;
+}
+
+/* File Properties dialog: prevent SimpleForm from overflowing dialog width */
+#container-managespec---detail--filePropertiesDialog .sapUiSimpleForm {
+  width: auto !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* File Properties dialog: content area background */
+#container-managespec---detail--filePropertiesDialog-cont {
+  background: #F5F6F7 !important;
+}
+
+/* File Properties dialog: remove bottom border line in IconTabBar content */
+#container-managespec---detail--filePropertiesDialog .sapMITBContainerContent {
+  border-bottom: none !important;
+}
+
+#container-managespec---detail--filePropertiesDialog .sapMITBContent {
+  border-bottom: none !important;
 }
