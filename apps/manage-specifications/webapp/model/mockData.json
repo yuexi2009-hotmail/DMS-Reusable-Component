@@ -7,6 +7,9 @@
       "part": "000",
       "documentStatus": "New",
       "version": "00",
+      "s4Number": "200000002854",
+      "s4Type": "DRW",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -18,9 +21,12 @@
       "part": "000",
       "documentStatus": "Released",
       "version": "00",
-      "s4SyncText": "Not Synced",
-      "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4Number": "200000002851",
+      "s4Type": "IMU",
+      "owner": "S4",
+      "s4SyncText": "Synced",
+      "s4SyncState": "Success",
+      "s4SyncIcon": "sap-icon://accept"
     },
     {
       "number": "100000002849",
@@ -29,6 +35,9 @@
       "part": "000",
       "documentStatus": "Released",
       "version": "00",
+      "s4Number": "200000002849",
+      "s4Type": "DRW",
+      "owner": "S4",
       "s4SyncText": "Synced",
       "s4SyncState": "Success",
       "s4SyncIcon": "sap-icon://accept"
@@ -40,6 +49,9 @@
       "part": "000",
       "documentStatus": "New",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -51,6 +63,9 @@
       "part": "000",
       "documentStatus": "Released",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -62,6 +77,9 @@
       "part": "000",
       "documentStatus": "Created",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -73,6 +91,9 @@
       "part": "000",
       "documentStatus": "New",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -84,6 +105,9 @@
       "part": "000",
       "documentStatus": "Released",
       "version": "01",
+      "s4Number": "200000002814",
+      "s4Type": "TES",
+      "owner": "S4",
       "s4SyncText": "Synced",
       "s4SyncState": "Success",
       "s4SyncIcon": "sap-icon://accept"
@@ -95,6 +119,9 @@
       "part": "000",
       "documentStatus": "In Work",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -106,6 +133,9 @@
       "part": "000",
       "documentStatus": "New",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"
@@ -117,9 +147,12 @@
       "part": "001",
       "documentStatus": "Released",
       "version": "02",
-      "s4SyncText": "Not Synced",
-      "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4Number": "200000002805",
+      "s4Type": "DRW",
+      "owner": "S4",
+      "s4SyncText": "Synced",
+      "s4SyncState": "Success",
+      "s4SyncIcon": "sap-icon://accept"
     },
     {
       "number": "100000002798",
@@ -128,6 +161,9 @@
       "part": "000",
       "documentStatus": "New",
       "version": "00",
+      "s4Number": "",
+      "s4Type": "",
+      "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "sap-icon://sys-minus"

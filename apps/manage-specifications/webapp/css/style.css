@@ -1397,9 +1397,14 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 
 /* Detail page — subtitle number gray, header values black */
 .detailDocNumber .sapMText,
-.detailDocNumber {
+.detailDocNumber,
+.sapUxAPObjectPageHeaderTitle .detailDocNumber,
+.sapUxAPObjectPageHeaderTitle .detailDocNumber .sapMText,
+.sapFDynamicPageTitle .detailDocNumber,
+.sapFDynamicPageTitle .detailDocNumber .sapMText {
   color: var(--sapContent_LabelColor) !important;
   font-size: var(--sapFontSize) !important;
+  font-weight: normal !important;
 }
 .detailHeaderValue .sapMLabelTextWrapper,
 .detailHeaderValue {

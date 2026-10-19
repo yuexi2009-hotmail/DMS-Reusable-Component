@@ -45,6 +45,11 @@ sap.ui.define([
         part: oDoc.part,
         documentStatus: oDoc.documentStatus,
         version: oDoc.version,
+        s4Number: oDoc.s4Number || "",
+        s4Type: oDoc.s4Type || "",
+        owner: oDoc.owner || "IPD",
+        s4SyncText: oDoc.s4SyncText || "Not Synced",
+        s4SyncState: oDoc.s4SyncState || "None",
         attachments: aAttachments
       });
       this.getView().setModel(oDetailModel, "detail");
@@ -60,6 +65,7 @@ sap.ui.define([
     onDeletePress: function () { MessageToast.show("Delete"); },
     onChangeStatusPress: function () { MessageToast.show("Change Status"); },
     onNewVersionPress: function () { MessageToast.show("New Version"); },
+    onSyncWithS4Press: function () { MessageToast.show("Sync with S4"); },
     onMoreActionsPress: function () { MessageToast.show("More Actions"); },
 
 

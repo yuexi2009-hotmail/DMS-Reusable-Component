@@ -41,6 +41,7 @@
               <Button text="Delete"        type="Ghost"      press=".onDeletePress"/>
               <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress"/>
               <Button text="New Version"   type="Ghost"      press=".onNewVersionPress"/>
+              <Button text="Sync with S4"  type="Ghost"      press=".onSyncWithS4Press"/>
               <Button icon="sap-icon://action" type="Transparent" press=".onMoreActionsPress" tooltip="Share"/>
             </uxap:actions>
 
@@ -52,7 +53,10 @@
             <Label text="Status:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
             <Label text="{detail>/documentStatus}" class="detailHeaderValue sapUiLargeMarginEnd"/>
             <Label text="Version:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
-            <Label text="{detail>/version}" class="detailHeaderValue"/>          </FlexBox>
+            <Label text="{detail>/version}" class="detailHeaderValue sapUiLargeMarginEnd"/>
+            <Label text="Sync Status:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
+            <ObjectStatus text="{detail>/s4SyncText}" state="{detail>/s4SyncState}"/>
+          </FlexBox>
         </uxap:headerContent>
 
         <uxap:sections>
@@ -67,14 +71,20 @@
                     layout="ColumnLayout"
                     columnsM="2" columnsL="4" columnsXL="4"
                     class="sapUxAPObjectPageSubSectionAlignContent">
-                    <Label text="Number:"/>
+                    <Label text="IPD Number"/>
                     <Text text="{detail>/number}"/>
-                    <Label text="Type:"/>
+                    <Label text="S4 Number"/>
+                    <Text text="{detail>/s4Number}"/>
+                    <Label text="IPD Type"/>
                     <Text text="{detail>/type}"/>
-                    <Label text="Part:"/>
+                    <Label text="S4 Type"/>
+                    <Text text="{detail>/s4Type}"/>
+                    <Label text="Part"/>
                     <Text text="{detail>/part}"/>
-                    <Label text="Description:"/>
+                    <Label text="Description"/>
                     <Text text="{detail>/description}"/>
+                    <Label text="Owner"/>
+                    <Text text="{detail>/owner}"/>
                   </form:SimpleForm>
                 </uxap:blocks>
               </uxap:ObjectPageSubSection>
