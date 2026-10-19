@@ -55,7 +55,11 @@
             <Label text="Version:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
             <Label text="{detail>/version}" class="detailHeaderValue sapUiLargeMarginEnd"/>
             <Label text="Sync Status:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
-            <ObjectStatus text="{detail>/s4SyncText}" state="{detail>/s4SyncState}"/>
+            <ObjectStatus
+              id="syncStatusDisplay"
+              text="{detail>/s4SyncText}"
+              state="{detail>/s4SyncState}"
+              icon="{detail>/s4SyncIcon}"/>
           </FlexBox>
         </uxap:headerContent>
 

@@ -12,7 +12,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002851",
@@ -24,9 +24,9 @@
       "s4Number": "200000002851",
       "s4Type": "IMU",
       "owner": "S4",
-      "s4SyncText": "Synced",
+      "s4SyncText": "Synced on Oct 15, 2026, 9:30 AM",
       "s4SyncState": "Success",
-      "s4SyncIcon": "sap-icon://accept"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002849",
@@ -38,9 +38,9 @@
       "s4Number": "200000002849",
       "s4Type": "DRW",
       "owner": "S4",
-      "s4SyncText": "Synced",
+      "s4SyncText": "Synced on Oct 10, 2026, 2:15 PM",
       "s4SyncState": "Success",
-      "s4SyncIcon": "sap-icon://accept"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002846",
@@ -54,7 +54,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002816",
@@ -68,7 +68,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002821",
@@ -82,7 +82,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002819",
@@ -96,7 +96,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002814",
@@ -108,9 +108,9 @@
       "s4Number": "200000002814",
       "s4Type": "TES",
       "owner": "S4",
-      "s4SyncText": "Synced",
+      "s4SyncText": "Synced on Oct 8, 2026, 4:00 PM",
       "s4SyncState": "Success",
-      "s4SyncIcon": "sap-icon://accept"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002814",
@@ -124,7 +124,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002810",
@@ -138,7 +138,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002805",
@@ -150,9 +150,9 @@
       "s4Number": "200000002805",
       "s4Type": "DRW",
       "owner": "S4",
-      "s4SyncText": "Synced",
+      "s4SyncText": "Synced on Sep 28, 2026, 11:00 AM",
       "s4SyncState": "Success",
-      "s4SyncIcon": "sap-icon://accept"
+      "s4SyncIcon": ""
     },
     {
       "number": "100000002798",
@@ -166,7 +166,7 @@
       "owner": "IPD",
       "s4SyncText": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": "sap-icon://sys-minus"
+      "s4SyncIcon": ""
     }
   ]
 }
