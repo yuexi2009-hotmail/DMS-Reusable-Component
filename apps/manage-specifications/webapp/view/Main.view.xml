@@ -8,7 +8,7 @@
 
   <Page showHeader="false" enableScrolling="false" class="manageSpecPage">
     <content>
-      <f:DynamicPage id="mainPage" class="mainDynamicPage" toggleHeaderOnTitleClick="true" showFooter="false">
+      <f:DynamicPage id="mainPage" class="mainDynamicPage" toggleHeaderOnTitleClick="false" showFooter="false" headerExpanded="true">
 
         <f:title>
           <f:DynamicPageTitle>
@@ -20,7 +20,7 @@
             </f:heading>
             <f:snappedHeading>
               <HBox alignItems="Center">
-                <Title text="Standard" level="H3" class="sapUiSmallMarginEnd manageSpecTitle" />
+                <Title text="Standard" level="H2" class="sapUiSmallMarginEnd manageSpecTitle" />
                 <Button icon="sap-icon://slim-arrow-down" type="Transparent" press=".onViewSwitchPress" />
               </HBox>
             </f:snappedHeading>
@@ -33,10 +33,9 @@
 
         <f:header>
           <f:DynamicPageHeader pinnable="true">
-            <!-- Full-width filter area with page-level padding -->
             <VBox class="manageSpecFilterContainer sapUiSizeCompact">
 
-              <!-- Row 1: Search + 5 dropdowns spanning full width -->
+              <!-- Row 1 -->
               <HBox class="manageSpecFilterRow manageSpecFilterRowTop" alignItems="End">
                 <VBox class="manageSpecFilterItem">
                   <SearchField id="searchField" placeholder="Search" liveChange=".onSearch" />
@@ -53,65 +52,32 @@
                   </Select>
                 </VBox>
                 <VBox class="manageSpecFilterItem">
-                  <Label text="Status:" labelFor="statusFilter" />
-                  <Select id="statusFilter" width="100%" change=".onFilterChange">
-                    <items>
-                      <core:Item key="" text="" />
-                      <core:Item key="Draft" text="Draft" />
-                      <core:Item key="InReview" text="In Review" />
-                      <core:Item key="Release" text="Release" />
-                      <core:Item key="Blocked" text="Blocked" />
-                    </items>
-                  </Select>
+                  <Label text="Number:" labelFor="numberInput" />
+                  <Input id="numberInput" width="100%" showValueHelp="true" valueHelpRequest=".onNumberValueHelp" />
                 </VBox>
                 <VBox class="manageSpecFilterItem">
-                  <Label text="Specification Type:" labelFor="specTypeFilter" />
-                  <Select id="specTypeFilter" width="100%" change=".onFilterChange">
-                    <items>
-                      <core:Item key="" text="" />
-                      <core:Item key="MM_SpecType_Full" text="MM_SpecType_Full" />
-                      <core:Item key="GG001" text="GG001" />
-                      <core:Item key="WF" text="WF" />
-                      <core:Item key="TM26" text="TM26 CW02 ANALYTIC PROP" />
-                    </items>
-                  </Select>
+                  <Label text="Description:" labelFor="descriptionInput" />
+                  <Input id="descriptionInput" width="100%" showValueHelp="true" valueHelpRequest=".onDescriptionValueHelp" />
                 </VBox>
                 <VBox class="manageSpecFilterItem">
-                  <Label text="Product Category:" labelFor="productCategoryInput" />
-                  <Input id="productCategoryInput" width="100%" />
+                  <Label text="Type:" labelFor="typeInput" />
+                  <Input id="typeInput" width="100%" showValueHelp="true" valueHelpRequest=".onTypeValueHelp" />
                 </VBox>
                 <VBox class="manageSpecFilterItem manageSpecFilterItemLast">
-                  <Label text="Created By:" labelFor="createdByFilter" />
-                  <Select id="createdByFilter" width="100%" change=".onFilterChange">
-                    <items>
-                      <core:Item key="" text="" />
-                      <core:Item key="EK_TRANSLATE" text="EK_TRANSLATE" />
-                      <core:Item key="EK_TRANSLATE_2" text="EK_TRANSLATE_2" />
-                      <core:Item key="TM26_USER" text="TM26 CW02 User" />
-                    </items>
-                  </Select>
+                  <Label text="Document Status:" labelFor="documentStatusInput" />
+                  <Input id="documentStatusInput" width="100%" showValueHelp="true" valueHelpRequest=".onDocStatusValueHelp" />
                 </VBox>
               </HBox>
 
-              <!-- Row 2: 3 dropdowns + spacer + Go/Adapt flush right -->
+              <!-- Row 2 -->
               <HBox class="manageSpecFilterRow" alignItems="End">
                 <VBox class="manageSpecFilterItem">
-                  <Label text="Changed By:" labelFor="changedByFilter" />
-                  <Select id="changedByFilter" width="100%" change=".onFilterChange">
-                    <items>
-                      <core:Item key="" text="" />
-                      <core:Item key="EK_TRANSLATE" text="EK_TRANSLATE" />
-                      <core:Item key="TM26_USER" text="TM26 CW02 User" />
-                    </items>
-                  </Select>
+                  <Label text="Version:" labelFor="versionInput" />
+                  <Input id="versionInput" width="100%" showValueHelp="true" valueHelpRequest=".onVersionValueHelp" />
                 </VBox>
                 <VBox class="manageSpecFilterItem">
-                  <Label text="Created On:" labelFor="createdOnFilter" />
-                  <DatePicker id="createdOnFilter" width="100%" placeholder="" />
-                </VBox>
-                <VBox class="manageSpecFilterItem">
-                  <Label text="Changed On:" labelFor="changedOnFilter" />
-                  <DatePicker id="changedOnFilter" width="100%" placeholder="" />
+                  <Label text="Created By:" labelFor="createdByInput" />
+                  <Input id="createdByInput" width="100%" showValueHelp="true" valueHelpRequest=".onCreatedByValueHelp" />
                 </VBox>
                 <HBox alignItems="Center" class="manageSpecGoActions">
                   <Button text="Go" type="Emphasized" press=".onGoPress" />
@@ -127,81 +93,68 @@
           <VBox>
 
             <OverflowToolbar class="sapUiSizeCompact">
-              <Title text="Specifications (2,766)" level="H3" id="tableTitle" />
+              <Title text="Documents (288)" level="H3" id="tableTitle" />
               <ToolbarSpacer />
-              <Button id="copyBtn" text="Copy" type="Transparent" press=".onCopyPress" enabled="false" />
-              <MenuButton text="Mass Change" type="Transparent" buttonMode="Regular" press=".onMassChangePress">
-                <menu>
-                  <Menu>
-                    <items>
-                      <MenuItem text="Change Status" press=".onChangeStatus" />
-                      <MenuItem text="Change Type" press=".onChangeType" />
-                    </items>
-                  </Menu>
-                </menu>
-              </MenuButton>
-              <Button id="compareBtn" text="Compare" type="Transparent" press=".onComparePress" enabled="false" />
-              <MenuButton id="createBtn" text="Create" type="Transparent" buttonMode="Regular" press=".onCreatePress">
-                <menu>
-                  <Menu>
-                    <items>
-                      <MenuItem text="Create New" press=".onCreatePress" />
-                      <MenuItem text="Create from Template" press=".onCreateOptionsPress" />
-                    </items>
-                  </Menu>
-                </menu>
-              </MenuButton>
+              <Button id="createBtn" text="Create" type="Transparent" press=".onCreatePress" />
+              <Button id="syncWithS4Btn" text="Sync with S4" type="Transparent" press=".onSyncWithS4Press" enabled="false" />
+              <Button id="pullFromS4Btn" text="Pull from S4" type="Transparent" press=".onPullFromS4Press" />
               <Button id="deleteBtn" text="Delete" type="Transparent" press=".onDeletePress" enabled="false" />
               <Button icon="sap-icon://copy" type="Transparent" tooltip="Copy to clipboard" press=".onClipboardPress" />
               <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Column settings" press=".onColumnSettingsPress" />
+              <Button icon="sap-icon://group-2" type="Transparent" tooltip="Export" press=".onExportPress" />
             </OverflowToolbar>
 
             <Table
               id="specificationsTable"
-              items="{/specifications}"
+              items="{/documents}"
               mode="MultiSelect"
               selectionChange=".onSelectionChange"
-              noDataText="No specifications found"
+              noDataText="No documents found"
               sticky="ColumnHeaders,HeaderToolbar"
               growing="true"
               growingThreshold="20"
               class="sapUiSizeCompact">
 
               <columns>
-                <Column width="7rem">
-                  <Text text="Thumbnail" />
+                <Column width="10rem">
+                  <Text text="Number" />
                 </Column>
                 <Column>
-                  <Text text="Specification" />
+                  <Text text="Description" />
                 </Column>
-                <Column width="7rem" hAlign="Center">
+                <Column width="5rem">
+                  <Text text="Type" />
+                </Column>
+                <Column width="6rem">
+                  <Text text="Part" />
+                </Column>
+                <Column width="10rem">
+                  <Text text="Document Status" />
+                </Column>
+                <Column width="8rem">
                   <Text text="Version" />
                 </Column>
-                <Column minScreenWidth="Tablet" demandPopin="true">
-                  <Text text="Status" />
-                </Column>
-                <Column minScreenWidth="Desktop" demandPopin="true">
-                  <Text text="Specification Type" />
+                <Column width="9rem">
+                  <Text text="S4 Sync" />
                 </Column>
               </columns>
 
               <items>
                 <ColumnListItem type="Navigation" press=".onItemPress">
                   <cells>
-                    <Avatar src="sap-icon://product" displayShape="Square" backgroundColor="Accent1" size="S" class="manageSpecAvatar" />
-                    <VBox>
-                      <Text text="{name}" class="manageSpecRowTitle" />
-                      <Text text="{technicalName}" class="manageSpecRowSubtitle" />
-                      <Link text="{editingStatus}" visible="{showEditingStatus}" press=".onSpecNamePress" />
-                    </VBox>
-                    <Text text="{version}" class="manageSpecVersionBold" />
-                    <ObjectStatus text="{statusText}" state="{statusState}" icon="{statusIcon}" />
-                    <Text text="{specType}" />
+                    <ObjectIdentifier title="{number}" titleActive="false" titlePress=".onItemPress" />
+                    <Text text="{description}" wrapping="false" />
+                    <Text text="{type}" wrapping="false" />
+                    <ObjectIdentifier title="{part}" />
+                    <Text text="{documentStatus}" wrapping="false" />
+                    <ObjectIdentifier title="{version}" />
+                    <ObjectStatus text="{s4SyncText}" state="{s4SyncState}" />
                   </cells>
                 </ColumnListItem>
               </items>
 
             </Table>
+
           </VBox>
         </f:content>
 

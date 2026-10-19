@@ -4,8 +4,8 @@
     "id": "com.sap.demo.managespec",
     "type": "application",
     "applicationVersion": { "version": "1.0.2" },
-    "title": "Manage Specifications",
-    "description": "Browse, filter and manage product specifications"
+    "title": "Manage Documents",
+    "description": "Browse, filter and manage documents"
   },
   "sap.ui": {
     "technology": "UI5",

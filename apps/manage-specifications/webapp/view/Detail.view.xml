@@ -1,637 +1,210 @@
 <mvc:View
   controllerName="com.sap.demo.managespec.controller.Detail"
-  xmlns:mvc="sap.ui.core.mvc"
+  displayBlock="true"
   xmlns="sap.m"
-  xmlns:f="sap.f"
-  xmlns:l="sap.ui.layout"
-  xmlns:form="sap.ui.layout.form"
+  xmlns:mvc="sap.ui.core.mvc"
   xmlns:uxap="sap.uxap"
-  xmlns:ui="sap.ui.table"
-  xmlns:core="sap.ui.core"
-  xmlns:mdc="sap.ui.mdc"
-  xmlns:mdct="sap.ui.mdc.table"
-  displayBlock="true">
+  xmlns:layout="sap.ui.layout"
+  xmlns:form="sap.ui.layout.form"
+  xmlns:core="sap.ui.core">
 
-  <Page showHeader="false" enableScrolling="false" class="detailPage">
+  <Page showHeader="false" enableScrolling="false">
     <content>
-      <f:DynamicPage id="detailPage" toggleHeaderOnTitleClick="true" showFooter="false" stickySubheaderProvider="detailTabBar">
+      <uxap:ObjectPageLayout
+        id="objectPageLayout"
+        useIconTabBar="true"
+        upperCaseAnchorBar="false"
+        showTitleInHeaderContent="false"
+        alwaysShowContentHeader="false"
+        preserveHeaderStateOnScroll="false"
+        class="sapUiSizeCompact">
 
-        <f:title>
-          <f:DynamicPageTitle class="sapUiSizeCompact">
-            <f:heading>
+        <uxap:headerTitle>
+          <uxap:ObjectPageDynamicHeaderTitle>
+
+            <uxap:heading>
               <VBox>
-                <Title text="{detail>/name}" level="H2" />
-                <Text text="{detail>/technicalName}" class="detailSpecSubtitle" />
+                <Title text="{detail>/description}" level="H2"/>
+                <Text text="{detail>/number}" class="detailDocNumber"/>
               </VBox>
-            </f:heading>
-            <f:snappedHeading>
+            </uxap:heading>
+
+            <uxap:snappedHeading>
               <VBox>
-                <Title text="{detail>/name}" level="H3" />
-                <Text text="{detail>/technicalName}" class="detailSpecSubtitle" />
+                <Title text="{detail>/description}" level="H3"/>
+                <Text text="{detail>/number}" class="detailDocNumber"/>
               </VBox>
-            </f:snappedHeading>
-            <f:actions>
-              <Button text="Delete" type="Ghost" />
-              <Button text="Copy" type="Ghost" />
-              <Button text="Change Product Category" type="Ghost" />
-              <Button text="Transfer Data" type="Ghost" />
-              <Button text="New Version" type="Ghost" />
-              <Button icon="sap-icon://action" type="Transparent" />
-            </f:actions>
-          </f:DynamicPageTitle>
-        </f:title>
+            </uxap:snappedHeading>
 
-        <f:header>
-          <f:DynamicPageHeader pinnable="true">
-            <HBox alignItems="Start" class="sapUiMediumMarginBottom">
-              <Avatar src="sap-icon://product" displayShape="Square" class="detailHeaderAvatar sapUiMediumMarginEnd" />
-              <VBox class="sapUiMediumMarginEnd detailHeaderCol">
-                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
-                  <Label text="Version:" class="detailAttrLabel sapUiTinyMarginEnd" />
-                  <Text text="{detail>/version}" />
-                </HBox>
-                <HBox alignItems="Center">
-                  <Label text="Status:" class="detailAttrLabel sapUiTinyMarginEnd" />
-                  <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" icon="{detail>/statusIcon}" />
-                </HBox>
-              </VBox>
-              <VBox class="detailHeaderCol">
-                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
-                  <Label text="Specification Type:" class="detailAttrLabel sapUiTinyMarginEnd" />
-                  <Text text="{detail>/specType}" />
-                </HBox>
-                <HBox alignItems="Center">
-                  <Label text="Product Category:" class="detailAttrLabel sapUiTinyMarginEnd" />
-                  <Text text="{detail>/productCategory}" />
-                </HBox>
-              </VBox>
-            </HBox>
-          </f:DynamicPageHeader>
-        </f:header>
+            <uxap:actions>
+              <Button text="Edit"          type="Emphasized" press=".onEditPress"/>
+              <Button text="Delete"        type="Ghost"      press=".onDeletePress"/>
+              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress"/>
+              <Button text="New Version"   type="Ghost"      press=".onNewVersionPress"/>
+              <Button icon="sap-icon://action" type="Transparent" press=".onMoreActionsPress" tooltip="Share"/>
+            </uxap:actions>
 
-        <f:content>
-          <IconTabBar id="detailTabBar" class="detailTabBar sapUiNoContentPadding" expanded="true" select=".onTabSelect">
-            <items>
+          </uxap:ObjectPageDynamicHeaderTitle>
+        </uxap:headerTitle>
 
-              <!-- General Tab -->
-              <IconTabFilter text="General" key="general">
-                <uxap:ObjectPageLayout
-                  id="generalObjectPage"
-                  useIconTabBar="false"
-                  upperCaseAnchorBar="false"
-                  showTitleInHeaderContent="false"
-                  alwaysShowContentHeader="false"
-                  preserveHeaderStateOnScroll="false"
-                  showAnchorBar="false"
-                  showHeaderContent="false"
-                  enableLazyLoading="false"
-                  class="detailGeneralPage">
-                  <uxap:sections>
+        <uxap:headerContent>
+          <FlexBox wrap="NoWrap" alignItems="Center">
+            <Label text="Status:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
+            <Label text="{detail>/documentStatus}" class="detailHeaderValue sapUiLargeMarginEnd"/>
+            <Label text="Version:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
+            <Label text="{detail>/version}" class="detailHeaderValue"/>          </FlexBox>
+        </uxap:headerContent>
 
-                    <uxap:ObjectPageSection title=" " titleUppercase="false">
-                      <uxap:subSections>
-                        <uxap:ObjectPageSubSection title=" ">
-                          <uxap:blocks>
-                            <VBox width="100%">
-                              <Toolbar class="sapUiSizeCompact detailSectionToolbar detailPlainToolbar">
-                                <Title text="Basic Data" level="H4" />
-                              </Toolbar>
-                              <form:SimpleForm
-                                layout="ColumnLayout"
-                                columnsM="2" columnsL="4" columnsXL="4"
-                                class="sapUxAPObjectPageSubSectionAlignContent">
-                                <Label text="ID" />
-                                <Text text="{detail>/id}" />
-                                <Label text="Status" />
-                                <ObjectStatus text="{detail>/statusText}" state="{detail>/statusState}" />
-                                <Label text="Name" />
-                                <Text text="{detail>/name}" />
-                                <Label text="Product Category" />
-                                <Text text="{detail>/productCategory}" />
-                                <Label text="Version" />
-                                <Text text="{detail>/version}" />
-                                <Label text="Specification Type" />
-                                <Text text="{detail>/specType}" />
-                              </form:SimpleForm>
-                            </VBox>
-                          </uxap:blocks>
-                        </uxap:ObjectPageSubSection>
-                      </uxap:subSections>
-                    </uxap:ObjectPageSection>
+        <uxap:sections>
 
-                    <uxap:ObjectPageSection title=" " titleUppercase="false">
-                      <uxap:subSections>
-                        <uxap:ObjectPageSubSection title=" ">
-                          <uxap:blocks>
-                            <VBox width="100%">
-                              <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                                <Title text="Other Versions" level="H4" />
-                                <ToolbarSpacer />
-                                <SearchField placeholder="Search" width="14rem" />
-                                <Button icon="sap-icon://action-settings" type="Transparent" />
-                                <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
-                              </Toolbar>
-                              <Table items="{detail>/otherVersions}" class="sapUiSizeCompact detailTable">
-                                <columns>
-                                  <Column><Text text="Name" /></Column>
-                                  <Column width="8rem"><Text text="Version" /></Column>
-                                  <Column><Text text="Status" /></Column>
-                                </columns>
-                                <items>
-                                  <ColumnListItem>
-                                    <cells>
-                                      <Text text="{name}" />
-                                      <Text text="{version}" />
-                                      <ObjectStatus text="{statusText}" state="{statusState}" />
-                                    </cells>
-                                  </ColumnListItem>
-                                </items>
-                                <noData>
-                                  <IllustratedMessage illustrationType="sapIllus-NoData" illustrationSize="Dot"
-                                    title="No items available" description="When there are, you'll find them here." />
-                                </noData>
-                              </Table>
-                            </VBox>
-                          </uxap:blocks>
-                        </uxap:ObjectPageSubSection>
-                      </uxap:subSections>
-                    </uxap:ObjectPageSection>
+          <!-- General Tab -->
+          <uxap:ObjectPageSection title="General" titleUppercase="false">
+            <uxap:subSections>
 
-                  </uxap:sections>
-                </uxap:ObjectPageLayout>
-              </IconTabFilter>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks>
+                  <form:SimpleForm
+                    layout="ColumnLayout"
+                    columnsM="2" columnsL="4" columnsXL="4"
+                    class="sapUxAPObjectPageSubSectionAlignContent">
+                    <Label text="Number:"/>
+                    <Text text="{detail>/number}"/>
+                    <Label text="Type:"/>
+                    <Text text="{detail>/type}"/>
+                    <Label text="Part:"/>
+                    <Text text="{detail>/part}"/>
+                    <Label text="Description:"/>
+                    <Text text="{detail>/description}"/>
+                  </form:SimpleForm>
+                </uxap:blocks>
+              </uxap:ObjectPageSubSection>
 
-              <!-- Properties Tab -->
-              <IconTabFilter text="Properties" key="properties">
-                <VBox class="detailTabContent">
-                  <VBox>
-                    <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                      <Title text="Properties" level="H4" />
-                      <ToolbarSpacer />
-                      <SearchField placeholder="Search" width="14rem" />
-                      <Button icon="sap-icon://action-settings" type="Transparent" />
-                      <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
-                    </Toolbar>
-                    <Table items="{detail>/properties}" class="sapUiSizeCompact detailTable">
-                      <columns>
-                        <Column><Text text="Name" /></Column>
-                        <Column><Text text="Value" /></Column>
-                        <Column><Text text="Unit" /></Column>
-                      </columns>
-                      <items>
-                        <ColumnListItem>
-                          <cells>
-                            <Text text="{name}" />
-                            <Text text="{value}" />
-                            <Text text="{unit}" />
-                          </cells>
-                        </ColumnListItem>
-                      </items>
-                      <noData>
-                        <IllustratedMessage illustrationType="sapIllus-NoData" illustrationSize="Dot"
-                          title="No items available" description="When there are, you'll find them here." />
-                      </noData>
-                    </Table>
-                  </VBox>
-                </VBox>
-              </IconTabFilter>
+              <uxap:ObjectPageSubSection title="Attachments" titleUppercase="false">
+                <uxap:blocks>
+                  <Table
+                    id="docAttachmentsTable"
+                    items="{detail>/attachments}"
+                    mode="MultiSelect"
+                    selectionChange=".onAttachmentSelectionChange"
+                    sticky="ColumnHeaders,HeaderToolbar"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%"
+                    class="sapUiSizeCompact">
+                    <headerToolbar>
+                      <OverflowToolbar>
+                        <VariantManagement selectedKey="standard">
+                          <VariantItem key="standard" text="Standard"/>
+                        </VariantManagement>
+                        <Text text="Items ({= ${detail>/attachments/length}})" class="sapMText sapUiSmallMarginBegin"/>
+                        <ToolbarSpacer/>
+                        <SearchField id="attSearchField" width="15rem" placeholder="Search" search=".onAttSearch"/>
+                        <Button id="attUploadBtn"   icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" enabled="false"/>
+                        <Button id="attEditLinkBtn" text="Edit Link"  type="Transparent" enabled="false" press=".onAttEditLink"/>
+                        <Button id="attDownloadBtn" text="Download"   type="Transparent" enabled="false" press=".onAttDownload"/>
+                        <Button id="attDeleteBtn"   text="Delete"     type="Transparent" enabled="false" press=".onAttDelete"/>
+                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                          <menu>
+                            <Menu>
+                              <items>
+                                <MenuItem text="Check Out"  press=".onAttCheckOut"/>
+                                <MenuItem text="Check In"   press=".onAttCheckIn"/>
+                                <MenuItem text="Properties" press=".onAttProperties"/>
+                              </items>
+                            </Menu>
+                          </menu>
+                        </MenuButton>
+                        <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   enabled="false"/>
+                        <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onAttRefresh"/>
+                        <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"/>
+                        <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings"/>
+                      </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                      <Column width="3.5rem" hAlign="Center"><Text text="Type"/></Column>
+                      <Column><Text text="Name"/></Column>
+                      <Column width="10rem"><Text text="Modified On"/></Column>
+                      <Column width="14rem"><Text text="Created By"/></Column>
+                      <Column width="14rem"><Text text="Modified By"/></Column>
+                      <Column width="6rem"><Text text="Size"/></Column>
+                      <Column width="4rem"><Text text=""/></Column>
+                    </columns>
+                    <items>
+                      <ColumnListItem>
+                        <cells>
+                          <core:Icon src="{detail>typeIcon}" class="docAttTypeIcon"/>
+                          <Text text="{detail>name}" wrapping="false" class="docAttNameBold"/>
+                          <Text text="{detail>modifiedOn}" wrapping="false"/>
+                          <Text text="{detail>createdBy}" wrapping="false"/>
+                          <Text text="{detail>modifiedBy}" wrapping="false"/>
+                          <Text text="{detail>size}" wrapping="false"/>
+                          <Button icon="sap-icon://overflow" type="Transparent" press=".onAttRowMore" tooltip="More"/>
+                        </cells>
+                      </ColumnListItem>
+                    </items>
+                  </Table>
+                </uxap:blocks>
+              </uxap:ObjectPageSubSection>
 
-              <!-- Related Objects Tab -->
-              <IconTabFilter text="Related Objects" key="relatedObjects">
-                <VBox class="detailTabContent">
-                  <VBox>
-                    <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                      <Title text="Collaborations" level="H4" />
-                      <ToolbarSpacer />
-                      <SearchField placeholder="Search" width="14rem" />
-                      <Button icon="sap-icon://action-settings" type="Transparent" />
-                      <Button icon="sap-icon://slim-arrow-down" type="Transparent" />
-                    </Toolbar>
-                    <Table items="{detail>/collaborations}" class="sapUiSizeCompact detailTable">
-                      <columns>
-                        <Column><Text text="Name" /></Column>
-                        <Column><Text text="Description" /></Column>
-                        <Column width="10rem"><Text text="Created On" /></Column>
-                        <Column><Text text="Created By" /></Column>
-                      </columns>
-                      <items>
-                        <ColumnListItem>
-                          <cells>
-                            <Text text="{name}" />
-                            <Text text="{description}" />
-                            <Text text="{createdOn}" />
-                            <Text text="{createdBy}" />
-                          </cells>
-                        </ColumnListItem>
-                      </items>
-                      <noData>
-                        <IllustratedMessage illustrationType="sapIllus-NoData" illustrationSize="Dot"
-                          title="No items available" description="When there are, you'll find them here." />
-                      </noData>
-                    </Table>
-                  </VBox>
-                </VBox>
-              </IconTabFilter>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-              <IconTabFilter text="Document Empty state" key="documentsEmptyState">
-                <VBox class="doc9TabContent">
-                  <!-- Title toolbar always visible -->
-                  <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Title text="Documents" level="H4" />
-                  </Toolbar>
+          <!-- Attachments Tab -->
+          <uxap:ObjectPageSection title="Attachments" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-                  <!-- Empty state: full-width table + illustration inside noData (default) -->
-                  <VBox id="doc9DropZone" visible="false" class="doc9DropZone">
-                    <Table id="doc9AttTableEmpty"
-                      class="sapUiSizeCompact doc9AttTableEmpty">
-                      <columns>
-                        <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
-                        <Column><Text text="Name" /></Column>
-                        <Column width="10rem"><Text text="Modified On" /></Column>
-                        <Column width="12rem"><Text text="Created By" /></Column>
-                        <Column width="12rem"><Text text="Modified By" /></Column>
-                        <Column width="6rem"><Text text="Size" /></Column>
-                        <Column width="4rem"><Text text="" /></Column>
-                      </columns>
-                      <noData>
-                        <IllustratedMessage
-                          illustrationType="sapIllus-NoData"
-                          illustrationSize="Dialog"
-                          title='Click "Load Files" to load documents.'
-                          description="Select a document row or click Load Files below.">
-                          <additionalContent>
-                            <Button text="Load Files" type="Default" press=".onDoc9LoadFiles" />
-                          </additionalContent>
-                        </IllustratedMessage>
-                      </noData>
-                    </Table>
-                  </VBox>
+          <!-- Linked Objects Tab -->
+          <uxap:ObjectPageSection title="Linked Objects" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-                  <!-- Data state: left/right splitter (shown after upload) -->
-                  <l:ResponsiveSplitter id="doc9Splitter" class="doc9Splitter doc7SplitterPanel">
-                    <l:PaneContainer>
-                      <l:SplitPane id="doc9PaneLeft" requiredParentWidth="300">
-                        <l:layoutData>
-                          <l:SplitterLayoutData size="30%" minSize="160" />
-                        </l:layoutData>
-                        <mdc:Table
-                          id="doc9DocTable"
-                          header="Items"
-                          p13nMode="Column,Sort,Filter,Group"
-                          selectionMode="None"
-                          showRowCount="true"
-                          class="sapUiSizeCompact"
-                          rowPress=".onDoc9DocSelect"
-                          delegate="{
-                            name: 'com/sap/demo/managespec/delegate/DocLeftTableDelegate',
-                            payload: { bindingPath: '/doc9LeftRows' }
-                          }">
-                          <mdc:actions>
-                            <Button text="{detail>/doc9ActionBtnText}" type="Transparent" visible="{detail>/doc9ShowSwitchType}" press=".onDoc9ActionBtn" />
-                            <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
-                              <menu>
-                                <Menu>
-                                  <items>
-                                    <MenuItem text="Link Existing" press=".onLinkExistingDoc9" />
-                                    <MenuItem text="Link New" />
-                                  </items>
-                                </Menu>
-                              </menu>
-                            </MenuButton>
-                            <Button id="unlinkBtn9" text="Unlink" type="Transparent" enabled="false" press=".onDoc9Unlink" />
-                          </mdc:actions>
-                          <mdc:type>
-                            <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
-                          </mdc:type>
-                          <mdct:Column propertyKey="docId"   header="Document"  ><HBox><Text text="{detail>docId}" wrapping="false" visible="{= ${detail>type} === 'ATT' }" class="docIdBold"/><Link text="{detail>docId}" wrapping="false" visible="{= ${detail>type} !== 'ATT' }" press=".onDocIdLinkPress" class="docIdBold"/></HBox></mdct:Column>
-                          <mdct:Column propertyKey="type"    header="Type"      width="4rem"  ><Text text="{detail>type}"    wrapping="false"/></mdct:Column>
-                          <mdct:Column propertyKey="part"    header="Part"      width="4rem"  ><Text text="{detail>part}"    wrapping="false"/></mdct:Column>
-                          <mdct:Column propertyKey="version" header="Ver."      width="4rem"  ><Text text="{detail>version}" wrapping="false"/></mdct:Column>
-                          <mdct:Column propertyKey="status"  header="Status"    width="5.5rem"><Text text="{detail>status}"  wrapping="false"/></mdct:Column>
-                        </mdc:Table>
-                      </l:SplitPane>
-                      <l:SplitPane id="doc9PaneRight" requiredParentWidth="300">
-                        <VBox class="doc9RightPane" height="100%">
-                        <!-- initial state: full illustration only, no table chrome -->
-                        <IllustratedMessage
-                          visible="{= ${detail>/doc9RightState} === 'initial' }"
-                          illustrationType="sapIllus-NoData"
-                          illustrationSize="Dialog"
-                          title='Click "Load Files" to load documents.'
-                          description="Select a document row or click Load Files below.">
-                          <additionalContent>
-                            <Button text="Load Files" type="Default" press=".onDoc9LoadFiles" />
-                          </additionalContent>
-                        </IllustratedMessage>
-                        <Table id="doc9AttTable"
-                          visible="{= ${detail>/doc9RightState} !== 'initial' }"
-                          items="{detail>/doc9Attachments}"
-                          mode="MultiSelect"
-                          growing="true"
-                          growingThreshold="10"
-                          sticky="ColumnHeaders,HeaderToolbar"
-                          class="sapUiSizeCompact doc9AttTable"
-                          updateFinished=".onDoc9AttTableUpdated">
-                          <noData>
-                            <IllustratedMessage
-                              illustrationType="{= ${detail>/doc9RightState} === 'upload' ? 'sapIllus-UploadCollection' : 'sapIllus-NoData' }"
-                              illustrationSize="Dialog"
-                              title="{= ${detail>/doc9RightState} === 'upload' ? 'Drag and drop documents here to upload them.' : 'No files found.' }"
-                              description="{= ${detail>/doc9RightState} === 'upload' ? 'Click Upload new or drag files here.' : 'Go to Document Management to upload and manage files.' }">
-                              <additionalContent>
-                                <Button text="Navigate to DMS" type="Default" press=".onDoc9NavigateToDMS"
-                                  visible="{= ${detail>/doc9RightState} === 'noFiles' }" />
-                              </additionalContent>
-                            </IllustratedMessage>
-                          </noData>
-                          <headerToolbar>
-                            <OverflowToolbar class="doc9RightToolbar" visible="{= ${detail>/doc9RightState} !== 'initial' }">
-                              <VariantManagement id="doc9AttVM" selectedKey="standard">
-                                <VariantItem key="standard" text="Standard" />
-                              </VariantManagement>
-                              <Text id="doc9ItemCount" text="Items ({= ${detail>/doc9Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
-                              <ToolbarSpacer />
-                              <SearchField id="doc9Search" width="15rem" placeholder="Search" search=".onDoc9Search" />
-                              <MenuButton id="doc9CreateBtn" text="Create" type="Default" menuPosition="BeginBottom" enabled="false">
-                                <menu>
-                                  <Menu itemSelected=".onDoc9MenuItemSelected">
-                                    <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc9CreateFolder" />
-                                    <MenuItem text="Document" icon="sap-icon://document">
-                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc9Upload" />
-                                    </MenuItem>
-                                    <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc9CreateLink" />
-                                  </Menu>
-                                </menu>
-                              </MenuButton>
-                              <Button id="doc9EditBtn"   text="Edit Link"  type="Transparent" enabled="false" press=".onDoc9EditLink" />
-                              <Button id="doc9DownBtn"   text="Download"   type="Transparent" enabled="false" press=".onDoc9Download" />
-                              <Button id="doc9DeleteBtn" text="Delete"     type="Transparent" enabled="false" press=".onDoc9Delete" />
-                              <Button id="doc9MoveBtn" text="Move" type="Transparent" enabled="false" press=".onDoc9Move">
-                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
-                              </Button>
-                              <Button id="doc9CopyBtn" text="Copy" type="Transparent" enabled="false" press=".onDoc9Copy">
-                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
-                              </Button>
-                              <MenuButton id="doc9ManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
-                                <menu>
-                                  <Menu>
-                                    <items>
-                                      <MenuItem text="Check Out"  press=".onDoc9CheckOut" />
-                                      <MenuItem text="Check In"   press=".onDoc9CheckIn" />
-                                      <MenuItem text="Properties" press=".onDoc9Properties" />
-                                    </items>
-                                  </Menu>
-                                </menu>
-                              </MenuButton>
-                              <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   press=".onDoc9NavUp"   enabled="false" />
-                              <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onDoc9Refresh" enabled="false" />
-                              <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     press=".onDoc9Sort"    enabled="false" />
-                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc9Settings" enabled="false" />
-                            </OverflowToolbar>
-                          </headerToolbar>
-                          <columns>
-                            <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
-                            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Name" /></Column>
-                            <Column minScreenWidth="Tablet" demandPopin="true" width="10rem"><Text text="Modified On" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Created By" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Modified By" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="6rem"><Text text="Size" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="8rem"><Text text="Expire On" /></Column>
-                            <Column width="4rem"><Text text="" /></Column>
-                          </columns>
-                          <items>
-                            <ColumnListItem>
-                              <cells>
-                                <core:Icon src="{detail>typeIcon}" class="docAttTypeIcon" />
-                                <Text text="{detail>name}" wrapping="false" class="docAttNameBold" />
-                                <Text text="{detail>modifiedOn}" wrapping="false" />
-                                <Text text="{detail>createdBy}" wrapping="false" />
-                                <Text text="{detail>modifiedBy}" wrapping="false" />
-                                <Text text="{detail>size}" wrapping="false" />
-                                <Text text="{detail>expireOn}" wrapping="false" />
-                                <Button icon="sap-icon://overflow" type="Transparent" press=".onDoc9RowMore" tooltip="More" />
-                              </cells>
-                            </ColumnListItem>
-                          </items>
-                        </Table>
-                        </VBox>
-                      </l:SplitPane>
-                    </l:PaneContainer>
-                  </l:ResponsiveSplitter>
-                </VBox>
-              </IconTabFilter>
+          <!-- Change Processes Tab -->
+          <uxap:ObjectPageSection title="Change Processes" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-              <IconTabFilter text="Document with Files" key="documents7">
-                <VBox class="doc7TabContent">
-                  <!-- Title toolbar always visible -->
-                  <Toolbar class="sapUiSizeCompact detailSectionToolbar">
-                    <Title text="Documents" level="H4" />
-                  </Toolbar>
+          <!-- Translation Tab -->
+          <uxap:ObjectPageSection title="Translation" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-                  <!-- Empty state: full-width table + illustration inside noData (default) -->
-                  <VBox id="doc7DropZone" visible="{= !${detail>/doc7HasData} }" class="doc7DropZone">
-                    <Table id="doc7AttTableEmpty"
-                      class="sapUiSizeCompact doc7AttTableEmpty">
-                      <headerToolbar>
-                        <OverflowToolbar class="doc7EmptyToolbar">
-                          <VariantManagement id="doc7AttVMEmpty" selectedKey="standard">
-                            <VariantItem key="standard" text="Standard" />
-                          </VariantManagement>
-                          <Text text="Items (0)" class="sapMText sapUiSmallMarginBegin" />
-                          <ToolbarSpacer />
-                          <SearchField width="15rem" placeholder="Search" />
-                          <MenuButton id="doc7CreateEmpty" text="Create" type="Default" menuPosition="BeginBottom">
-                            <layoutData><OverflowToolbarLayoutData priority="NeverOverflow" /></layoutData>
-                            <menu>
-                              <Menu itemSelected=".onDoc7MenuItemSelected">
-                                <MenuItem text="Document" icon="sap-icon://document">
-                                  <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7UploadNew" />
-                                </MenuItem>
-                                <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
-                              </Menu>
-                            </menu>
-                          </MenuButton>
-                          <Button id="doc7EditBtnE" text="Edit Link" type="Transparent" enabled="false" />
-                          <Button id="doc7DownBtnE" text="Download" type="Transparent" enabled="false" />
-                          <Button id="doc7DeleteBtnE" text="Delete" type="Transparent" enabled="false" />
-                          <MenuButton text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
-                            <menu><Menu><items>
-                              <MenuItem text="Check Out" />
-                              <MenuItem text="Check In" />
-                              <MenuItem text="Properties" />
-                            </items></Menu></menu>
-                          </MenuButton>
-                          <Button icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" />
-                          <Button icon="sap-icon://refresh"            type="Transparent" tooltip="Refresh" press=".onDoc7Refresh" />
-                          <Button icon="sap-icon://sort"               type="Transparent" tooltip="Sort" />
-                          <Button icon="sap-icon://action-settings"    type="Transparent" tooltip="Settings" />
-                        </OverflowToolbar>
-                      </headerToolbar>
-                      <columns>
-                        <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
-                        <Column><Text text="Name" /></Column>
-                        <Column width="10rem"><Text text="Modified On" /></Column>
-                        <Column width="12rem"><Text text="Created By" /></Column>
-                        <Column width="12rem"><Text text="Modified By" /></Column>
-                        <Column width="6rem"><Text text="Size" /></Column>
-                        <Column width="4rem"><Text text="" /></Column>
-                      </columns>
-                      <noData>
-                        <IllustratedMessage
-                          illustrationType="sapIllus-UploadCollection"
-                          illustrationSize="Scene"
-                          title='Click "Upload new" and then drag and drop documents here to upload them.'
-                          description="Drag and drop documents here to upload." />
-                      </noData>
-                    </Table>
-                  </VBox>
+          <!-- History Tab -->
+          <uxap:ObjectPageSection title="History" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-                  <!-- Data state: left/right splitter (shown after upload) -->
-                  <l:ResponsiveSplitter id="doc7Splitter" class="doc7Splitter doc7SplitterPanel" visible="{detail>/doc7HasData}">
-                    <l:PaneContainer>
-                      <l:SplitPane id="doc7PaneLeft" requiredParentWidth="300">
-                        <l:layoutData>
-                          <l:SplitterLayoutData size="30%" minSize="160" />
-                        </l:layoutData>
-                        <mdc:Table
-                          id="doc7DocTable"
-                          header="Items"
-                          p13nMode="Column,Sort,Filter,Group"
-                          selectionMode="None"
-                          showRowCount="true"
-                          class="sapUiSizeCompact"
-                          rowPress=".onDoc7DocSelect"
-                          delegate="{
-                            name: 'com/sap/demo/managespec/delegate/DocLeftTableDelegate',
-                            payload: { bindingPath: '/doc7LeftRows' }
-                          }">
-                          <mdc:actions>
-                            <Button text="Create Local Document" type="Transparent" visible="{detail>/doc7ShowCreateLocal}" press=".onDoc7CreateLocalDocument" />
-                            <Button text="{detail>/doc7ActionBtnText}" type="Transparent" visible="{detail>/doc7ShowSwitchType}" press=".onDoc7ActionBtn" />
-                            <MenuButton text="Link" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom">
-                              <menu>
-                                <Menu>
-                                  <items>
-                                    <MenuItem text="Link Existing" press=".onLinkExistingDoc3" />
-                                    <MenuItem text="Link New" />
-                                  </items>
-                                </Menu>
-                              </menu>
-                            </MenuButton>
-                            <Button id="unlinkBtn7" text="Unlink" type="Transparent" enabled="false" press=".onDoc7Unlink" />
-                          </mdc:actions>
-                          <mdc:type>
-                            <mdct:ResponsiveTableType></mdct:ResponsiveTableType>
-                          </mdc:type>
-                          <mdct:Column propertyKey="docId"   header="Document"  ><HBox><Text text="{detail>docId}" wrapping="false" visible="{= ${detail>type} === 'ATT' }" class="docIdBold"/><Link text="{detail>docId}" wrapping="false" visible="{= ${detail>type} !== 'ATT' }" press=".onDocIdLinkPress" class="docIdBold"/></HBox></mdct:Column>
-                          <mdct:Column propertyKey="type"    header="Type"      width="4rem"  ><Text text="{detail>type}"    wrapping="false"/></mdct:Column>
-                          <mdct:Column propertyKey="part"    header="Part"      width="4rem"  ><Text text="{detail>part}"    wrapping="false"/></mdct:Column>
-                          <mdct:Column propertyKey="version" header="Ver."      width="4rem"  ><Text text="{detail>version}" wrapping="false"/></mdct:Column>
-                          <mdct:Column propertyKey="status"  header="Status"    width="5.5rem"><Text text="{detail>status}"  wrapping="false"/></mdct:Column>
-                        </mdc:Table>
-                      </l:SplitPane>
-                      <l:SplitPane id="doc7PaneRight" requiredParentWidth="300">
-                        <Table id="doc7AttTable"
-                          items="{detail>/doc7Attachments}"
-                          mode="MultiSelect"
-                          growing="true"
-                          growingThreshold="10"
-                          class="sapUiSizeCompact doc7AttTable"
-                          updateFinished=".onDoc7AttTableUpdated">
-                          <noData>
-                            <IllustratedMessage
-                              id="doc7NoDataMsg"
-                              illustrationType="{= ${detail>/doc7ShowUploadState} ? 'sapIllus-UploadCollection' : 'sapIllus-NoData' }"
-                              illustrationSize="Dialog"
-                              title="{= ${detail>/doc7ShowUploadState} ? 'Drag and drop documents here to upload them.' : (!${detail>/doc7AttLoaded} ? 'Click &quot;Load Files&quot; to load documents.' : 'No files found.') }"
-                              description="{= ${detail>/doc7ShowUploadState} ? 'Click Upload new or drag files here.' : (!${detail>/doc7AttLoaded} ? 'Select a document row or click Load Files below.' : 'Go to Document Management to upload and manage files.') }">
-                              <additionalContent>
-                                <Button text="Load Files"      type="Default"    press=".onDoc7LoadFiles"       visible="{= !${detail>/doc7ShowUploadState} &amp;&amp; !${detail>/doc7AttLoaded} }" />
-                                <Button text="Navigate to DMS" type="Default"    press=".onDoc7NavigateToDMS"   visible="{= !${detail>/doc7ShowUploadState} &amp;&amp; ${detail>/doc7AttLoaded} }" />
-                              </additionalContent>
-                            </IllustratedMessage>
-                          </noData>
-                          <headerToolbar>
-                            <OverflowToolbar class="doc7RightToolbar">
-                              <VariantManagement id="doc7AttVM" selectedKey="standard">
-                                <VariantItem key="standard" text="Standard" />
-                              </VariantManagement>
-                              <Text id="doc7ItemCount" text="Items ({= ${detail>/doc7Attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
-                              <ToolbarSpacer />
-                              <SearchField id="doc7Search" width="15rem" placeholder="Search" search=".onDoc7Search" />
-                              <MenuButton id="doc7CreateBtn" text="Create" type="Default" menuPosition="BeginBottom" enabled="false">
-                                <menu>
-                                  <Menu itemSelected=".onDoc7MenuItemSelected">
-                                    <MenuItem text="Folder" icon="sap-icon://folder-blank" press=".onDoc7CreateFolder" />
-                                    <MenuItem text="Document" icon="sap-icon://document">
-                                      <MenuItem text="Upload File" icon="sap-icon://upload" press=".onDoc7Upload" />
-                                    </MenuItem>
-                                    <MenuItem text="Link" icon="sap-icon://chain-link" press=".onDoc7CreateLink" />
-                                  </Menu>
-                                </menu>
-                              </MenuButton>
-                              <Button id="doc7EditBtn"   text="Edit Link"  type="Transparent" enabled="false" press=".onDoc7EditLink" />
-                              <Button id="doc7DownBtn"   text="Download"   type="Transparent" enabled="false" press=".onDoc7Download" />
-                              <Button id="doc7DeleteBtn" text="Delete"     type="Transparent" enabled="false" press=".onDoc7Delete" />
-                              <Button id="doc7MoveBtn" text="Move" type="Transparent" enabled="false" press=".onDoc7Move">
-                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
-                              </Button>
-                              <Button id="doc7CopyBtn" text="Copy" type="Transparent" enabled="false" press=".onDoc7Copy">
-                                <layoutData><OverflowToolbarLayoutData priority="Low" /></layoutData>
-                              </Button>
-                              <MenuButton id="doc7ManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
-                                <menu>
-                                  <Menu>
-                                    <items>
-                                      <MenuItem text="Check Out"  press=".onDoc7CheckOut" />
-                                      <MenuItem text="Check In"   press=".onDoc7CheckIn" />
-                                      <MenuItem text="Properties" press=".onDoc7Properties" />
-                                    </items>
-                                  </Menu>
-                                </menu>
-                              </MenuButton>
-                              <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   press=".onDoc7NavUp"   enabled="false" />
-                              <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onDoc7Refresh" enabled="false" />
-                              <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     press=".onDoc7Sort"    enabled="false" />
-                              <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" press=".onDoc7Settings" enabled="false" />
-                            </OverflowToolbar>
-                          </headerToolbar>
-                          <columns>
-                            <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
-                            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Name" /></Column>
-                            <Column minScreenWidth="Tablet" demandPopin="true" width="10rem"><Text text="Modified On" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Created By" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="12rem"><Text text="Modified By" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="6rem"><Text text="Size" /></Column>
-                            <Column minScreenWidth="Desktop" demandPopin="true" width="8rem"><Text text="Expire On" /></Column>
-                            <Column width="4rem"><Text text="" /></Column>
-                          </columns>
-                          <items>
-                            <ColumnListItem>
-                              <cells>
-                                <core:Icon src="{detail>typeIcon}" class="docAttTypeIcon" />
-                                <Text text="{detail>name}" wrapping="false" class="docAttNameBold" />
-                                <Text text="{detail>modifiedOn}" wrapping="false" />
-                                <Text text="{detail>createdBy}" wrapping="false" />
-                                <Text text="{detail>modifiedBy}" wrapping="false" />
-                                <Text text="{detail>size}" wrapping="false" />
-                                <Text text="{detail>expireOn}" wrapping="false" />
-                                <Button icon="sap-icon://overflow" type="Transparent" press=".onDoc7RowMore" tooltip="More" />
-                              </cells>
-                            </ColumnListItem>
-                          </items>
-                        </Table>
-                      </l:SplitPane>
-                    </l:PaneContainer>
-                  </l:ResponsiveSplitter>
-                </VBox>
-              </IconTabFilter>
+          <!-- Administration Tab -->
+          <uxap:ObjectPageSection title="Administration" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
 
-            </items>
-          </IconTabBar>
-        </f:content>
-
-      </f:DynamicPage>
+        </uxap:sections>
+      </uxap:ObjectPageLayout>
     </content>
   </Page>
 

@@ -880,7 +880,7 @@ button[id$="-cancelBtn"] {
 .sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnDefault {
   height: 1.625rem !important;
   min-height: 1.625rem !important;
-  line-height: 1.5rem !important;
+  line-height: 1.625rem !important;
   padding: 0 0.5rem !important;
   font-size: var(--sapFontSize) !important;
 }
@@ -1320,4 +1320,89 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 
 #container-managespec---detail--filePropertiesDialog .sapMITBContent {
   border-bottom: none !important;
+}
+
+/* ── Document Detail page ─────────────────────────────────────── */
+
+/* Bold large title (description) */
+.detailDocTitle .sapMTitle {
+  font-weight: bold;
+}
+
+/* Subdued subtitle (number) */
+.detailDocSubtitle,
+.detailDocSubtitle .sapMText {
+  color: var(--sapContent_LabelColor);
+  font-size: var(--sapFontSize);
+  margin-top: 0.25rem;
+}
+
+/* Header row: Status / Version labels */
+.detailDocHeader {
+  padding: 0.5rem 0 0.25rem 0;
+}
+.detailDocHeaderLabel {
+  font-weight: normal;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Tab bar: remove extra chrome */
+.detailDocTabBar.sapMITB > .sapMITH {
+  background: var(--sapBackgroundColor);
+  border-bottom: 1px solid var(--sapGroup_TitleBorderColor);
+}
+.detailDocTabBar.sapMITBNoContentPadding > .sapMITBContainerContent > .sapMITBContent,
+.detailDocTabBar .sapMITBContainerContent,
+.detailDocTabBar .sapMITBContent {
+  padding: 0 !important;
+  background: var(--sapBackgroundColor) !important;
+}
+
+/* General tab: Basic Data form section */
+.detailDocSection {
+  padding: 1rem 1rem 0 1rem;
+  background: var(--sapBackgroundColor);
+  border-bottom: 1px solid var(--sapGroup_TitleBorderColor);
+}
+.detailDocForm.sapUiSimpleForm {
+  padding: 0.5rem 0 0.5rem 0;
+}
+.detailDocForm .sapUiFormCL .sapUiFormElementLbl {
+  color: var(--sapContent_LabelColor);
+}
+
+/* Attachments section */
+.detailDocAttachmentsSection {
+  margin-top: 1.5rem;
+  padding: 0 1rem;
+}
+.detailDocAttTitle.sapMTitle {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Attachments table: bold file name */
+.detailDocAttTable .docAttNameBold {
+  font-weight: bold;
+}
+
+/* Detail page header — Status/Version inline alignment */
+.detailHeaderLabel,
+.detailHeaderValue {
+  line-height: 1.4rem;
+  padding-top: 0 !important;
+  vertical-align: middle;
+}
+
+/* Detail page — subtitle number gray, header values black */
+.detailDocNumber .sapMText,
+.detailDocNumber {
+  color: var(--sapContent_LabelColor) !important;
+  font-size: var(--sapFontSize) !important;
+}
+.detailHeaderValue .sapMLabelTextWrapper,
+.detailHeaderValue {
+  color: var(--sapTextColor) !important;
+  font-weight: normal !important;
 }

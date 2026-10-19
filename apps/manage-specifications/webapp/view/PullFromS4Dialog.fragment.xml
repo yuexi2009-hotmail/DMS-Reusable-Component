@@ -1,0 +1,106 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:t="sap.ui.table">
+
+  <Dialog
+    id="pullFromS4Dialog"
+    title="Pull from S4"
+    contentWidth="76rem"
+    resizable="true"
+    draggable="true"
+    class="sapUiSizeCompact linkDoc3VHDialog">
+
+    <content>
+      <VBox fitContainer="true">
+
+        <!-- Search row -->
+        <Toolbar id="pullFromS4SearchRow" class="sapUiSizeCompact sapMTBTransparent linkDoc3VHSearchRow">
+          <SearchField
+            id="pullFromS4SearchField"
+            placeholder="Search"
+            search=".onPullFromS4Search"
+            class="linkDoc3VHSearchField" />
+          <ToolbarSpacer />
+          <Button
+            id="pullFromS4GoBtn"
+            text="Go"
+            type="Emphasized"
+            press=".onPullFromS4GoSearch"
+            class="sapUiSizeCompact" />
+          <Button
+            id="pullFromS4ShowFiltersBtn"
+            text="Show Filters"
+            type="Transparent"
+            press=".onPullFromS4ToggleFilters"
+            class="sapUiSizeCompact" />
+        </Toolbar>
+
+        <!-- Collapsible filter panel -->
+        <VBox id="pullFromS4FilterPanel" visible="false" class="linkDoc3FilterPanel">
+          <l:Grid
+            defaultSpan="L3 M3 S6"
+            containerQuery="true"
+            class="linkDoc3FilterGrid">
+            <VBox class="linkDoc3FilterItem">
+              <Label text="Document Type:" class="linkDoc3FilterLabel" />
+              <Select id="pullFromS4TypeFilter" change=".onPullFromS4Filter" width="100%">
+                <core:Item key="" text="All" />
+                <core:Item key="DFT" text="DFT" />
+                <core:Item key="DRW" text="DRW" />
+                <core:Item key="TST" text="TST" />
+                <core:Item key="IMU" text="IMU" />
+              </Select>
+            </VBox>
+            <VBox class="linkDoc3FilterItem">
+              <Label text="Status:" class="linkDoc3FilterLabel" />
+              <Select id="pullFromS4StatusFilter" change=".onPullFromS4Filter" width="100%">
+                <core:Item key="" text="All" />
+                <core:Item key="New" text="New" />
+                <core:Item key="In Work" text="In Work" />
+                <core:Item key="Released" text="Released" />
+              </Select>
+            </VBox>
+          </l:Grid>
+        </VBox>
+
+        <!-- Items count -->
+        <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDoc3ItemsToolbar">
+          <Title id="pullFromS4ItemsTitle" text="Items ({= ${pullFromS4>/documents}.length})" level="H5" />
+        </Toolbar>
+
+        <!-- Grid Table -->
+        <t:Table
+          id="pullFromS4ResultTable"
+          rows="{pullFromS4>/documents}"
+          selectionMode="Single"
+          selectionBehavior="Row"
+          visibleRowCountMode="Fixed"
+          visibleRowCount="16"
+          noData="No documents found"
+          rowSelectionChange=".onPullFromS4RowSelectionChange"
+          class="sapUiSizeCompact linkDoc3GridTable">
+          <t:columns>
+            <t:Column width="13rem"><Label text="Document No." /><t:template><Text text="{pullFromS4>number}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="18rem"><Label text="Description" /><t:template><Text text="{pullFromS4>description}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="9rem"><Label text="Type" /><t:template><Text text="{pullFromS4>type}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="7rem"><Label text="Part" /><t:template><Text text="{pullFromS4>part}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="8rem"><Label text="Version" /><t:template><Text text="{pullFromS4>version}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="9rem"><Label text="Document Status" /><t:template><Text text="{pullFromS4>documentStatus}" wrapping="false" /></t:template></t:Column>
+          </t:columns>
+        </t:Table>
+
+      </VBox>
+    </content>
+
+    <beginButton>
+      <Button id="pullFromS4ConfirmBtn" text="Pull" type="Emphasized" press=".onPullFromS4Confirm" enabled="false" class="sapUiSizeCompact" />
+    </beginButton>
+    <endButton>
+      <Button text="Cancel" press=".onPullFromS4Cancel" class="sapUiSizeCompact" />
+    </endButton>
+
+  </Dialog>
+
+</core:FragmentDefinition>
