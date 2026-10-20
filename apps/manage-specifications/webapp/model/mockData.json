@@ -11,8 +11,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002851",
@@ -25,8 +29,12 @@
       "s4Type": "IMU",
       "owner": "S4",
       "s4SyncText": "Synced on Oct 15, 2026, 9:30 AM",
+      "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "Oct 15, 2026, 9:30 AM",
+      "s4SyncedBy": "yue.xi01@sap.com",
+      "s4Part": "000"
     },
     {
       "number": "100000002849",
@@ -39,8 +47,12 @@
       "s4Type": "DRW",
       "owner": "S4",
       "s4SyncText": "Synced on Oct 10, 2026, 2:15 PM",
+      "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "Oct 10, 2026, 2:15 PM",
+      "s4SyncedBy": "yue.xi01@sap.com",
+      "s4Part": "000"
     },
     {
       "number": "100000002846",
@@ -53,8 +65,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002816",
@@ -67,8 +83,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002821",
@@ -81,8 +101,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002819",
@@ -95,8 +119,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002814",
@@ -109,8 +137,12 @@
       "s4Type": "TES",
       "owner": "S4",
       "s4SyncText": "Synced on Oct 8, 2026, 4:00 PM",
+      "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "Oct 8, 2026, 4:00 PM",
+      "s4SyncedBy": "admin@sap.com",
+      "s4Part": "000"
     },
     {
       "number": "100000002814",
@@ -123,8 +155,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002810",
@@ -137,8 +173,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     },
     {
       "number": "100000002805",
@@ -151,8 +191,12 @@
       "s4Type": "DRW",
       "owner": "S4",
       "s4SyncText": "Synced on Sep 28, 2026, 11:00 AM",
+      "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "Sep 28, 2026, 11:00 AM",
+      "s4SyncedBy": "yue.xi01@sap.com",
+      "s4Part": "001"
     },
     {
       "number": "100000002798",
@@ -165,8 +209,12 @@
       "s4Type": "",
       "owner": "IPD",
       "s4SyncText": "Not Synced",
+      "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
-      "s4SyncIcon": ""
+      "s4SyncIcon": "",
+      "s4SyncedOn": "\u2013",
+      "s4SyncedBy": "\u2013",
+      "s4Part": ""
     }
   ]
 }

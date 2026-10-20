@@ -135,7 +135,13 @@
                   <Text text="Version" />
                 </Column>
                 <Column width="9rem">
-                  <Text text="S4 Sync" />
+                  <Text text="S4 Sync Status" />
+                </Column>
+                <Column width="12rem">
+                  <Text text="Synced On" />
+                </Column>
+                <Column width="12rem">
+                  <Text text="Synced By" />
                 </Column>
               </columns>
 
@@ -148,7 +154,9 @@
                     <ObjectIdentifier title="{part}" />
                     <Text text="{documentStatus}" wrapping="false" />
                     <ObjectIdentifier title="{version}" />
-                    <ObjectStatus text="{s4SyncText}" state="{s4SyncState}" />
+                    <ObjectStatus text="{s4SyncStatus}" state="{s4SyncState}" />
+                    <Text text="{s4SyncedOn}" wrapping="false" />
+                    <Text text="{s4SyncedBy}" wrapping="false" />
                   </cells>
                 </ColumnListItem>
               </items>

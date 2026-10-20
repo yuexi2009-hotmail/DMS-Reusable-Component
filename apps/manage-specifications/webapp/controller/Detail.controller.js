@@ -40,18 +40,20 @@ sap.ui.define([
 
       var aExternalLinks = [
         {
-          name: "SAP Help Portal",
-          description: "Document Management Service guide",
-          createdOn: "Sep 12, 2026",
-          createdBy: "yue.xi01@sap.com",
-          changedOn: "Sep 15, 2026"
+          name: "100000002805",
+          description: "Engineering Drawing Rev B",
+          type: "DRW",
+          part: "001",
+          documentStatus: "Released",
+          version: "02"
         },
         {
-          name: "ECR #4521",
-          description: "Engineering Change Request for part revision",
-          createdOn: "Oct 1, 2026",
-          createdBy: "admin@sap.com",
-          changedOn: "Oct 3, 2026"
+          name: "100000002849",
+          description: "Yuetest0000",
+          type: "DRW",
+          part: "000",
+          documentStatus: "Released",
+          version: "00"
         }
       ];
 
@@ -64,6 +66,7 @@ sap.ui.define([
         version: oDoc.version,
         s4Number: oDoc.documentStatus === "Released" ? (oDoc.s4Number || "–") : "–",
         s4Type:   oDoc.documentStatus === "Released" ? (oDoc.s4Type   || "–") : "–",
+        s4Part:   oDoc.documentStatus === "Released" ? (oDoc.s4Part   || "–") : "–",
         owner: oDoc.owner || "IPD",
         s4SyncText: oDoc.s4SyncText || "Not Synced",
         s4SyncState: oDoc.s4SyncState || "None",

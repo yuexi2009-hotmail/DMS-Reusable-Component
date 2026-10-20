@@ -84,8 +84,10 @@
                     <Text text="{detail>/type}"/>
                     <Label text="S4 Type"/>
                     <Text text="{detail>/s4Type}"/>
-                    <Label text="Part"/>
+                    <Label text="IPD Part"/>
                     <Text text="{detail>/part}"/>
+                    <Label text="S4 Part"/>
+                    <Text text="{detail>/s4Part}"/>
                     <Label text="Description"/>
                     <Text text="{detail>/description}"/>
                     <Label text="Owner"/>
@@ -209,38 +211,28 @@
                     id="externalLinksTable"
                     items="{detail>/externalLinks}"
                     mode="MultiSelect"
-                    sticky="ColumnHeaders,HeaderToolbar"
+                    sticky="ColumnHeaders"
                     growing="true"
                     growingThreshold="20"
                     width="100%"
                     class="sapUiSizeCompact">
-                    <headerToolbar>
-                      <OverflowToolbar>
-                        <Title text="External Links" level="H4" class="sapUiTinyMarginEnd"/>
-                        <Text text="({= ${detail>/externalLinks} ? ${detail>/externalLinks/length} : 0})" class="sapMText"/>
-                        <ToolbarSpacer/>
-                        <Button text="Add" icon="sap-icon://add" type="Transparent" press=".onExtLinkAdd"/>
-                        <Button id="extLinkDeleteBtn" text="Delete" icon="sap-icon://delete" type="Transparent" enabled="false" press=".onExtLinkDelete"/>
-                        <Button icon="sap-icon://refresh" type="Transparent" tooltip="Refresh" press=".onExtLinkRefresh"/>
-                      </OverflowToolbar>
-                    </headerToolbar>
                     <columns>
-                      <Column><Text text="Name"/></Column>
+                      <Column><Text text="Number"/></Column>
                       <Column><Text text="Description"/></Column>
-                      <Column width="10rem" hAlign="End"><Text text="Created On"/></Column>
-                      <Column width="14rem" hAlign="Begin"><Text text="Created By"/></Column>
-                      <Column width="10rem" hAlign="End"><Text text="Changed On"/></Column>
-                      <Column width="3rem"><Text text=""/></Column>
+                      <Column width="6rem"><Text text="Type"/></Column>
+                      <Column width="6rem"><Text text="Part"/></Column>
+                      <Column width="12rem"><Text text="Document Status"/></Column>
+                      <Column width="8rem"><Text text="Version"/></Column>
                     </columns>
                     <items>
                       <ColumnListItem>
                         <cells>
-                          <Text text="{detail>name}" wrapping="false"/>
+                          <ObjectIdentifier title="{detail>name}" titleActive="false"/>
                           <Text text="{detail>description}" wrapping="false"/>
-                          <Text text="{detail>createdOn}" wrapping="false"/>
-                          <Text text="{detail>createdBy}" wrapping="false"/>
-                          <Text text="{detail>changedOn}" wrapping="false"/>
-                          <Button icon="sap-icon://overflow" type="Transparent" tooltip="More"/>
+                          <Text text="{detail>type}" wrapping="false"/>
+                          <ObjectIdentifier title="{detail>part}"/>
+                          <Text text="{detail>documentStatus}" wrapping="false"/>
+                          <ObjectIdentifier title="{detail>version}"/>
                         </cells>
                       </ColumnListItem>
                     </items>

@@ -85,6 +85,7 @@ sap.ui.define([
 
       this.byId("deleteBtn").setEnabled(iCount > 0);
       this.byId("syncWithS4Btn").setEnabled(iCount === 1);
+      this.byId("pullFromS4Btn").setEnabled(iCount === 0);
     },
 
     onItemPress: function (oEvent) {
