@@ -38,6 +38,23 @@ sap.ui.define([
         }
       ];
 
+      var aExternalLinks = [
+        {
+          name: "SAP Help Portal",
+          description: "Document Management Service guide",
+          createdOn: "Sep 12, 2026",
+          createdBy: "yue.xi01@sap.com",
+          changedOn: "Sep 15, 2026"
+        },
+        {
+          name: "ECR #4521",
+          description: "Engineering Change Request for part revision",
+          createdOn: "Oct 1, 2026",
+          createdBy: "admin@sap.com",
+          changedOn: "Oct 3, 2026"
+        }
+      ];
+
       var oDetailModel = new JSONModel({
         number: oDoc.number,
         description: oDoc.description,
@@ -51,7 +68,9 @@ sap.ui.define([
         s4SyncText: oDoc.s4SyncText || "Not Synced",
         s4SyncState: oDoc.s4SyncState || "None",
         s4SyncIcon: "",
-        attachments: aAttachments
+        attachments: aAttachments,
+        externalLinks: aExternalLinks,
+        attHasSelection: false
       });
       this.getView().setModel(oDetailModel, "detail");
 
@@ -109,11 +128,7 @@ sap.ui.define([
     onAttachmentSelectionChange: function () {
       var oTable = this.byId("docAttachmentsTable");
       var bHas = oTable && oTable.getSelectedItems().length > 0;
-      var oView = this.getView();
-      ["attEditLinkBtn", "attDownloadBtn", "attDeleteBtn", "attManageBtn"].forEach(function (sId) {
-        var oBtn = oView.byId(sId);
-        if (oBtn) { oBtn.setEnabled(bHas); }
-      });
+      this.getView().getModel("detail").setProperty("/attHasSelection", bHas);
     },
 
     onAttSearch: function () {},
@@ -124,7 +139,11 @@ sap.ui.define([
     onAttCheckIn: function () { MessageToast.show("Check In"); },
     onAttProperties: function () { MessageToast.show("Properties"); },
     onAttRefresh: function () { MessageToast.show("Refreshed"); },
-    onAttRowMore: function () { MessageToast.show("More"); }
+    onAttRowMore: function () { MessageToast.show("More"); },
+
+    onExtLinkAdd: function () { MessageToast.show("Add External Link"); },
+    onExtLinkDelete: function () { MessageToast.show("Delete"); },
+    onExtLinkRefresh: function () { MessageToast.show("Refreshed"); }
 
   });
 });

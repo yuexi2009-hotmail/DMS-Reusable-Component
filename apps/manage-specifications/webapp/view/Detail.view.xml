@@ -37,9 +37,9 @@
             </uxap:snappedHeading>
 
             <uxap:actions>
-              <Button text="Edit"          type="Emphasized" press=".onEditPress"/>
-              <Button text="Delete"        type="Ghost"      press=".onDeletePress"/>
-              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress"/>
+              <Button text="Edit"          type="Emphasized" press=".onEditPress"         enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
+              <Button text="Delete"        type="Ghost"      press=".onDeletePress"       enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
+              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress" enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
               <Button text="New Version"   type="Ghost"      press=".onNewVersionPress"/>
               <Button text="Sync with S4"  type="Ghost"      press=".onSyncWithS4Press"/>
               <Button icon="sap-icon://action" type="Transparent" press=".onMoreActionsPress" tooltip="Share"/>
@@ -69,7 +69,7 @@
           <uxap:ObjectPageSection title="General" titleUppercase="false">
             <uxap:subSections>
 
-              <uxap:ObjectPageSubSection title=" ">
+              <uxap:ObjectPageSubSection title=" " wrapperEnabled="false">
                 <uxap:blocks>
                   <form:SimpleForm
                     layout="ColumnLayout"
@@ -93,7 +93,7 @@
                 </uxap:blocks>
               </uxap:ObjectPageSubSection>
 
-              <uxap:ObjectPageSubSection title="Attachments" titleUppercase="false">
+              <uxap:ObjectPageSubSection title="Attachments" titleUppercase="false" wrapperEnabled="false">
                 <uxap:blocks>
                   <Table
                     id="docAttachmentsTable"
@@ -114,10 +114,10 @@
                         <ToolbarSpacer/>
                         <SearchField id="attSearchField" width="15rem" placeholder="Search" search=".onAttSearch"/>
                         <Button id="attUploadBtn"   icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" enabled="false"/>
-                        <Button id="attEditLinkBtn" text="Edit Link"  type="Transparent" enabled="false" press=".onAttEditLink"/>
-                        <Button id="attDownloadBtn" text="Download"   type="Transparent" enabled="false" press=".onAttDownload"/>
-                        <Button id="attDeleteBtn"   text="Delete"     type="Transparent" enabled="false" press=".onAttDelete"/>
-                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                        <Button id="attEditLinkBtn" text="Edit Link"  type="Transparent" enabled="{= ${detail>/documentStatus} !== 'Released' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttEditLink"/>
+                        <Button id="attDownloadBtn" text="Download"   type="Transparent" enabled="{detail>/attHasSelection}" press=".onAttDownload"/>
+                        <Button id="attDeleteBtn"   text="Delete"     type="Transparent" enabled="{= ${detail>/documentStatus} !== 'Released' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttDelete"/>
+                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="{= ${detail>/documentStatus} !== 'Released' &amp;&amp; ${detail>/attHasSelection}}">
                           <menu>
                             <Menu>
                               <items>
@@ -195,6 +195,56 @@
             <uxap:subSections>
               <uxap:ObjectPageSubSection title=" ">
                 <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
+              </uxap:ObjectPageSubSection>
+            </uxap:subSections>
+          </uxap:ObjectPageSection>
+
+          <!-- External Links Tab -->
+          <uxap:ObjectPageSection title="External Links" titleUppercase="false">
+            <uxap:subSections>
+              <uxap:ObjectPageSubSection title=" " wrapperEnabled="false">
+                <uxap:blocks>
+                  <Table
+                    id="externalLinksTable"
+                    items="{detail>/externalLinks}"
+                    mode="MultiSelect"
+                    sticky="ColumnHeaders,HeaderToolbar"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%"
+                    class="sapUiSizeCompact">
+                    <headerToolbar>
+                      <OverflowToolbar>
+                        <Title text="External Links" level="H4" class="sapUiTinyMarginEnd"/>
+                        <Text text="({= ${detail>/externalLinks} ? ${detail>/externalLinks/length} : 0})" class="sapMText"/>
+                        <ToolbarSpacer/>
+                        <Button text="Add" icon="sap-icon://add" type="Transparent" press=".onExtLinkAdd"/>
+                        <Button id="extLinkDeleteBtn" text="Delete" icon="sap-icon://delete" type="Transparent" enabled="false" press=".onExtLinkDelete"/>
+                        <Button icon="sap-icon://refresh" type="Transparent" tooltip="Refresh" press=".onExtLinkRefresh"/>
+                      </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                      <Column><Text text="Name"/></Column>
+                      <Column><Text text="Description"/></Column>
+                      <Column width="10rem" hAlign="End"><Text text="Created On"/></Column>
+                      <Column width="14rem" hAlign="Begin"><Text text="Created By"/></Column>
+                      <Column width="10rem" hAlign="End"><Text text="Changed On"/></Column>
+                      <Column width="3rem"><Text text=""/></Column>
+                    </columns>
+                    <items>
+                      <ColumnListItem>
+                        <cells>
+                          <Text text="{detail>name}" wrapping="false"/>
+                          <Text text="{detail>description}" wrapping="false"/>
+                          <Text text="{detail>createdOn}" wrapping="false"/>
+                          <Text text="{detail>createdBy}" wrapping="false"/>
+                          <Text text="{detail>changedOn}" wrapping="false"/>
+                          <Button icon="sap-icon://overflow" type="Transparent" tooltip="More"/>
+                        </cells>
+                      </ColumnListItem>
+                    </items>
+                  </Table>
+                </uxap:blocks>
               </uxap:ObjectPageSubSection>
             </uxap:subSections>
           </uxap:ObjectPageSection>
