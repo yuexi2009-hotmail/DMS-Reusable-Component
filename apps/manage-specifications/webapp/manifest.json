@@ -29,7 +29,7 @@
     "models": {
       "": {
         "type": "sap.ui.model.json.JSONModel",
-        "uri": "model/mockData.json"
+        "uri": "model/mockData.json?v=40"
       },
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",

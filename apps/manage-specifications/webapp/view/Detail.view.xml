@@ -14,6 +14,7 @@
         id="objectPageLayout"
         useIconTabBar="true"
         upperCaseAnchorBar="false"
+        showAnchorBarPopover="false"
         showTitleInHeaderContent="false"
         alwaysShowContentHeader="false"
         preserveHeaderStateOnScroll="false"
