@@ -1,7 +1,9 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
-  "sap/m/MessageToast"
-], function (Controller, MessageToast) {
+  "sap/m/MessageToast",
+  "sap/m/Menu",
+  "sap/m/MenuItem"
+], function (Controller, MessageToast, Menu, MenuItem) {
   "use strict";
 
   return Controller.extend("com.sap.demo.managespec.controller.Doc4Detail", {
@@ -43,7 +45,29 @@ sap.ui.define([
     onAttDownload: function () { MessageToast.show("Download"); },
     onAttDelete:   function () { MessageToast.show("Delete"); },
     onAttMove:     function () { MessageToast.show("Move"); },
-    onAttCopy:     function () { MessageToast.show("Copy"); }
+    onAttCopy:     function () { MessageToast.show("Copy"); },
+
+    onRowActionMenuPress: function (oEvent) {
+      var oButton = oEvent.getSource();
+      var oView = this.getView();
+
+      if (!this._oRowActionMenu) {
+        var oMenu = new Menu({
+          itemSelected: function (oMenuEvent) {
+            MessageToast.show(oMenuEvent.getParameter("item").getText());
+          }
+        });
+
+        ["Properties", "Rename", "Share", "Preview"].forEach(function (sText) {
+          oMenu.addItem(new MenuItem({ text: sText }));
+        });
+
+        oView.addDependent(oMenu);
+        this._oRowActionMenu = oMenu;
+      }
+
+      this._oRowActionMenu.openBy(oButton);
+    }
 
   });
 });

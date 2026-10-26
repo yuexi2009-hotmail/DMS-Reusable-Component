@@ -4,6 +4,7 @@
   xmlns="sap.m"
   xmlns:f="sap.f"
   xmlns:core="sap.ui.core"
+  xmlns:unified="sap.ui.unified"
   displayBlock="true">
 
   <Page showHeader="false" enableScrolling="true" class="doc4DetailPage">
@@ -58,6 +59,7 @@
           <Column width="6rem">
             <Text text="Size" />
           </Column>
+          <Column width="3rem" hAlign="End" />
         </columns>
         <items>
           <ColumnListItem type="Active">
@@ -68,6 +70,11 @@
               <Text text="{doc4>createdBy}" />
               <Text text="{doc4>modifiedBy}" />
               <Text text="{doc4>size}" />
+              <Button
+                icon="sap-icon://overflow"
+                type="Transparent"
+                press=".onRowActionMenuPress"
+                tooltip="More actions" />
             </cells>
           </ColumnListItem>
         </items>

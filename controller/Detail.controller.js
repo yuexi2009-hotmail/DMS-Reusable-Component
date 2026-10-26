@@ -3,24 +3,12 @@ sap.ui.define([
   "sap/ui/model/json/JSONModel",
   "sap/m/MessageToast",
   "sap/m/MessageBox",
-  "sap/ui/core/Fragment",
-  "sap/ui/model/Filter",
-  "sap/ui/model/FilterOperator",
-  "sap/ui/model/Sorter",
-  "sap/m/Dialog",
-  "sap/m/Button",
-  "sap/m/Text",
-  "sap/m/library",
-  "sap/m/Table",
-  "sap/m/Column",
-  "sap/m/ColumnListItem",
-  "sap/m/Label",
-  "sap/m/VBox",
-  "sap/m/MessageStrip"
-], function (Controller, JSONModel, MessageToast, MessageBox, Fragment, Filter, FilterOperator, Sorter, Dialog, Button, Text, mobileLibrary, MTable, MColumn, ColumnListItem, Label, VBox, MessageStrip) {
+  "sap/m/MessagePopover",
+  "sap/m/MessageItem",
+  "sap/m/ActionSheet",
+  "sap/m/Button"
+], function (Controller, JSONModel, MessageToast, MessageBox, MessagePopover, MessageItem, ActionSheet, Button) {
   "use strict";
-  var ButtonType = mobileLibrary.ButtonType;
-  var DialogType = mobileLibrary.DialogType;
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
 
@@ -28,1212 +16,171 @@ sap.ui.define([
       var oRouter = this.getOwnerComponent().getRouter();
       oRouter.getRoute("detail").attachPatternMatched(this._onRouteMatched, this);
     },
-    onTabSelect: function (oEvent) {
-      var sKey = oEvent && oEvent.getParameter && oEvent.getParameter("key");
-      setTimeout(function () {
-        var aContents = document.querySelectorAll(".detailPage .sapMITBContent, .detailPage .sapMITBContainerContent");
-        aContents.forEach(function (el) {
-          el.style.background = "var(--sapBackgroundColor, #ffffff)";
-          el.style.padding = "0";
-        });
-      }, 0);
-      if (sKey === "documents4") {
-        this._doc4AutoSelect();
-      }
-    },
-
-    _doc4AutoSelect: function () {
-      var oTable = this.getView().byId("documentsTable4");
-      if (!oTable) { return; }
-      var aItems = oTable.getItems();
-      if (!aItems.length) { return; }
-      var oFirst = aItems[0];
-      oTable.setSelectedItem(oFirst, true);
-      var oCtx = oFirst.getBindingContext("detail");
-      if (oCtx) {
-        var aFlat = this.getView().getModel("detail").getProperty("/documentsFlat") || [];
-        this._doc4ShowRow(oCtx.getObject(), aFlat.indexOf(oCtx.getObject()));
-      }
-    },
-
-    onDocumentNavigate: function () {
-      MessageToast.show("Navigate to document");
-    },
-
-    onDoc5ViewSettings: function () {
-      var oView = this.getView();
-      if (!this._oDoc5VSD) {
-        sap.ui.require([
-          "sap/m/ViewSettingsDialog",
-          "sap/m/ViewSettingsItem"
-        ], function (ViewSettingsDialog, ViewSettingsItem) {
-          this._oDoc5VSD = new ViewSettingsDialog({
-            sortItems: [
-              new ViewSettingsItem({ key: "fileName", text: "Attachment", selected: true }),
-              new ViewSettingsItem({ key: "docName",  text: "Document" }),
-              new ViewSettingsItem({ key: "type",     text: "Type" }),
-              new ViewSettingsItem({ key: "version",  text: "Version" }),
-              new ViewSettingsItem({ key: "status",   text: "Status" })
-            ],
-            groupItems: [
-              new ViewSettingsItem({ key: "type",   text: "Type" }),
-              new ViewSettingsItem({ key: "status", text: "Status" }),
-              new ViewSettingsItem({ key: "docName",text: "Document" })
-            ],
-            confirm: this._onDoc5VSDConfirm.bind(this),
-            reset:   this._onDoc5VSDReset.bind(this)
-          });
-          oView.addDependent(this._oDoc5VSD);
-          this._oDoc5VSD.open();
-        }.bind(this));
-      } else {
-        this._oDoc5VSD.open();
-      }
-    },
-
-    _onDoc5VSDConfirm: function (oEvent) {
-      var mParams   = oEvent.getParameters();
-      var oTable    = this.getView().byId("documentsTable5");
-      if (!oTable) { return; }
-      var oBinding  = oTable.getBinding("items");
-      if (!oBinding) { return; }
-
-      var aSorters  = [];
-      if (mParams.sortItem) {
-        var sSortPath = mParams.sortItem.getKey();
-        aSorters.push(new Sorter(sSortPath, mParams.sortDescending));
-      }
-      oBinding.sort(aSorters);
-    },
-
-    _onDoc5VSDReset: function () {
-      var oTable   = this.getView().byId("documentsTable5");
-      if (!oTable) { return; }
-      var oBinding = oTable.getBinding("items");
-      if (oBinding) { oBinding.sort([]); }
-    },
-
-    onDoc5SelectionChange: function () {
-      var oTable = this.getView().byId("documentsTable5");
-      var aSelected = oTable ? oTable.getSelectedContexts() : [];
-      var oBtn = this.getView().byId("doc5UnlinkBtn");
-      if (oBtn) { oBtn.setEnabled(aSelected.length > 0); }
-    },
-
-    onDoc5Unlink: function () {
-      var oView = this.getView();
-      var oTable = oView.byId("documentsTable5");
-      var aSelected = oTable ? oTable.getSelectedContexts() : [];
-      if (!aSelected.length) { return; }
-
-      // Collect unique docNumbers from selected rows
-      var aSelectedDocNumbers = [];
-      aSelected.forEach(function (oCtx) {
-        var oObj = oCtx.getObject();
-        if (oObj && oObj.docNumber && aSelectedDocNumbers.indexOf(oObj.docNumber) === -1) {
-          aSelectedDocNumbers.push(oObj.docNumber);
-        }
-      });
-
-      // Find ALL attachments belonging to those documents (unlink is document-level)
-      // documentsFlat has one entry per doc; attachments are in oDoc.attachments[]
-      var oDetailModel = oView.getModel("detail");
-      var aAllFlat = oDetailModel.getProperty("/documentsFlat") || [];
-      var aMatchedDocs = aAllFlat.filter(function (d) { return aSelectedDocNumbers.indexOf(d.docNumber) !== -1; });
-
-      // Expand each matched doc into one row per attachment for the dialog table
-      var aAffected = [];
-      aMatchedDocs.forEach(function (oDoc) {
-        var aAtts = oDoc.attachments || [];
-        if (!aAtts.length) {
-          aAffected.push({ fileName: oDoc.fileName, docName: oDoc.docName, docNumber: oDoc.docNumber });
-        } else {
-          aAtts.forEach(function (sFile) {
-            aAffected.push({ fileName: sFile, docName: oDoc.docName, docNumber: oDoc.docNumber });
-          });
-        }
-      });
-      var that = this;
-      if (!this._oDoc5UnlinkDialog) {
-        this._oUnlinkMsgStrip = new MessageStrip({ type: "Warning", showIcon: true, showCloseButton: false });
-        this._oUnlinkTable = new MTable({
-          columns: [
-            new MColumn({ header: new Label({ text: "Attachment" }) }),
-            new MColumn({ header: new Label({ text: "Document" }) }),
-            new MColumn({ header: new Label({ text: "Doc Number" }) })
-          ],
-          backgroundDesign: "Transparent"
-        });
-        this._oUnlinkTable.addStyleClass("unlinkDialogTable");
-        this._oDoc5UnlinkDialog = new Dialog({
-          type: DialogType.Message,
-          title: "Unlink Document",
-          contentWidth: "32rem",
-          content: new VBox({
-            items: [ this._oUnlinkMsgStrip, this._oUnlinkTable ]
-          }),
-          beginButton: new Button({
-            type: ButtonType.Emphasized,
-            text: "Unlink",
-            press: function () {
-              that._oDoc5UnlinkDialog.close();
-              var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
-              aFlat = aFlat.filter(function (d) { return that._oDoc5UnlinkDocNumbers.indexOf(d.docNumber) === -1; });
-              oDetailModel.setProperty("/documentsFlat", aFlat);
-              var oBtn = oView.byId("doc5UnlinkBtn");
-              if (oBtn) { oBtn.setEnabled(false); }
-              MessageToast.show(that._oDoc5UnlinkDocNumbers.length + " document(s) unlinked");
-            }
-          }),
-          endButton: new Button({
-            text: "Cancel",
-            press: function () {
-              that._oDoc5UnlinkDialog.close();
-            }
-          })
-        });
-        oView.addDependent(this._oDoc5UnlinkDialog);
-        this._oDoc5UnlinkDialog.addStyleClass("sapUiSizeCompact");
-      }
-      // Update message and table rows each time
-      this._oUnlinkMsgStrip.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked.");
-      this._oUnlinkTable.removeAllItems();
-      aAffected.forEach(function (d) {
-        that._oUnlinkTable.addItem(new ColumnListItem({
-          cells: [
-            new Text({ text: d.fileName }),
-            new Text({ text: d.docName }),
-            new Text({ text: d.docNumber })
-          ]
-        }));
-      });
-      this._oDoc5UnlinkDocNumbers = aSelectedDocNumbers;
-      this._oDoc5UnlinkDialog.open();
-    },
-    onDoc5Search: function () {},
-
-    onDoc6SelectionChange: function () {
-      var oTable = this.getView().byId("documentsTable6");
-      var aSelected = oTable ? oTable.getSelectedContexts() : [];
-      var oBtn = this.getView().byId("doc6UnlinkBtn");
-      if (oBtn) { oBtn.setEnabled(aSelected.length > 0); }
-    },
-
-    onDoc6Unlink: function () {
-      var oView = this.getView();
-      var oTable = oView.byId("documentsTable6");
-      var aSelected = oTable ? oTable.getSelectedContexts() : [];
-      if (!aSelected.length) { return; }
-
-      var aSelectedDocNumbers = [];
-      aSelected.forEach(function (oCtx) {
-        var oObj = oCtx.getObject();
-        if (oObj && oObj.docNumber && aSelectedDocNumbers.indexOf(oObj.docNumber) === -1) {
-          aSelectedDocNumbers.push(oObj.docNumber);
-        }
-      });
-
-      var oDetailModel = oView.getModel("detail");
-      var aAllFlat = oDetailModel.getProperty("/documentsFlat") || [];
-      var aMatchedDocs = aAllFlat.filter(function (d) { return aSelectedDocNumbers.indexOf(d.docNumber) !== -1; });
-
-      var aAffected = [];
-      aMatchedDocs.forEach(function (oDoc) {
-        var aAtts = oDoc.attachments || [];
-        if (!aAtts.length) {
-          aAffected.push({ fileName: oDoc.fileName, docName: oDoc.docName, docNumber: oDoc.docNumber });
-        } else {
-          aAtts.forEach(function (sFile) {
-            aAffected.push({ fileName: sFile, docName: oDoc.docName, docNumber: oDoc.docNumber });
-          });
-        }
-      });
-      var that = this;
-      if (!this._oDoc6UnlinkDialog) {
-        this._oUnlinkMsgStrip6 = new MessageStrip({ type: "Warning", showIcon: true, showCloseButton: false });
-        this._oUnlinkTable6 = new MTable({
-          columns: [
-            new MColumn({ header: new Label({ text: "Attachment" }) }),
-            new MColumn({ header: new Label({ text: "Document" }) }),
-            new MColumn({ header: new Label({ text: "Doc Number" }) })
-          ],
-          backgroundDesign: "Transparent"
-        });
-        this._oUnlinkTable6.addStyleClass("unlinkDialogTable");
-        this._oDoc6UnlinkDialog = new Dialog({
-          type: DialogType.Message,
-          title: "Unlink Document",
-          contentWidth: "32rem",
-          content: new VBox({
-            items: [ this._oUnlinkMsgStrip6, this._oUnlinkTable6 ]
-          }),
-          beginButton: new Button({
-            type: ButtonType.Emphasized,
-            text: "Unlink",
-            press: function () {
-              that._oDoc6UnlinkDialog.close();
-              var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
-              aFlat = aFlat.filter(function (d) { return that._oDoc6UnlinkDocNumbers.indexOf(d.docNumber) === -1; });
-              oDetailModel.setProperty("/documentsFlat", aFlat);
-              var oBtn = oView.byId("doc6UnlinkBtn");
-              if (oBtn) { oBtn.setEnabled(false); }
-              MessageToast.show(that._oDoc6UnlinkDocNumbers.length + " document(s) unlinked");
-            }
-          }),
-          endButton: new Button({
-            text: "Cancel",
-            press: function () {
-              that._oDoc6UnlinkDialog.close();
-            }
-          })
-        });
-        oView.addDependent(this._oDoc6UnlinkDialog);
-        this._oDoc6UnlinkDialog.addStyleClass("sapUiSizeCompact");
-      }
-      this._oUnlinkMsgStrip6.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked.");
-      this._oUnlinkTable6.removeAllItems();
-      aAffected.forEach(function (d) {
-        that._oUnlinkTable6.addItem(new ColumnListItem({
-          cells: [
-            new Text({ text: d.fileName }),
-            new Text({ text: d.docName }),
-            new Text({ text: d.docNumber })
-          ]
-        }));
-      });
-      this._oDoc6UnlinkDocNumbers = aSelectedDocNumbers;
-      this._oDoc6UnlinkDialog.open();
-    },
-
-    onDoc6DocNumberPress: function () {},
-
-    onDoc6Search: function () {},
-
-    onDoc6Sync: function () {      var oText = this.byId("doc6LastSyncedText");
-      var now = new Date();
-      var sTime = now.toLocaleString("en-US", {
-        month: "2-digit", day: "2-digit", year: "numeric",
-        hour: "2-digit", minute: "2-digit", second: "2-digit",
-        hour12: true
-      });
-      if (oText) {
-        oText.setText("Last synced: " + sTime);
-      }
-      sap.m.MessageToast.show("Sync completed");
-    },
-
-    onDocAttTableUpdated: function () {
-      var oTable = this.byId("docAttachmentsTable");
-      if (!oTable) { return; }
-      oTable.$().find(".docAttTypeIcon").each(function () {
-        this.style.setProperty("color",           "#506D84",                    "important");
-        this.style.setProperty("font-size",       "1.25rem",                    "important");
-        this.style.setProperty("width",           "2.5rem",                     "important");
-        this.style.setProperty("height",          "2.5rem",                     "important");
-        this.style.setProperty("line-height",     "2.5rem",                     "important");
-        this.style.setProperty("border",          "1px solid rgba(80,109,132,0.4)", "important");
-        this.style.setProperty("border-radius",   "0.5rem",                     "important");
-        this.style.setProperty("background",      "#fff",              "important");
-        this.style.setProperty("box-sizing",      "border-box",        "important");
-        this.style.setProperty("display",         "inline-flex",       "important");
-        this.style.setProperty("align-items",     "center",            "important");
-        this.style.setProperty("justify-content", "center",            "important");
-        this.style.setProperty("text-align",      "center",            "important");
-      });
-    },
-
-    onDocAttSearch:       function () {},
-    onDocAttCreateFolder: function () {},
-    onDocAttUpload:       function () {},
-    onDocAttCreateLink:   function () {},
-    onDocAttEditLink:     function () {},
-    onDocAttDownload:     function () {},
-    onDocAttDelete:       function () {},
-    onDocAttMove:         function () {},
-    onDocAttCopy:         function () {},
-    onDocAttCheckOut:     function () {},
-    onDocAttCheckIn:      function () {},
-    onDocAttProperties:   function () {},
-    onDocAttNavUp:        function () {},
-    onDocAttRefresh:      function () {},
-    onDocAttSort:         function () {},
-    onDocAttSettings:     function () {},
-    onDocAttRowMore:      function () {},
-
-    _cascadeSelection: function (sTableId) {
-      // intentionally empty — cascade selection disabled
-    },
-
-    _updateUnlinkBtn: function (sTableId, sBtnId) {
-      var oTable = this.getView().byId(sTableId);
-      var oBtn = this.getView().byId(sBtnId);
-      if (!oTable || !oBtn) { return; }
-      var aSelected = oTable.getSelectedIndices();
-      oBtn.setEnabled(aSelected.length > 0);
-    },
-
-    onDocSelectionChange: function (oEvent) {
-      var oTable = this.getView().byId("documentsTreeTable");
-      this._expandAndCascade(oTable, oEvent, "documentsTreeTable", "unlinkBtn");
-    },
-
-    onDocSelectionChange1: function (oEvent) {
-      var oTable = this.getView().byId("documentsTreeTable1");
-      this._expandAndCascade(oTable, oEvent, "documentsTreeTable1", "unlinkBtn1");
-    },
-
-    onDocSelectionChange2: function (oEvent) {
-      var oTable = this.getView().byId("documentsTreeTable2");
-      this._expandAndCascade(oTable, oEvent, "documentsTreeTable2", "unlinkBtn2");
-    },
-
-    onLinkDocSelectionChange: function (oEvent) {
-      var oTable = this.getView().byId("linkDocResultTable");
-      this._expandAndCascade(oTable, oEvent, null, null);
-    },
-
-    _expandAndCascade: function (oTable, oEvent, sTableId, sBtnId) {
-      if (!oTable) { return; }
-      var oBinding = oTable.getBinding("rows");
-      if (!oBinding) { return; }
-
-      var oView = this.getView();
-      var iRow = oEvent.getParameter("rowIndex");
-      var oCtx = (iRow >= 0) ? oBinding.getContextByIndex(iRow) : null;
-      var oObj = oCtx ? oCtx.getObject() : null;
-      var isParentRow = !!(oObj && oObj.isParent);
-      var isSelected = (iRow >= 0) && oTable.isIndexSelected(iRow);
-
-      // Expand parent row when selected
-      if (isParentRow && isSelected) {
-        try { oBinding.expand(iRow); } catch (e) {}
-      }
-
-      setTimeout(function () {
-        var iNewTotal = oBinding.getLength();
-        oTable.setVisibleRowCount(iNewTotal);
-
-        // If a parent row was just selected, deselect its child rows
-        if (isParentRow && isSelected) {
-          for (var i = iRow + 1; i < iNewTotal; i++) {
-            var ctx = oBinding.getContextByIndex(i);
-            var obj = ctx ? ctx.getObject() : null;
-            if (!obj || obj.isParent) { break; }
-            oTable.removeSelectionInterval(i, i);
-          }
-        }
-
-        // Update unlink button
-        if (sTableId && sBtnId) {
-          var oBtn = oView.byId(sBtnId);
-          if (!oBtn) { return; }
-          var aSelected = oTable.getSelectedIndices();
-          oBtn.setEnabled(aSelected.length > 0);
-        }
-      }, 50);
-    },
-
-    onUnlinkDocument: function (oEvent) {
-      var oView = this.getView();
-      var oSource = oEvent.getSource();
-      var sSourceId = oSource.getId();
-      var sTableId, sBtnId;
-      if (sSourceId.indexOf("unlinkBtn1") !== -1) {
-        sTableId = "documentsTreeTable1"; sBtnId = "unlinkBtn1";
-      } else if (sSourceId.indexOf("unlinkBtn2") !== -1) {
-        sTableId = "documentsTreeTable2"; sBtnId = "unlinkBtn2";
-      } else {
-        sTableId = "documentsTreeTable"; sBtnId = "unlinkBtn";
-      }
-
-      var oTable = oView.byId(sTableId);
-      var aSelected = oTable ? oTable.getSelectedIndices() : [];
-      var oBinding = oTable && oTable.getBinding("rows");
-      var oDetailModel = oView.getModel("detail");
-      var aDocs = oDetailModel ? (oDetailModel.getProperty("/documents") || []) : [];
-      var aDocNumbers = [];
-      aSelected.forEach(function (i) {
-        var oCtx = oBinding && oBinding.getContextByIndex(i);
-        var oDoc = oCtx && oCtx.getObject();
-        if (!oDoc) { return; }
-        if (oDoc.isParent) {
-          if (aDocNumbers.indexOf(oDoc.docNumber) === -1) { aDocNumbers.push(oDoc.docNumber); }
-        } else {
-          aDocs.forEach(function (oParent) {
-            if (oParent.children && oParent.children.some(function (c) { return c.docNumber === oDoc.docNumber; })) {
-              if (aDocNumbers.indexOf(oParent.docNumber) === -1) { aDocNumbers.push(oParent.docNumber); }
-            }
-          });
-        }
-      });
-      if (!aDocNumbers.length) { return; }
-
-      // Collect matched parent docs with their children
-      var aMatchedDocs = aDocs.filter(function (d) { return aDocNumbers.indexOf(d.docNumber) !== -1; });
-
-      var that = this;
-      if (!this._oUnlinkDialog) {
-        this._oUnlinkMsgStripTree = new MessageStrip({ type: "Warning", showIcon: true, showCloseButton: false });
-        this._oUnlinkTreeTable = new MTable({
-          columns: [
-            new MColumn({ header: new Label({ text: "Document" }), width: "14rem" }),
-            new MColumn({ header: new Label({ text: "Attachments" }) })
-          ],
-          backgroundDesign: "Transparent"
-        });
-        this._oUnlinkTreeTable.addStyleClass("unlinkDialogTable");
-        this._oUnlinkDialog = new Dialog({
-          type: DialogType.Message,
-          title: "Unlink Document",
-          contentWidth: "34rem",
-          content: new VBox({ items: [ this._oUnlinkMsgStripTree, this._oUnlinkTreeTable ] }),
-          beginButton: new Button({
-            type: ButtonType.Emphasized,
-            text: "Unlink",
-            press: function () {
-              that._oUnlinkDialog.close();
-              var aAllDocs = oDetailModel.getProperty("/documents") || [];
-              aAllDocs = aAllDocs.filter(function (d) { return that._oUnlinkDocNumbers.indexOf(d.docNumber) === -1; });
-              oDetailModel.setProperty("/documents", aAllDocs);
-              setTimeout(function () {
-                ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
-                  var oT = oView.byId(sId);
-                  if (!oT) { return; }
-                  oT.clearSelection();
-                  var oB = oT.getBinding("rows");
-                  if (oB) { oT.setVisibleRowCount(oB.getLength()); }
-                });
-                ["unlinkBtn", "unlinkBtn1", "unlinkBtn2"].forEach(function (sId) {
-                  var oB = oView.byId(sId);
-                  if (oB) { oB.setEnabled(false); }
-                });
-              }, 0);
-              MessageToast.show(that._oUnlinkDocNumbers.length + " document(s) unlinked");
-            }
-          }),
-          endButton: new Button({
-            text: "Cancel",
-            press: function () { that._oUnlinkDialog.close(); }
-          })
-        });
-        oView.addDependent(this._oUnlinkDialog);
-        this._oUnlinkDialog.addStyleClass("sapUiSizeCompact");
-      }
-
-      this._oUnlinkMsgStripTree.setText("Unlinking applies at the document level. All attachments of the affected document(s) will be unlinked.");
-      this._oUnlinkTreeTable.removeAllItems();
-      aMatchedDocs.forEach(function (oDoc) {
-        var aChildren = oDoc.children || [];
-        // Document cell: docNumber bold + description below
-        var oDocCell = new VBox({ items: [
-          new Text({ text: oDoc.docNumber, wrapping: false }).addStyleClass("detailDocNumber"),
-          new Text({ text: oDoc.description || oDoc.docDescription || "", wrapping: true }).addStyleClass("detailDocMeta")
-        ]});
-        // Attachments cell: one Text per child
-        var oAttCell = new VBox({ items: aChildren.length
-          ? aChildren.map(function (c) { return new Text({ text: c.description, wrapping: false }); })
-          : [ new Text({ text: "–" }) ]
-        });
-        that._oUnlinkTreeTable.addItem(new ColumnListItem({
-          cells: [ oDocCell, oAttCell ]
-        }));
-      });
-      this._oUnlinkDocNumbers = aDocNumbers;
-      this._oUnlinkDialog.open();
-    },
-
-
-    onUnlinkDocument3: function () {
-      var oView = this.getView();
-      var oTable = oView.byId("documentsTable3");
-      var aSelected = oTable ? oTable.getSelectedItems() : [];
-      if (!aSelected.length) { return; }
-
-      var aSelectedDocNumbers = [];
-      aSelected.forEach(function (oItem) {
-        var oCtx = oItem.getBindingContext("detail");
-        var oObj = oCtx && oCtx.getObject();
-        if (oObj && oObj.docNumber && aSelectedDocNumbers.indexOf(oObj.docNumber) === -1) {
-          aSelectedDocNumbers.push(oObj.docNumber);
-        }
-      });
-
-      var oDetailModel = oView.getModel("detail");
-      var that = this;
-      if (!this._oUnlinkDoc3Dialog) {
-        this._oUnlinkDoc3Dialog = new Dialog({
-          type: DialogType.Message,
-          title: "Unlink",
-          content: new Text({ text: "Do you want to unlink the selected document(s)? They will remain saved in the system." }),
-          beginButton: new Button({
-            type: ButtonType.Emphasized,
-            text: "Unlink",
-            press: function () {
-              that._oUnlinkDoc3Dialog.close();
-              var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
-              aFlat = aFlat.filter(function (d) { return that._oUnlinkDoc3DocNumbers.indexOf(d.docNumber) === -1; });
-              oDetailModel.setProperty("/documentsFlat", aFlat);
-              oTable.removeSelections();
-              var oBtn = oView.byId("unlinkBtn3");
-              if (oBtn) { oBtn.setEnabled(false); }
-              MessageToast.show(that._oUnlinkDoc3DocNumbers.length + " document(s) unlinked");
-            }
-          }),
-          endButton: new Button({
-            text: "Cancel",
-            press: function () { that._oUnlinkDoc3Dialog.close(); }
-          })
-        });
-        oView.addDependent(this._oUnlinkDoc3Dialog);
-        this._oUnlinkDoc3Dialog.addStyleClass("sapUiSizeCompact");
-      }
-      this._oUnlinkDoc3DocNumbers = aSelectedDocNumbers;
-      this._oUnlinkDoc3Dialog.open();
-    },
-
-    onLinkNewDocument: function () {
-      var sBase = window.location.href.replace(/\/apps\/manage-specifications\/.*$/, "");
-      var sDmsUrl = sBase + "/apps/dms-create/webapp/index.html";
-      window.open(sDmsUrl, "_blank");
-      var fnMessage = function (oEvent) {
-        if (oEvent.data && oEvent.data.action === "documentCreated") {
-          window.removeEventListener("message", fnMessage);
-          MessageToast.show(
-            "Document " + oEvent.data.document.number + " linked successfully"
-          );
-        }
-      };
-      window.addEventListener("message", fnMessage);
-    },
-
-    onLinkExistingDocument: function () {
-      var oView = this.getView();
-      if (this._oLinkDocDialog) {
-        this._oLinkDocDialog.then(function (oDialog) { oDialog.destroy(); });
-        this._oLinkDocDialog = null;
-      }
-      if (!this._oLinkDocDialog) {
-        this._oLinkDocDialog = Fragment.load({
-          id: oView.getId(),
-          name: "com.sap.demo.managespec.view.LinkDocumentDialog",
-          controller: this
-        }).then(function (oDialog) {
-          oView.addDependent(oDialog);
-          var oLinkDocModel = new JSONModel({
-            documents: [
-              { fileName: "Body-material-steel.pdf",      fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Body-color-arctic-white.pdf",  fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Body-structure-frame.dwg",     fileIcon: "sap-icon://document",         docName: "Car-Body-Design",      docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Raw-material-A.xlsx",          fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Raw-material-B.xlsx",          fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Supplier-cert.pdf",            fileIcon: "sap-icon://pdf-attachment",   docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Test-report.pdf",              fileIcon: "sap-icon://pdf-attachment",   docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Composition-table.xlsx",       fileIcon: "sap-icon://excel-attachment",  docName: "Body-Material-Spec",   docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Wheel-geometry.pdf",           fileIcon: "sap-icon://pdf-attachment",   docName: "Car-Wheel-Design",     docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
-              { fileName: "Wheel-material-spec.xlsx",     fileIcon: "sap-icon://excel-attachment",  docName: "Car-Wheel-Design",     docNumber: "100000000189", type: "DRW", part: "000", version: "00", status: "New" },
-              { fileName: "Engine-assembly.pdf",          fileIcon: "sap-icon://pdf-attachment",   docName: "Engine-Design-v2",     docNumber: "100000000195", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Engine-block-spec.xlsx",       fileIcon: "sap-icon://excel-attachment",  docName: "Engine-Block-Spec",    docNumber: "100000000197", type: "DFT", part: "000", version: "00", status: "In Work" },
-              { fileName: "Cylinder-head-drawing.dwg",    fileIcon: "sap-icon://document",         docName: "Cylinder-Head-Drawing",docNumber: "100000000198", type: "DFT", part: "000", version: "00", status: "New" },
-              { fileName: "Chassis-design.pdf",           fileIcon: "sap-icon://pdf-attachment",   docName: "Chassis-Design",       docNumber: "100000000200", type: "TST", part: "000", version: "00", status: "New" },
-              { fileName: "Frame-material-spec.xlsx",     fileIcon: "sap-icon://excel-attachment",  docName: "Frame-Material-Spec",  docNumber: "100000000202", type: "TST", part: "000", version: "00", status: "New" }
-            ]
-          });
-          oDialog.setModel(oLinkDocModel, "linkDoc");
-          return oDialog;
-        });
-      }
-      var oView = this.getView();
-      this._oLinkDocDialog.then(function (oDialog) {
-        oDialog.open();
-      });
-    },
-
-    onDocFilterDialogConfirm: function (oEvent) {
-      var oFacetFilter = oEvent.getSource();
-      var oDetailModel = this.getView().getModel("detail");
-      if (!oDetailModel.getProperty("/documentsAll")) {
-        oDetailModel.setProperty("/documentsAll", (oDetailModel.getProperty("/documents") || []).slice());
-      }
-      var oFilters = {};
-      oFacetFilter.getLists().forEach(function (oList) {
-        var aSelected = oList.getSelectedItems();
-        if (aSelected.length > 0) {
-          oFilters[oList.getKey()] = aSelected.map(function (i) { return i.getKey(); });
-        }
-      });
-      var aSource = oDetailModel.getProperty("/documentsAll");
-      var aFiltered = aSource.filter(function (oDoc) {
-        if (!oDoc.isParent) { return true; }
-        var typeMatch = !oFilters.type || oFilters.type.indexOf(oDoc.type) !== -1;
-        var statusMatch = !oFilters.status || oFilters.status.indexOf(oDoc.status) !== -1;
-        return typeMatch && statusMatch;
-      });
-      oDetailModel.setProperty("/documents", aFiltered);
-    },
-
-    onDocFilterDialogReset: function () {
-      var oDetailModel = this.getView().getModel("detail");
-      var aAll = oDetailModel.getProperty("/documentsAll");
-      if (aAll) {
-        oDetailModel.setProperty("/documents", aAll.slice());
-        oDetailModel.setProperty("/documentsAll", null);
-      }
-    },
-
-    onDoc3SelectionChange: function (oEvent) {
-      var oTable = this.getView().byId("documentsTable3");
-      var bHasSelection = oTable && oTable.getSelectedItems().length > 0;
-      var oBtn = this.getView().byId("unlinkBtn3");
-      if (oBtn) { oBtn.setEnabled(bHasSelection); }
-    },
-
-    formatShowAllVisible: function (bShowAll, aAttachments) {
-      return Array.isArray(aAttachments) && aAttachments.length > 5;
-    },
-
-    formatAttachmentSlice: function (bShowAll, aAttachments) {
-      if (!Array.isArray(aAttachments)) { return []; }
-      return bShowAll ? aAttachments : aAttachments.slice(0, 5);
-    },
-
-    formatShowAllText: function (bShowAll) {
-      return bShowAll ? "Show less" : "Show all";
-    },
-
-    formatAttachmentIcon: function (sFileName) {
-      if (!sFileName) { return "sap-icon://document"; }
-      var sExt = sFileName.split(".").pop().toLowerCase();
-      var mIcons = {
-        "pdf":  "sap-icon://pdf-attachment",
-        "xlsx": "sap-icon://excel-attachment",
-        "xls":  "sap-icon://excel-attachment",
-        "docx": "sap-icon://doc-attachment",
-        "doc":  "sap-icon://doc-attachment",
-        "pptx": "sap-icon://ppt-attachment",
-        "ppt":  "sap-icon://ppt-attachment",
-        "png":  "sap-icon://attachment-photo",
-        "jpg":  "sap-icon://attachment-photo",
-        "jpeg": "sap-icon://attachment-photo",
-        "dwg":  "sap-icon://document",
-        "txt":  "sap-icon://document-text"
-      };
-      return mIcons[sExt] || "sap-icon://document";
-    },
-
-    onDoc3ShowAll: function (oEvent) {
-      var oLink = oEvent.getSource();
-      var oCtx = oLink.getBindingContext("detail");
-      if (!oCtx) { return; }
-      var bCurrentlyExpanded = oCtx.getProperty("showAll");
-      oCtx.getModel().setProperty(oCtx.getPath() + "/showAll", !bCurrentlyExpanded);
-      // Walk up: Link → VBox (doc3AttBox) → find List sibling
-      var oVBox = oLink.getParent();
-      var oList = null;
-      oVBox.getItems().forEach(function (oItem) {
-        if (oItem.isA("sap.m.List")) { oList = oItem; }
-      });
-      if (oList) {
-        if (!bCurrentlyExpanded) {
-          oList.addStyleClass("doc3AttListExpanded");
-        } else {
-          oList.removeStyleClass("doc3AttListExpanded");
-        }
-      }
-    },
-
-    _doc4ShowRow: function (oDoc, iIndex) {
-      var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.2 MB"];
-      var aAttachments = (oDoc.attachments || []).map(function (sFile, i) {
-        return {
-          fileName: sFile,
-          modifiedOn: "Aug 6, 2026",
-          createdBy: "yue.xi01@sap.com",
-          modifiedBy: "yue.xi01@sap.com",
-          size: aSizes[i % aSizes.length]
-        };
-      });
-      // Store data in component-level model so Doc4Detail view can read it
-      var oComp = this.getOwnerComponent();
-      var oDoc4Model = oComp.getModel("doc4");
-      if (!oDoc4Model) {
-        oDoc4Model = new JSONModel();
-        oComp.setModel(oDoc4Model, "doc4");
-      }
-      oDoc4Model.setData({ docName: oDoc.docName || "Attachments", attachments: aAttachments });
-
-      // Switch FCL to TwoColumnsBeginExpanded — midColumn already embedded statically
-      var oAppCtrl = oComp.getRootControl().getController();
-      if (oAppCtrl && oAppCtrl.setFCLLayout) {
-        oAppCtrl.setFCLLayout("TwoColumnsBeginExpanded");
-      }
-    },
-
-    onDoc4RowSelect: function (oEvent) {
-      var oItem = oEvent.getSource();
-      if (oItem.isA("sap.m.Table")) {
-        oItem = oEvent.getParameter("listItem");
-      }
-      if (!oItem) { return; }
-      var oCtx = oItem.getBindingContext("detail");
-      if (!oCtx) { return; }
-      var aFlat = this.getView().getModel("detail").getProperty("/documentsFlat") || [];
-      var iIndex = aFlat.indexOf(oCtx.getObject());
-      this._doc4ShowRow(oCtx.getObject(), iIndex);
-
-      var oTable = this.getView().byId("documentsTable4");
-      var oBtn = this.getView().byId("unlinkBtn4");
-      if (oBtn && oTable) { oBtn.setEnabled(oTable.getSelectedItems().length > 0); }
-    },
-
-    onDoc4CloseDetail: function () {
-      var oAppCtrl = this.getOwnerComponent().getRootControl().getController();
-      if (oAppCtrl && oAppCtrl.setFCLLayout) {
-        oAppCtrl.setFCLLayout("OneColumn");
-      }
-      var oTable = this.getView().byId("documentsTable4");
-      if (oTable) { oTable.removeSelections(true); }
-    },
-
-    onDoc4AttCreate:    function () { MessageToast.show("Create attachment"); },
-    onDoc4AttEditLink:  function () { MessageToast.show("Edit Link"); },
-    onDoc4AttDownload:  function () { MessageToast.show("Download"); },
-    onDoc4AttDelete:    function () { MessageToast.show("Delete"); },
-    onDoc4AttMove:      function () { MessageToast.show("Move"); },
-    onDoc4AttCopy:      function () { MessageToast.show("Copy"); },
-
-    onLinkExistingDoc3: function () {
-      var oView = this.getView();
-      var aDocuments = [
-        { docName: "Valve-Assembly-2026",         docNumber: "200000002001", type: "DFT", part: "000", version: "01", status: "New"      },
-        { docName: "Surface-Treatment-Spec",      docNumber: "200000002010", type: "TST", part: "000", version: "02", status: "In Work"  },
-        { docName: "Gearbox-Housing-Design",      docNumber: "200000002020", type: "DRW", part: "001", version: "03", status: "Released" },
-        { docName: "Frame-Welding-Procedure",     docNumber: "200000002030", type: "IMU", part: "000", version: "01", status: "In Work"  },
-        { docName: "Fastener-Torque-Spec",        docNumber: "200000002040", type: "TST", part: "000", version: "01", status: "New"      },
-        { docName: "Final-Assembly-Guide",        docNumber: "200000002050", type: "DFT", part: "000", version: "02", status: "Released" },
-        { docName: "Bearing-Load-Analysis",       docNumber: "200000002060", type: "DRW", part: "000", version: "01", status: "New"      },
-        { docName: "Hydraulic-Seal-Spec",         docNumber: "200000002070", type: "TST", part: "001", version: "01", status: "In Work"  },
-        { docName: "Corrosion-Protection-Plan",   docNumber: "200000002080", type: "IMU", part: "000", version: "02", status: "Released" },
-        { docName: "Electrical-Wiring-Diagram",   docNumber: "200000002090", type: "DFT", part: "000", version: "01", status: "New"      },
-        { docName: "Thermal-Stress-Report",       docNumber: "200000002100", type: "TST", part: "000", version: "01", status: "In Work"  },
-        { docName: "Pneumatic-Schematic",         docNumber: "200000002110", type: "DRW", part: "000", version: "03", status: "Released" },
-        { docName: "Lubrication-Procedure",       docNumber: "200000002120", type: "IMU", part: "000", version: "01", status: "New"      },
-        { docName: "Noise-Vibration-Test-Spec",   docNumber: "200000002130", type: "TST", part: "001", version: "02", status: "In Work"  },
-        { docName: "Disassembly-Work-Instruction",docNumber: "200000002140", type: "DFT", part: "000", version: "01", status: "Released" }
-      ];
-
-      if (!this._oLinkDoc3Dialog) {
-        Fragment.load({
-          id: "linkDoc3Fragment",
-          name: "com.sap.demo.managespec.view.LinkDoc3Dialog",
-          controller: this
-        }).then(function (oDialog) {
-          this._oLinkDoc3Dialog = oDialog;
-          this._oLinkDoc3AllDocs = aDocuments;
-          oView.addDependent(oDialog);
-          oDialog.setModel(new JSONModel({ documents: aDocuments }), "linkDoc3");
-          oDialog.open();
-        }.bind(this));
-      } else {
-        this._oLinkDoc3Dialog.open();
-      }
-    },
-
-    onLinkDoc3GoSearch: function () {
-      var oSearch = Fragment.byId("linkDoc3Fragment", "linkDoc3SearchField");
-      this._applyLinkDoc3Filters(oSearch ? oSearch.getValue() : "");
-    },
-
-    onLinkDoc3Filter: function () {
-      this._applyLinkDoc3Filters();
-    },
-
-    onLinkDoc3Search: function (oEvent) {
-      this._applyLinkDoc3Filters(oEvent.getParameter("query") || oEvent.getParameter("newValue") || "");
-    },
-
-    onLinkDoc3ToggleFilters: function () {
-      var oPanel = Fragment.byId("linkDoc3Fragment", "linkDoc3FilterPanel");
-      var oBtn   = Fragment.byId("linkDoc3Fragment", "linkDoc3ShowFiltersBtn");
-      if (!oPanel || !oBtn) { return; }
-      var bVisible = oPanel.getVisible();
-      oPanel.setVisible(!bVisible);
-      oBtn.setText(bVisible ? "Show Filters" : "Hide Filters");
-      // Re-apply 8px gap after setText triggers DOM re-render
-      setTimeout(function () {
-        var oDomBtn = oBtn.getDomRef ? oBtn.getDomRef() : document.querySelector("[id$='linkDoc3ShowFiltersBtn']");
-        if (oDomBtn) { oDomBtn.style.setProperty("margin-left", "8px", "important"); }
-      }, 0);
-    },
-
-    _applyLinkDoc3Filters: function (sQuery) {
-      var oTable = Fragment.byId("linkDoc3Fragment", "linkDoc3ResultTable");
-      if (!oTable) { return; }
-      var oBinding = oTable.getBinding("rows");
-      if (!oBinding) { return; }
-
-      var oTypeSelect   = Fragment.byId("linkDoc3Fragment", "linkDoc3TypeFilter");
-      var oStatusSelect = Fragment.byId("linkDoc3Fragment", "linkDoc3StatusFilter");
-      var sType   = oTypeSelect   ? oTypeSelect.getSelectedKey()   : "";
-      var sStatus = oStatusSelect ? oStatusSelect.getSelectedKey() : "";
-      if (sQuery === undefined) {
-        var oSearch = Fragment.byId("linkDoc3Fragment", "linkDoc3SearchField");
-        sQuery = oSearch ? oSearch.getValue() : "";
-      }
-
-      var aFilters = [];
-      if (sType)   { aFilters.push(new Filter("type",   FilterOperator.EQ, sType)); }
-      if (sStatus) { aFilters.push(new Filter("status", FilterOperator.EQ, sStatus)); }
-      if (sQuery)  {
-        aFilters.push(new Filter([
-          new Filter("fileName",  FilterOperator.Contains, sQuery),
-          new Filter("docName",   FilterOperator.Contains, sQuery),
-          new Filter("docNumber", FilterOperator.Contains, sQuery)
-        ], false));
-      }
-      oBinding.filter(aFilters.length ? [new Filter(aFilters, true)] : []);
-    },
-
-    onLinkDoc3Confirm: function () {
-      var oTable = Fragment.byId("linkDoc3Fragment", "linkDoc3ResultTable");
-      if (oTable) {
-        var aIndices = oTable.getSelectedIndices();
-        if (aIndices.length > 0) {
-          var oDetailModel = this.getView().getModel("detail");
-          var aFlat = oDetailModel.getProperty("/documentsFlat") || [];
-          aIndices.forEach(function (iIndex) {
-            var oCtx = oTable.getContextByIndex(iIndex);
-            var oDoc = oCtx ? oCtx.getObject() : null;
-            if (oDoc && !aFlat.some(function (d) { return d.fileName === oDoc.fileName; })) {
-              aFlat.push(Object.assign({}, oDoc, { status: "New", showAll: false, attachments: [] }));
-            }
-          });
-          oDetailModel.setProperty("/documentsFlat", aFlat);
-        }
-      }
-      if (this._oLinkDoc3Dialog) { this._oLinkDoc3Dialog.close(); }
-    },
-
-    onLinkDoc3Cancel: function () {
-      if (this._oLinkDoc3Dialog) { this._oLinkDoc3Dialog.close(); }
-    },
-
-    onLinkDocSearch: function () {
-    },
-
-    onLinkDocTreeToggle: function () {
-      var oTable = this.getView().byId("linkDocResultTable");
-      if (!oTable) { return; }
-      setTimeout(function () {
-        var oBinding = oTable.getBinding("rows");
-        if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-      }, 0);
-    },
-
-    onLinkDocShowFilters: function () {
-      MessageToast.show("Show Filters");
-    },
-
-    onLinkDocConfirm: function () {
-      var oView = this.getView();
-      var oTable = oView.byId("linkDocResultTable");
-      if (!oTable) {
-        this._oLinkDocDialog.then(function (oDialog) { oDialog.close(); });
-        return;
-      }
-
-      // Get selected indices and find their parent docs with full children intact
-      var oBinding = oTable.getBinding("rows");
-      var aSelectedIndices = oTable.getSelectedIndices();
-      var aNewDocs = [];
-      var aSeenNumbers = [];
-
-      aSelectedIndices.forEach(function (iIndex) {
-        var oCtx = oBinding.getContextByIndex(iIndex);
-        if (!oCtx) { return; }
-        var oDoc = oCtx.getObject();
-        if (!oDoc) { return; }
-
-        // Walk up to find the parent doc from the linkDoc model
-        var oLinkDocModel = oView.byId("linkDocResultTable").getModel("linkDoc");
-        var aAllDocs = oLinkDocModel ? oLinkDocModel.getProperty("/documents") : [];
-
-        if (oDoc.isParent) {
-          // Directly a parent — add with its children
-          if (aSeenNumbers.indexOf(oDoc.docNumber) === -1) {
-            aSeenNumbers.push(oDoc.docNumber);
-            aNewDocs.push(JSON.parse(JSON.stringify(oDoc)));
-          }
-        } else {
-          // Child row — find its parent and add the whole parent+children
-          aAllDocs.forEach(function (oParent) {
-            if (oParent.children && oParent.children.some(function (c) { return c.docNumber === oDoc.docNumber; })) {
-              if (aSeenNumbers.indexOf(oParent.docNumber) === -1) {
-                aSeenNumbers.push(oParent.docNumber);
-                aNewDocs.push(JSON.parse(JSON.stringify(oParent)));
-              }
-            }
-          });
-        }
-      });
-
-      if (aNewDocs.length > 0) {
-        var oDetailModel = oView.getModel("detail");
-        var aDocs = oDetailModel.getProperty("/documents") || [];
-        oDetailModel.setProperty("/documents", aDocs.concat(aNewDocs));
-
-        setTimeout(function () {
-          ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
-            var oT = oView.byId(sId);
-            if (!oT) { return; }
-            var oB = oT.getBinding("rows");
-            if (oB) { oT.setVisibleRowCount(oB.getLength()); }
-          });
-        }, 0);
-
-        MessageToast.show(aNewDocs.length + " document(s) linked");
-      }
-
-      this._oLinkDocDialog.then(function (oDialog) { oDialog.close(); });
-    },
-
-    onLinkDocCancel: function () {
-      this._oLinkDocDialog.then(function (oDialog) { oDialog.close(); });
-    },
-
-    onDocTreeToggle: function () {
-      var oTable = this.getView().byId("documentsTreeTable");
-      if (!oTable) { return; }
-      setTimeout(function () {
-        var oBinding = oTable.getBinding("rows");
-        if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-      }, 0);
-    },
-
-    onDocTreeToggle1: function () {
-      var oTable = this.getView().byId("documentsTreeTable1");
-      if (!oTable) { return; }
-      setTimeout(function () {
-        var oBinding = oTable.getBinding("rows");
-        if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-      }, 0);
-    },
-
-    onDocTreeToggle2: function () {
-      var oTable = this.getView().byId("documentsTreeTable2");
-      if (!oTable) { return; }
-      setTimeout(function () {
-        var oBinding = oTable.getBinding("rows");
-        if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-      }, 0);
-    },
-
-        // ---- Documents 7 ----
-    onDoc7DocSelect: function (oEvent) {
-      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-      if (!oItem || oItem.isA("sap.m.Table")) { return; }
-      var oCtx = oItem.getBindingContext("detail");
-      if (!oCtx) { return; }
-      var oDoc = oCtx.getObject();
-      var aSizes = ["18 KB", "43 KB", "96 KB", "124 KB", "205 KB", "512 KB", "1.21 MB"];
-      var aAtts = (oDoc.attachments || []).map(function (sFile, i) {
-        return {
-          fileName: sFile,
-          modifiedOn: "Aug 6, 2026",
-          createdBy: "yue.xi01@sap.com",
-          modifiedBy: "yue.xi01@sap.com",
-          size: aSizes[i % aSizes.length]
-        };
-      });
-      var oDetailModel = this.getView().getModel("detail");
-      oDetailModel.setProperty("/doc7Attachments", aAtts);
-      oDetailModel.setProperty("/doc7Uuid", "09a212e0-65fa-4464-907d-d52c1b844027");
-      oDetailModel.setProperty("/doc7StripVisible", true);
-      // Reset action buttons
-      var oView = this.getView();
-      ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
-        var oBtn = oView.byId(sId);
-        if (oBtn) { oBtn.setEnabled(false); }
-      });
-    },
-
-    onDoc7AttSelect: function () {
-      var oTable = this.getView().byId("doc7AttTable");
-      var bHas = oTable && oTable.getSelectedItems().length > 0;
-      var oView = this.getView();
-      ["doc7EditBtn", "doc7DownBtn", "doc7DeleteBtn", "doc7MoveBtn", "doc7CopyBtn"].forEach(function (sId) {
-        var oBtn = oView.byId(sId);
-        if (oBtn) { oBtn.setEnabled(bHas); }
-      });
-    },
-
-    onDoc7Create:   function () { MessageToast.show("Create attachment"); },
-    onDoc7EditLink: function () { MessageToast.show("Edit Link"); },
-    onDoc7Download: function () { MessageToast.show("Download"); },
-    onDoc7Delete:   function () { MessageToast.show("Delete"); },
-    onDoc7Move:     function () { MessageToast.show("Move"); },
-    onDoc7Upload:   function () { MessageToast.show("Upload"); },
-    onDoc7Refresh:  function () { MessageToast.show("Refreshed"); },
-    onDoc7Search:   function () {},
 
     _onRouteMatched: function (oEvent) {
       var sSpecId = oEvent.getParameter("arguments").specId;
-      this._sCurrentSpecId = sSpecId;
       this._loadDetail(sSpecId);
-      this._fixObjectPageScroll();
-    },
-
-    _fixObjectPageScroll: function () {
-      var oOPL = this.getView().byId("generalObjectPage");
-      if (!oOPL) { return; }
-
-      // Patch _adjustHeaderHeights to always report 0 header height
-      // so ObjectPage never sets a non-zero padding-top on the scroll container
-      if (!oOPL.__headerHeightPatched) {
-        var fnOrig = oOPL._adjustHeaderHeights && oOPL._adjustHeaderHeights.bind(oOPL);
-        if (fnOrig) {
-          oOPL._adjustHeaderHeights = function () {
-            fnOrig();
-            var oDom = oOPL.getDomRef();
-            if (oDom) {
-              var oScroll = oDom.querySelector(".sapUxAPObjectPageScroll");
-              if (oScroll) { oScroll.style.paddingTop = "0px"; }
-            }
-          };
-        }
-        oOPL.__headerHeightPatched = true;
-      }
     },
 
     _loadDetail: function (sSpecId) {
       var oAppModel = this.getOwnerComponent().getModel();
-      var aSpecs = oAppModel.getProperty("/specifications");
-      var oSpec = aSpecs.find(function (s) { return s.id === sSpecId; });
-      if (!oSpec) { return; }
+      var aDocuments = oAppModel.getProperty("/documents") || [];
+      var oDoc = aDocuments.find(function (d) { return d.number === sSpecId; });
 
-      var aDocumentsFlat = [
-          { fileName: "Car-Body-Design.pdf",        docName: "Car-Body-Design",        docNumber: "100000000913", type: "DFT", part: "000", version: "00", status: "New",     source: "S4HANA",
-            attachments: ["Body-material-steel.pdf", "Body-color-arctic-white.pdf", "Body-structure-frame.dwg"], showAll: false },
-          { fileName: "Body-Material-Spec.xlsx",     docName: "Body-Material-Spec",     docNumber: "100000000199", type: "DFT", part: "000", version: "00", status: "In Work", source: "S4HANA",
-            attachments: ["Raw-material-A.xlsx", "Raw-material-B.xlsx", "Supplier-cert.pdf", "Test-report.pdf", "Composition-table.xlsx", "REACH-compliance.pdf", "Thickness-spec.pdf", "Surface-treatment.pdf", "Grade-classification.xlsx", "Approval-letter.pdf", "Revision-notes.txt"], showAll: false },
-          { fileName: "Body-Color-Spec.pdf",         docName: "Body-Color-Spec",        docNumber: "100000000206", type: "TST", part: "000", version: "00", status: "In Work", source: "IPD",
-            attachments: ["Color-chart-RAL.pdf", "Paint-sample-A.png", "Paint-sample-B.png"], showAll: false },
-          { fileName: "Body-Structure-Drawing.dwg",  docName: "Body-Structure-Drawing",  docNumber: "100000000201", type: "DRW", part: "000", version: "00", status: "Locked", source: "IPD",
-            attachments: ["Frame-assembly.dwg", "Welding-specs.pdf"], showAll: false },
-          { fileName: "Car-Wheel-Design.pdf",        docName: "Car-Wheel-Design",        docNumber: "100000000196", type: "DFT", part: "000", version: "00", status: "New",     source: "S4HANA",
-            attachments: ["Wheel-geometry.pdf", "Rim-material.xlsx", "Hub-design.dwg", "Bearing-spec.pdf"], showAll: false },
-          { fileName: "Wheel-Material-Spec.xlsx",    docName: "Wheel-Material-Spec",    docNumber: "100000000203", type: "TST", part: "000", version: "00", status: "In Work", source: "IPD",
-            attachments: ["Alloy-composition.xlsx"], showAll: false },
-          { fileName: "Wheel-Color-Spec.pdf",        docName: "Wheel-Color-Spec",        docNumber: "100000000191", type: "DFT", part: "000", version: "00", status: "New",     source: "S4HANA",
-            attachments: ["Finish-gloss.pdf", "Finish-matte.pdf", "Color-sample.png"], showAll: false },
-          { fileName: "Engine-Design-v2.pdf",        docName: "Engine-Design-v2",        docNumber: "100000000847", type: "DRW", part: "000", version: "00", status: "Created", source: "IPD",
-            attachments: ["Engine-block.dwg", "Cylinder-head.dwg", "Fuel-system.pdf", "Cooling-circuit.pdf", "Exhaust-manifold.dwg"], showAll: false }
+      if (!oDoc) {
+        oDoc = { number: sSpecId, description: "–", type: "–", part: "–", documentStatus: "–", version: "–" };
+      }
+
+      var aAttachments = [
+        {
+          typeIcon: "sap-icon://attachment-photo",
+          name: "Screenshot 2026-07-21 at 10.59.56.png",
+          modifiedOn: "Aug 26, 2026",
+          createdBy: "yue.xi01@sap.com",
+          modifiedBy: "yue.xi01@sap.com",
+          size: "36 KB"
+        }
       ];
 
-      var aDocumentsAttFlat = [];
-      aDocumentsFlat.forEach(function (oDoc) {
-        (oDoc.attachments || []).forEach(function (sFile) {
-          aDocumentsAttFlat.push({
-            fileName: sFile,
-            docName: oDoc.docName,
-            docNumber: oDoc.docNumber,
-            type: oDoc.type,
-            part: oDoc.part,
-            version: oDoc.version,
-            status: oDoc.status,
-            source: oDoc.source || ""
-          });
-        });
-      });
+      var aExternalLinks = [
+        {
+          name: "100000002805",
+          description: "Engineering Drawing Rev B",
+          type: "DRW",
+          part: "001",
+          documentStatus: "Released",
+          version: "02"
+        }
+      ];
 
       var oDetailModel = new JSONModel({
-        id: oSpec.id,
-        name: oSpec.name,
-        technicalName: oSpec.technicalName,
-        version: oSpec.version,
-        statusText: oSpec.statusText,
-        statusState: oSpec.statusState,
-        statusIcon: oSpec.statusIcon,
-        specType: oSpec.specType,
-        productCategory: oSpec.productCategory || "–",
-        otherVersions: [],
-        collaborations: [],
-        documents: [
-          {
-            docNumber: "100000003683", description: "ObjectLinks-Overview-April2026.pptx", docDescription: "Overview of object links for April 2026 release", type: "NEW", part: "000", version: "01", status: "New", isParent: true,
-            children: [
-              { docNumber: "100000003684", description: "Appendix-A.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Aug 6, 2026", createdBy: "yue.xi01@sap.com" },
-              { docNumber: "100000003685", description: "Appendix-B.xlsx", type: "XLSX", part: "000", version: "02", modifiedOn: "Jul 12, 2026", createdBy: "yue.xi01@sap.com" }
-            ]
-          },
-          {
-            docNumber: "100000003690", description: "Technical-Specification-v2.pdf", docDescription: "Technical specification document version 2", type: "IMU", part: "000", version: "02", status: "In Work", isParent: true,
-            children: [
-              { docNumber: "100000003691", description: "Drawing-Front.dwg", type: "DWG", part: "000", version: "01", modifiedOn: "Aug 1, 2026", createdBy: "max.mueller@sap.com" },
-              { docNumber: "100000003692", description: "Drawing-Side.dwg", type: "DWG", part: "000", version: "02", modifiedOn: "Aug 3, 2026", createdBy: "max.mueller@sap.com" },
-              { docNumber: "100000003693", description: "BOM-List.xlsx", type: "XLSX", part: "000", version: "03", modifiedOn: "Jul 28, 2026", createdBy: "yue.xi01@sap.com" }
-            ]
-          },
-          {
-            docNumber: "100000003700", description: "Compliance-Report-2026.docx", docDescription: "Annual compliance report for 2026", type: "TES", part: "000", version: "01", status: "Locked", isParent: true,
-            children: [
-              { docNumber: "100000003701", description: "Test-Results.pdf", type: "PDF", part: "000", version: "01", modifiedOn: "Aug 5, 2026", createdBy: "anna.schmidt@sap.com" }
-            ]
-          },
-          {
-            docNumber: "100000003710", description: "User-Manual-EN.pdf", docDescription: "English user manual for end users", type: "DRW", part: "000", version: "04", status: "Created", isParent: true,
-            children: []
-          }
-        ],
-        documentsFlat: aDocumentsFlat,
-        documentsAttFlat: aDocumentsAttFlat,
-        docAttachments: [
-          { typeIcon: "sap-icon://document",   type: "File",   name: "ObjectLinks-Overview-April2026.pptx", docNumber: "100000000191", modifiedOn: "Aug 6, 2026",  createdBy: "yue.xi01@sap.com",   modifiedBy: "yue.xi01@sap.com",   size: "2.4 MB" },
-          { typeIcon: "sap-icon://folder",     type: "Folder", name: "Specifications",                      docNumber: "100000000192", modifiedOn: "Aug 1, 2026",  createdBy: "john.doe@sap.com",   modifiedBy: "john.doe@sap.com",   size: "—"      },
-          { typeIcon: "sap-icon://chain-link", type: "Link",   name: "SAP Help Portal",                     docNumber: "100000000193", modifiedOn: "Jul 28, 2026", createdBy: "jane.smith@sap.com", modifiedBy: "jane.smith@sap.com", size: "—"      }
-        ],
-        doc7Attachments: [],
-        doc7StripVisible: true,
-        doc7Uuid: "09a212e0-65fa-4464-907d-d52c1b844027"
+        number: oDoc.number,
+        description: oDoc.description,
+        type: oDoc.type,
+        part: oDoc.part,
+        documentStatus: oDoc.documentStatus,
+        version: oDoc.version,
+        s4Number: oDoc.documentStatus === "Released" ? (oDoc.s4Number || "") : "",
+        s4Type:   oDoc.documentStatus === "Released" ? (oDoc.s4Type   || "") : "",
+        s4Part:   oDoc.documentStatus === "Released" ? (oDoc.s4Part   || "") : "",
+        owner: oDoc.owner || "IPD",
+        s4SyncText: oDoc.s4SyncText || "Not Synced",
+        s4SyncState: oDoc.s4SyncState || "None",
+        s4SyncIcon: "",
+        s4SyncErrorMsg: oDoc.s4SyncErrorMsg || "",
+        attachments: aAttachments,
+        externalLinks: aExternalLinks,
+        attHasSelection: false
       });
-
       this.getView().setModel(oDetailModel, "detail");
 
-      var oView = this.getView();
-      setTimeout(function () {
-        ["documentsTreeTable", "documentsTreeTable1", "documentsTreeTable2"].forEach(function (sId) {
-          var oTable = oView.byId(sId);
-          if (!oTable) { return; }
-          oTable.expandToLevel(1);
-          var oBinding = oTable.getBinding("rows");
-          if (oBinding) { oTable.setVisibleRowCount(oBinding.getLength()); }
-        });
-      }, 100);
-
-      setTimeout(function () {
-        document.querySelectorAll(".docAttTypeIcon").forEach(function (el) {
-          el.style.setProperty("color",           "#506D84",                    "important");
-          el.style.setProperty("font-size",       "1.25rem",                    "important");
-          el.style.setProperty("width",           "2.5rem",                     "important");
-          el.style.setProperty("height",          "2.5rem",                     "important");
-          el.style.setProperty("line-height",     "2.5rem",                     "important");
-          el.style.setProperty("border",          "1px solid rgba(80,109,132,0.4)", "important");
-          el.style.setProperty("border-radius",   "0.5rem",                     "important");
-          el.style.setProperty("background",      "#fff",              "important");
-          el.style.setProperty("box-sizing",      "border-box",        "important");
-          el.style.setProperty("display",         "inline-flex",       "important");
-          el.style.setProperty("align-items",     "center",            "important");
-          el.style.setProperty("justify-content", "center",            "important");
-          el.style.setProperty("text-align",      "center",            "important");
-        });
-      }, 800);
-
       var oRootView = this.getOwnerComponent().getRootControl();
-      var oShellBar = oRootView.byId("appShellBar");
-      if (oShellBar) { oShellBar.setTitle("Manage Specifications"); }
-
       var oAppView = oRootView.getModel("appView");
       if (oAppView) { oAppView.setProperty("/showNavButton", true); }
-    }
+    },
+
+    onTabSelect: function () {},
+
+    onEditPress: function () { MessageToast.show("Edit"); },
+    onDeletePress: function () { MessageToast.show("Delete"); },
+    onChangeStatusPress: function () { MessageToast.show("Change Status"); },
+    onNewVersionPress: function () { MessageToast.show("New Version"); },
+    onSyncWithS4Press: function () {
+      var oModel = this.getView().getModel("detail");
+      var sStatus = oModel.getProperty("/documentStatus");
+
+      if (sStatus !== "Released") {
+        MessageBox.error(
+          "Only Released documents can be synced with S4.\nThe current document has status \"" + sStatus + "\".",
+          { title: "Cannot Sync with S4" }
+        );
+        return;
+      }
+
+      // Alternate: first call success, second call failure
+      this._syncAttempt = (this._syncAttempt || 0) + 1;
+      var bSuccess = (this._syncAttempt % 2 === 1);
+
+      oModel.setProperty("/s4SyncState", "Warning");
+      oModel.setProperty("/s4SyncText", "Syncing in progress...");
+      oModel.setProperty("/s4SyncIcon", "");
+
+      setTimeout(function () {
+        var oDate = new Date();
+        var sTimestamp = oDate.toLocaleString("en-US", {
+          month: "short", day: "numeric", year: "numeric",
+          hour: "numeric", minute: "2-digit", hour12: true
+        });
+        if (bSuccess) {
+          oModel.setProperty("/s4SyncState", "Success");
+          oModel.setProperty("/s4SyncText", "Synced successfully");
+          oModel.setProperty("/s4SyncIcon", "");
+        } else {
+          oModel.setProperty("/s4SyncState", "Error");
+          oModel.setProperty("/s4SyncText", "Sync failed");
+          oModel.setProperty("/s4SyncIcon", "");
+          oModel.setProperty("/s4SyncErrorMsg", "Connection to S4 timed out on " + sTimestamp + ". Please check your network and retry.");
+        }
+      }, 2000);
+    },
+    onMoreActionsPress: function () { MessageToast.show("More Actions"); },
+
+    onSyncErrorInfoPress: function (oEvent) {
+      var oModel = this.getView().getModel("detail");
+      var sMsg = oModel.getProperty("/s4SyncErrorMsg") || "Sync failed. Please retry.";
+
+      if (!this._oSyncErrorPopover) {
+        this._oSyncErrorPopover = new MessagePopover({
+          items: new MessageItem({ type: "Error", title: "Sync Failed", description: sMsg })
+        });
+        this.getView().addDependent(this._oSyncErrorPopover);
+      } else {
+        this._oSyncErrorPopover.destroyItems();
+        this._oSyncErrorPopover.addItem(new MessageItem({ type: "Error", title: "Sync Failed", description: sMsg }));
+      }
+
+      this._oSyncErrorPopover.openBy(oEvent.getSource());
+    },
+
+
+    onAttachmentSelectionChange: function () {
+      var oTable = this.byId("docAttachmentsTable");
+      var bHas = oTable && oTable.getSelectedItems().length > 0;
+      this.getView().getModel("detail").setProperty("/attHasSelection", bHas);
+    },
+
+    onAttSearch: function () {},
+    onAttEditLink: function () { MessageToast.show("Edit Link"); },
+    onAttDownload: function () { MessageToast.show("Download"); },
+    onAttDelete: function () { MessageToast.show("Delete"); },
+    onAttCheckOut: function () { MessageToast.show("Check Out"); },
+    onAttCheckIn: function () { MessageToast.show("Check In"); },
+    onAttProperties: function () { MessageToast.show("Properties"); },
+    onAttRefresh: function () { MessageToast.show("Refreshed"); },
+    onAttRowMore: function (oEvent) {
+      var oButton = oEvent.getSource();
+      var oModel = this.getView().getModel("detail");
+      var bIsS4 = oModel.getProperty("/owner") === "S4";
+
+      if (this._oAttRowActionSheet) {
+        this._oAttRowActionSheet.destroy();
+        this._oAttRowActionSheet = null;
+      }
+
+      this._oAttRowActionSheet = new ActionSheet({
+        buttons: [
+          new Button({ text: "Properties", enabled: !bIsS4, press: function () { MessageToast.show("Properties"); } }),
+          new Button({ text: "Rename",     enabled: !bIsS4, press: function () { MessageToast.show("Rename"); } }),
+          new Button({ text: "Preview",    enabled: true,   press: function () { MessageToast.show("Preview"); } })
+        ]
+      });
+      this.getView().addDependent(this._oAttRowActionSheet);
+      this._oAttRowActionSheet.openBy(oButton);
+    },
+
+    onExtLinkAdd: function () { MessageToast.show("Add External Link"); },
+    onExtLinkDelete: function () { MessageToast.show("Delete"); },
+    onExtLinkRefresh: function () { MessageToast.show("Refreshed"); }
 
   });
 });

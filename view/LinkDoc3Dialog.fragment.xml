@@ -8,7 +8,6 @@
     id="linkDoc3Dialog"
     title="Link Documents"
     contentWidth="76rem"
-    contentHeight="44rem"
     resizable="true"
     draggable="true"
     class="sapUiSizeCompact linkDoc3VHDialog">
@@ -68,7 +67,7 @@
 
         <!-- Items count -->
         <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDoc3ItemsToolbar">
-          <Title id="linkDoc3ItemsTitle" text="Items (15)" level="H5" />
+          <Title id="linkDoc3ItemsTitle" text="Items ({= ${linkDoc3>/documents}.length})" level="H5" />
         </Toolbar>
 
         <!-- Grid Table -->
@@ -77,13 +76,17 @@
           rows="{linkDoc3>/documents}"
           selectionMode="MultiToggle"
           selectionBehavior="Row"
-          visibleRowCountMode="Auto"
-          minAutoRowCount="5"
+          visibleRowCountMode="Fixed"
+          visibleRowCount="16"
           noData="No documents found"
+          rowSelectionChange=".onLinkDoc3RowSelectionChange"
           class="sapUiSizeCompact linkDoc3GridTable">
+          <t:rowSettingsTemplate>
+            <t:RowSettings highlight="{= ${linkDoc3>alreadyLinked} ? 'None' : 'None' }" navigated="{linkDoc3>alreadyLinked}" />
+          </t:rowSettingsTemplate>
           <t:columns>
             <t:Column width="13rem"><Label text="Document No." /><t:template><Text text="{linkDoc3>docNumber}" wrapping="false" /></t:template></t:Column>
-            <t:Column width="18rem"><Label text="Description" /><t:template><Text text="{linkDoc3>docName}" wrapping="false" /></t:template></t:Column>
+            <t:Column width="18rem"><Label text="Description" /><t:template><Text text="{linkDoc3>description}" wrapping="false" /></t:template></t:Column>
             <t:Column width="9rem"><Label text="Document Type" /><t:template><Text text="{linkDoc3>type}" wrapping="false" /></t:template></t:Column>
             <t:Column width="7rem"><Label text="Document Part" /><t:template><Text text="{linkDoc3>part}" wrapping="false" /></t:template></t:Column>
             <t:Column width="8rem"><Label text="Document Version" /><t:template><Text text="{linkDoc3>version}" wrapping="false" /></t:template></t:Column>

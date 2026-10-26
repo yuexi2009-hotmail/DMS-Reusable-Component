@@ -1,0 +1,39 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="switchTypeDialog"
+    title="Change Type"
+    contentWidth="30rem"
+    resizable="false"
+    draggable="true"
+    class="sapUiSizeCompact">
+
+    <content>
+      <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTopBottom">
+        <MessageStrip
+          text="Once the type is switched from ATT to another type, it cannot be changed again. After changing the type, future file management operations must be performed in Document Management System (DMS). Current files will become read-only."
+          type="Warning"
+          showIcon="true"
+          class="sapUiSmallMarginBottom" />
+        <Label text="Document Type:" labelFor="switchTypeSelect" class="doc7SwitchTypeLabel" />
+        <Select id="switchTypeSelect" width="100%">
+          <core:ListItem key="DFT" text="DFT – Default Document" />
+          <core:ListItem key="DRW" text="DRW – Drawing" />
+          <core:ListItem key="TST" text="TST – Test Specification" />
+          <core:ListItem key="IMU" text="IMU – Image / URL" />
+        </Select>
+      </VBox>
+    </content>
+
+    <beginButton>
+      <Button text="OK" type="Emphasized" press=".onSwitchTypeConfirm" width="auto" />
+    </beginButton>
+    <endButton>
+      <Button text="Cancel" press=".onSwitchTypeCancel" width="auto" />
+    </endButton>
+
+  </Dialog>
+
+</core:FragmentDefinition>

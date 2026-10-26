@@ -1,0 +1,25 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="noLocalFileTypeDialog"
+    title="No Local Document Type Found"
+    contentWidth="32rem"
+    resizable="false"
+    draggable="true"
+    class="sapUiSizeCompact">
+
+    <content>
+      <Text
+        text="The document type for local attachment is not defined. Please contact your administrator to add the required configuration."
+        class="sapUiSmallMarginBeginEnd sapUiTinyMarginTopBottom" />
+    </content>
+
+    <beginButton>
+      <Button text="OK" type="Emphasized" press=".onConfigureFileType" width="auto" />
+    </beginButton>
+
+  </Dialog>
+
+</core:FragmentDefinition>

@@ -1,0 +1,186 @@
+<mvc:View
+  controllerName="com.sap.demo.managespec.controller.Detail"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f"
+  xmlns:l="sap.ui.layout"
+  xmlns:form="sap.ui.layout.form"
+  xmlns:uxap="sap.uxap"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page showHeader="false" enableScrolling="false" class="detailPage">
+    <content>
+      <f:DynamicPage id="detailPage" toggleHeaderOnTitleClick="false" showFooter="false" headerExpanded="true">
+
+        <f:title>
+          <f:DynamicPageTitle class="sapUiSizeCompact">
+            <f:heading>
+              <VBox>
+                <Title text="{detail>/description}" level="H2" class="detailDocTitle" />
+                <Text text="{detail>/number}" class="detailDocSubtitle" />
+              </VBox>
+            </f:heading>
+            <f:snappedHeading>
+              <VBox>
+                <Title text="{detail>/description}" level="H3" class="detailDocTitle" />
+                <Text text="{detail>/number}" class="detailDocSubtitle" />
+              </VBox>
+            </f:snappedHeading>
+            <f:actions>
+              <Button text="Edit" type="Emphasized" press=".onEditPress" />
+              <Button text="Delete" type="Ghost" press=".onDeletePress" />
+              <Button text="Change Status" type="Ghost" press=".onChangeStatusPress" />
+              <Button text="New Version" type="Ghost" press=".onNewVersionPress" />
+              <Button icon="sap-icon://action" type="Transparent" press=".onMoreActionsPress" />
+              <Button icon="sap-icon://slim-arrow-down" type="Transparent" press=".onMoreActionsPress" />
+            </f:actions>
+          </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+          <f:DynamicPageHeader pinnable="false">
+            <HBox class="detailDocHeader sapUiSizeCompact">
+              <HBox alignItems="Center" class="sapUiSmallMarginEnd">
+                <Label text="Status:" class="detailDocHeaderLabel sapUiTinyMarginEnd" />
+                <Text text="{detail>/documentStatus}" />
+              </HBox>
+              <HBox alignItems="Center">
+                <Label text="Version:" class="detailDocHeaderLabel sapUiTinyMarginEnd" />
+                <Text text="{detail>/version}" />
+              </HBox>
+            </HBox>
+          </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+          <IconTabBar id="detailTabBar" class="detailDocTabBar" expanded="true" select=".onTabSelect">
+            <items>
+
+              <!-- General Tab -->
+              <IconTabFilter text="General" key="general">
+                <VBox>
+                  <!-- Basic Data form -->
+                  <VBox class="detailDocSection">
+                    <form:SimpleForm
+                      layout="ColumnLayout"
+                      columnsM="2" columnsL="4" columnsXL="4"
+                      class="detailDocForm">
+                      <Label text="Number:" />
+                      <Text text="{detail>/number}" />
+                      <Label text="Type:" />
+                      <Text text="{detail>/type}" />
+                      <Label text="Part:" />
+                      <Text text="{detail>/part}" />
+                      <Label text="Description:" />
+                      <Text text="{detail>/description}" />
+                    </form:SimpleForm>
+                  </VBox>
+
+                  <!-- Attachments section -->
+                  <VBox class="detailDocAttachmentsSection">
+                    <Title text="Attachments" level="H4" class="detailDocAttTitle" />
+                    <Table
+                      id="docAttachmentsTable"
+                      items="{detail>/attachments}"
+                      mode="MultiSelect"
+                      selectionChange=".onAttachmentSelectionChange"
+                      sticky="ColumnHeaders,HeaderToolbar"
+                      growing="true"
+                      growingThreshold="20"
+                      class="sapUiSizeCompact detailDocAttTable">
+                      <headerToolbar>
+                        <OverflowToolbar>
+                          <VariantManagement selectedKey="standard">
+                            <VariantItem key="standard" text="Standard" />
+                          </VariantManagement>
+                          <Text id="attItemCount" text="Items ({= ${detail>/attachments}.length})" class="sapMText sapUiSmallMarginBegin" />
+                          <ToolbarSpacer />
+                          <SearchField id="attSearchField" width="15rem" placeholder="Search" search=".onAttSearch" />
+                          <Button id="attUploadBtn" icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" enabled="false" />
+                          <Button id="attEditLinkBtn" text="Edit Link" type="Transparent" enabled="false" press=".onAttEditLink" />
+                          <Button id="attDownloadBtn" text="Download" type="Transparent" enabled="false" press=".onAttDownload" />
+                          <Button id="attDeleteBtn" text="Delete" type="Transparent" enabled="false" press=".onAttDelete" />
+                          <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                            <menu>
+                              <Menu>
+                                <items>
+                                  <MenuItem text="Check Out" press=".onAttCheckOut" />
+                                  <MenuItem text="Check In" press=".onAttCheckIn" />
+                                  <MenuItem text="Properties" press=".onAttProperties" />
+                                </items>
+                              </Menu>
+                            </menu>
+                          </MenuButton>
+                          <Button icon="sap-icon://delete" type="Transparent" tooltip="Delete" enabled="false" />
+                          <Button icon="sap-icon://refresh" type="Transparent" tooltip="Refresh" press=".onAttRefresh" />
+                          <Button icon="sap-icon://sort" type="Transparent" tooltip="Sort" />
+                          <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" />
+                        </OverflowToolbar>
+                      </headerToolbar>
+                      <columns>
+                        <Column width="3.5rem" hAlign="Center"><Text text="Type" /></Column>
+                        <Column><Text text="Name" /></Column>
+                        <Column width="10rem"><Text text="Modified On" /></Column>
+                        <Column width="14rem"><Text text="Created By" /></Column>
+                        <Column width="14rem"><Text text="Modified By" /></Column>
+                        <Column width="6rem"><Text text="Size" /></Column>
+                        <Column width="4rem"><Text text="" /></Column>
+                      </columns>
+                      <items>
+                        <ColumnListItem>
+                          <cells>
+                            <core:Icon src="{detail>typeIcon}" class="docAttTypeIcon" />
+                            <Text text="{detail>name}" wrapping="false" class="docAttNameBold" />
+                            <Text text="{detail>modifiedOn}" wrapping="false" />
+                            <Text text="{detail>createdBy}" wrapping="false" />
+                            <Text text="{detail>modifiedBy}" wrapping="false" />
+                            <Text text="{detail>size}" wrapping="false" />
+                            <Button icon="sap-icon://overflow" type="Transparent" press=".onAttRowMore" tooltip="More" />
+                          </cells>
+                        </ColumnListItem>
+                      </items>
+                    </Table>
+                  </VBox>
+                </VBox>
+              </IconTabFilter>
+
+              <!-- Attachments Tab -->
+              <IconTabFilter text="Attachments" key="attachments">
+                <VBox class="detailTabContent" />
+              </IconTabFilter>
+
+              <!-- Linked Objects Tab -->
+              <IconTabFilter text="Linked Objects" key="linkedObjects">
+                <VBox class="detailTabContent" />
+              </IconTabFilter>
+
+              <!-- Change Processes Tab -->
+              <IconTabFilter text="Change Processes" key="changeProcesses">
+                <VBox class="detailTabContent" />
+              </IconTabFilter>
+
+              <!-- Translation Tab -->
+              <IconTabFilter text="Translation" key="translation">
+                <VBox class="detailTabContent" />
+              </IconTabFilter>
+
+              <!-- History Tab -->
+              <IconTabFilter text="History" key="history">
+                <VBox class="detailTabContent" />
+              </IconTabFilter>
+
+              <!-- Administration Tab -->
+              <IconTabFilter text="Administration" key="administration">
+                <VBox class="detailTabContent" />
+              </IconTabFilter>
+
+            </items>
+          </IconTabBar>
+        </f:content>
+
+      </f:DynamicPage>
+    </content>
+  </Page>
+
+</mvc:View>

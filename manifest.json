@@ -3,9 +3,9 @@
   "sap.app": {
     "id": "com.sap.demo.managespec",
     "type": "application",
-    "applicationVersion": { "version": "1.0.0" },
-    "title": "Manage Specifications",
-    "description": "Browse, filter and manage product specifications"
+    "applicationVersion": { "version": "1.0.2" },
+    "title": "Manage Documents",
+    "description": "Browse, filter and manage documents"
   },
   "sap.ui": {
     "technology": "UI5",
@@ -16,6 +16,10 @@
     }
   },
   "sap.ui5": {
+    "resourceRoots": {
+      "com.sap.demo.managespec": "./",
+      "com.sap.demo.managespec.delegate": "./delegate/"
+    },
     "rootView": {
       "viewName": "com.sap.demo.managespec.view.App",
       "type": "XML",
@@ -25,7 +29,7 @@
     "models": {
       "": {
         "type": "sap.ui.model.json.JSONModel",
-        "uri": "model/mockData.json"
+        "uri": "model/mockData.json?v=44"
       },
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
@@ -60,11 +64,12 @@
       "targets": {
         "main": {
           "viewName": "Main",
+          "viewId": "main",
           "viewLevel": 1
         },
         "detail": {
-          "viewId": "detailView",
           "viewName": "Detail",
+          "viewId": "detail",
           "viewLevel": 2
         }
       }
@@ -87,7 +92,7 @@
     },
     "resources": {
       "css": [
-        { "uri": "css/style.css" }
+        { "uri": "css/style.css?v=3" }
       ]
     }
   }

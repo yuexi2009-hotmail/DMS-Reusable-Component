@@ -1,0 +1,125 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:form="sap.ui.layout.form">
+
+  <Dialog
+    id="filePropertiesDialog"
+    title="{fileProp>/name}"
+    resizable="true"
+    draggable="true"
+    contentWidth="44rem"
+    contentHeight="30rem"
+    class="sapUiSizeCompact">
+
+    <content>
+      <IconTabBar class="sapUiNoContentPadding">
+        <items>
+
+          <IconTabFilter text="Key Properties" key="keyProps">
+            <form:SimpleForm
+              layout="ColumnLayout"
+              columnsM="2" columnsL="2" columnsXL="2"
+              class="sapUiSmallMarginTop sapUiSmallMarginBegin sapUiSmallMarginEnd">
+              <Label text="Created on:" />
+              <Text text="{fileProp>/createdOn}" />
+              <Label text="Modified by:" />
+              <Text text="{fileProp>/modifiedBy}" />
+              <Label text="Created by:" />
+              <Text text="{fileProp>/createdBy}" />
+              <Label text="Description:" />
+              <TextArea value="{fileProp>/description}" rows="3" growing="true" maxLength="4500" showExceededText="true" width="100%" />
+              <Label text="Type:" />
+              <Text text="{fileProp>/type}" />
+              <Label text="Owner:" />
+              <Text text="{fileProp>/owner}" />
+              <Label text="Modified on:" />
+              <Text text="{fileProp>/modifiedOn}" />
+            </form:SimpleForm>
+          </IconTabFilter>
+
+          <IconTabFilter text="Versions" key="versions" />
+
+          <!-- Expiration tab -->
+          <IconTabFilter text="Expiration" key="expiration">
+            <VBox class="sapUiSmallMargin">
+              <Panel class="sapUiNoContentPadding" backgroundDesign="Solid">
+                <content>
+                  <VBox class="sapUiSmallMargin">
+                    <CheckBox
+                      id="setExpirationCB"
+                      text="Set Expiration"
+                      selected="{fileProp>/setExpiration}"
+                      select=".onSetExpirationChange" />
+                    <VBox visible="{fileProp>/setExpiration}" class="sapUiSmallMarginTop sapUiSmallMarginBegin">
+                      <Label text="Expiration Date:" />
+                      <DatePicker
+                        placeholder="Enter Expiration Date"
+                        value="{fileProp>/expirationDate}"
+                        valueFormat="yyyy-MM-dd"
+                        displayFormat="MMM d, yyyy"
+                        width="20rem" />
+                    </VBox>
+                  </VBox>
+                </content>
+              </Panel>
+            </VBox>
+          </IconTabFilter>
+
+          <!-- Retention tab -->
+          <IconTabFilter text="Retention" key="retention">
+            <VBox class="sapUiSmallMargin">
+              <Panel class="sapUiNoContentPadding" backgroundDesign="Solid">
+                <content>
+                  <VBox class="sapUiSmallMargin">
+                    <CheckBox
+                      id="setRetentionCB"
+                      text="Set Retention"
+                      selected="{fileProp>/setRetention}"
+                      select=".onSetRetentionChange" />
+                    <VBox visible="{fileProp>/setRetention}" class="sapUiSmallMarginTop sapUiSmallMarginBegin">
+                      <form:SimpleForm layout="ColumnLayout" columnsM="2" columnsL="2" columnsXL="2">
+                        <Label text="Destruction Date:" />
+                        <DatePicker
+                          placeholder="Enter Destruction Date"
+                          value="{fileProp>/destructionDate}"
+                          valueFormat="yyyy-MM-dd"
+                          displayFormat="MMM d, yyyy"
+                          width="100%" />
+                        <Label text="Expiration Date:" required="true" />
+                        <DatePicker
+                          placeholder="Enter Expiration Date"
+                          value="{fileProp>/retentionExpirationDate}"
+                          valueFormat="yyyy-MM-dd"
+                          displayFormat="MMM d, yyyy"
+                          width="100%" />
+                        <Label text="Start of Retention:" />
+                        <DatePicker
+                          placeholder="Enter Start of Retention Date"
+                          value="{fileProp>/retentionStartDate}"
+                          valueFormat="yyyy-MM-dd"
+                          displayFormat="MMM d, yyyy"
+                          width="100%" />
+                      </form:SimpleForm>
+                    </VBox>
+                  </VBox>
+                </content>
+              </Panel>
+            </VBox>
+          </IconTabFilter>
+
+          <IconTabFilter text="Change Log" key="changeLog" />
+
+        </items>
+      </IconTabBar>
+    </content>
+
+    <buttons>
+      <Button text="Save"  type="Emphasized" press=".onFilePropertiesSave" />
+      <Button text="Close" press=".onFilePropertiesClose" />
+    </buttons>
+
+  </Dialog>
+
+</core:FragmentDefinition>

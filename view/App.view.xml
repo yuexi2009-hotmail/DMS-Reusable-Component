@@ -8,7 +8,7 @@
 
     <ShellBar
         id="appShellBar"
-        title="Manage Specifications"
+        title="Document Management"
         showNavButton="true"
         showNotifications="true"
         showProductSwitcher="false"
@@ -22,7 +22,7 @@
         </additionalContent>
         <menu>
             <m:Menu>
-                <m:MenuItem text="Manage Specifications" icon="sap-icon://document"/>
+                <m:MenuItem text="Document Management" icon="sap-icon://document"/>
             </m:Menu>
         </menu>
         <profile>
