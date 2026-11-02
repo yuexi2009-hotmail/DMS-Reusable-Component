@@ -128,18 +128,21 @@ sap.ui.define([
 
       var sPath = oCtx.getPath();
       var oModel = this.getView().getModel();
-      oModel.setProperty(sPath + "/s4SyncText", "Syncing");
-      oModel.setProperty(sPath + "/s4SyncState", "Warning");
+      oModel.setProperty(sPath + "/s4SyncStatus", "Sync in progress...");
+      oModel.setProperty(sPath + "/s4SyncText",   "Sync in progress...");
+      oModel.setProperty(sPath + "/s4SyncState",  "Information");
 
       // Simulate async sync — success 70% of the time
       setTimeout(function () {
         var bSuccess = Math.random() > 0.3;
         if (bSuccess) {
-          oModel.setProperty(sPath + "/s4SyncText", "Synced");
-          oModel.setProperty(sPath + "/s4SyncState", "Success");
+          oModel.setProperty(sPath + "/s4SyncStatus", "Synced");
+          oModel.setProperty(sPath + "/s4SyncText",   "Synced");
+          oModel.setProperty(sPath + "/s4SyncState",  "Success");
         } else {
-          oModel.setProperty(sPath + "/s4SyncText", "Sync Failed please retry");
-          oModel.setProperty(sPath + "/s4SyncState", "Error");
+          oModel.setProperty(sPath + "/s4SyncStatus", "Sync failed");
+          oModel.setProperty(sPath + "/s4SyncText",   "Sync failed");
+          oModel.setProperty(sPath + "/s4SyncState",  "Error");
         }
       }, 2000);
     },

@@ -171,7 +171,7 @@ sap.ui.define([
         buttons: [
           new Button({ text: "Properties", enabled: !bIsS4, press: function () { MessageToast.show("Properties"); } }),
           new Button({ text: "Rename",     enabled: !bIsS4, press: function () { MessageToast.show("Rename"); } }),
-          new Button({ text: "Preview",    enabled: true,   press: function () { MessageToast.show("Preview"); } })
+          new Button({ text: "Preview",    enabled: !bIsS4, press: function () { MessageToast.show("Preview"); } })
         ]
       });
       this.getView().addDependent(this._oAttRowActionSheet);

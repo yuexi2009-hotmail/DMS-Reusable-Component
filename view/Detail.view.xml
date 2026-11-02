@@ -38,11 +38,11 @@
             </uxap:snappedHeading>
 
             <uxap:actions>
-              <Button text="Edit"          type="Emphasized" press=".onEditPress"         enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
-              <Button text="Delete"        type="Ghost"      press=".onDeletePress"       enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
-              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress" enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
-              <Button text="New Version"   type="Ghost"      press=".onNewVersionPress" enabled="{= ${detail>/s4SyncState} !== 'Success' }"/>
-              <Button text="Push to S4"    type="Ghost"      press=".onSyncWithS4Press" enabled="{= ${detail>/s4SyncState} !== 'Success' }"/>
+              <Button text="Edit"          type="Emphasized" press=".onEditPress"         enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="Delete"        type="Ghost"      press=".onDeletePress"       enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress" enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="New Version"   type="Ghost"      press=".onNewVersionPress"   enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="Push to S4"    type="Ghost"      press=".onSyncWithS4Press"   enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
               <Button icon="sap-icon://action" type="Transparent" press=".onMoreActionsPress" tooltip="Share"/>
             </uxap:actions>
 
@@ -129,7 +129,7 @@
                         <Button id="attEditLinkBtn" text="Edit Link"  type="Transparent" enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttEditLink"/>
                         <Button id="attDownloadBtn" text="Download"   type="Transparent" enabled="{detail>/attHasSelection}" press=".onAttDownload"/>
                         <Button id="attDeleteBtn"   text="Delete"     type="Transparent" enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttDelete"/>
-                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="false">
+                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}">
                           <menu>
                             <Menu>
                               <items>
@@ -140,10 +140,10 @@
                             </Menu>
                           </menu>
                         </MenuButton>
-                        <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   enabled="false"/>
-                        <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onAttRefresh" enabled="{= ${detail>/owner} !== 'S4' }"/>
-                        <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     enabled="false"/>
-                        <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" enabled="{= ${detail>/owner} !== 'S4' }"/>
+                        <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}"/>
+                        <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onAttRefresh" enabled="true"/>
+                        <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     enabled="true"/>
+                        <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" enabled="true"/>
                       </OverflowToolbar>
                     </headerToolbar>
                     <columns>
@@ -214,7 +214,7 @@
           <!-- External Links Tab -->
           <uxap:ObjectPageSection title="External Links" titleUppercase="false">
             <uxap:subSections>
-              <uxap:ObjectPageSubSection title="External Links" titleUppercase="false" wrapperEnabled="false">
+              <uxap:ObjectPageSubSection title="Documents" titleUppercase="false" wrapperEnabled="false">
                 <uxap:blocks>
                   <Table
                     id="externalLinksTable"
