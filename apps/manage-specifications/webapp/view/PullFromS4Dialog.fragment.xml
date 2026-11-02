@@ -65,8 +65,20 @@
           </l:Grid>
         </VBox>
 
+        <!-- Placeholder: shown before Go is clicked -->
+        <VBox
+          id="pullFromS4Placeholder"
+          visible="true"
+          alignItems="Center"
+          justifyContent="Center"
+          class="sapUiMediumMarginTop sapUiMediumMarginBottom">
+          <core:Icon src="sap-icon://search" size="3rem" color="var(--sapContent_NonInteractiveIconColor)" class="sapUiSmallMarginBottom"/>
+          <Title text="Search to see results" level="H4" class="sapUiTinyMarginBottom"/>
+          <Text text="Enter a search query or apply filters, then click Go." textAlign="Center"/>
+        </VBox>
+
         <!-- Items count -->
-        <Toolbar class="sapUiSizeCompact sapMTBTransparent linkDoc3ItemsToolbar">
+        <Toolbar id="pullFromS4ItemsToolbar" visible="false" class="sapUiSizeCompact sapMTBTransparent linkDoc3ItemsToolbar">
           <Title id="pullFromS4ItemsTitle" text="Items ({= ${pullFromS4>/documents}.length})" level="H5" />
         </Toolbar>
 
@@ -77,9 +89,10 @@
           selectionMode="Single"
           selectionBehavior="Row"
           visibleRowCountMode="Fixed"
-          visibleRowCount="16"
+          visibleRowCount="10"
           noData="No documents found"
           rowSelectionChange=".onPullFromS4RowSelectionChange"
+          visible="false"
           class="sapUiSizeCompact linkDoc3GridTable">
           <t:columns>
             <t:Column width="13rem"><Label text="Document No." /><t:template><Text text="{pullFromS4>number}" wrapping="false" /></t:template></t:Column>

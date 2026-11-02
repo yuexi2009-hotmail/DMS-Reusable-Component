@@ -96,7 +96,7 @@
               <Title text="Documents (288)" level="H3" id="tableTitle" />
               <ToolbarSpacer />
               <Button id="createBtn" text="Create" type="Transparent" press=".onCreatePress" />
-              <Button id="syncWithS4Btn" text="Sync with S4" type="Transparent" press=".onSyncWithS4Press" enabled="false" />
+              <Button id="syncWithS4Btn" text="Push to S4" type="Transparent" press=".onSyncWithS4Press" enabled="false" />
               <Button id="pullFromS4Btn" text="Pull from S4" type="Transparent" press=".onPullFromS4Press" />
               <Button id="deleteBtn" text="Delete" type="Transparent" press=".onDeletePress" enabled="false" />
               <Button icon="sap-icon://copy" type="Transparent" tooltip="Copy to clipboard" press=".onClipboardPress" />

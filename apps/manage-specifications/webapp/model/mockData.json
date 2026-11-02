@@ -14,8 +14,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -28,7 +28,7 @@
       "s4Number": "200000002851",
       "s4Type": "IMU",
       "owner": "S4",
-      "s4SyncText": "Synced on Oct 15, 2026, 9:30 AM",
+      "s4SyncText": "Synced",
       "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
       "s4SyncIcon": "",
@@ -46,9 +46,10 @@
       "s4Number": "200000002849",
       "s4Type": "DRW",
       "owner": "S4",
-      "s4SyncText": "Synced on Oct 10, 2026, 2:15 PM",
-      "s4SyncStatus": "Synced",
-      "s4SyncState": "Success",
+      "s4SyncText": "Sync failed",
+      "s4SyncStatus": "Sync failed",
+      "s4SyncState": "Error",
+      "s4SyncErrorMsg": "Connection to S4 timed out on Oct 10, 2026, 2:15 PM. Please check your network and retry.",
       "s4SyncIcon": "",
       "s4SyncedOn": "Oct 10, 2026, 2:15 PM",
       "s4SyncedBy": "yue.xi01@sap.com",
@@ -68,8 +69,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -86,8 +87,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -104,8 +105,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -122,8 +123,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -136,7 +137,7 @@
       "s4Number": "200000002814",
       "s4Type": "TES",
       "owner": "S4",
-      "s4SyncText": "Synced on Oct 8, 2026, 4:00 PM",
+      "s4SyncText": "Synced",
       "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
       "s4SyncIcon": "",
@@ -158,8 +159,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -176,8 +177,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     },
     {
@@ -190,7 +191,7 @@
       "s4Number": "200000002805",
       "s4Type": "DRW",
       "owner": "S4",
-      "s4SyncText": "Synced on Sep 28, 2026, 11:00 AM",
+      "s4SyncText": "Synced",
       "s4SyncStatus": "Synced",
       "s4SyncState": "Success",
       "s4SyncIcon": "",
@@ -212,8 +213,8 @@
       "s4SyncStatus": "Not Synced",
       "s4SyncState": "None",
       "s4SyncIcon": "",
-      "s4SyncedOn": "\u2013",
-      "s4SyncedBy": "\u2013",
+      "s4SyncedOn": "",
+      "s4SyncedBy": "",
       "s4Part": ""
     }
   ]

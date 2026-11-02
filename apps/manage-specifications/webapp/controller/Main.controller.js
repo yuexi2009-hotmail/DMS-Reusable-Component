@@ -4,8 +4,9 @@ sap.ui.define([
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
   "sap/m/MessageToast",
-  "sap/m/MessageBox"
-], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox) {
+  "sap/m/MessageBox",
+  "sap/ui/core/Fragment"
+], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox, Fragment) {
   "use strict";
 
   return Controller.extend("com.sap.demo.managespec.controller.Main", {
@@ -127,18 +128,21 @@ sap.ui.define([
 
       var sPath = oCtx.getPath();
       var oModel = this.getView().getModel();
-      oModel.setProperty(sPath + "/s4SyncText", "Syncing");
-      oModel.setProperty(sPath + "/s4SyncState", "Warning");
+      oModel.setProperty(sPath + "/s4SyncStatus", "Sync in progress...");
+      oModel.setProperty(sPath + "/s4SyncText",   "Sync in progress...");
+      oModel.setProperty(sPath + "/s4SyncState",  "Information");
 
       // Simulate async sync — success 70% of the time
       setTimeout(function () {
         var bSuccess = Math.random() > 0.3;
         if (bSuccess) {
-          oModel.setProperty(sPath + "/s4SyncText", "Synced");
-          oModel.setProperty(sPath + "/s4SyncState", "Success");
+          oModel.setProperty(sPath + "/s4SyncStatus", "Synced");
+          oModel.setProperty(sPath + "/s4SyncText",   "Synced");
+          oModel.setProperty(sPath + "/s4SyncState",  "Success");
         } else {
-          oModel.setProperty(sPath + "/s4SyncText", "Sync Failed please retry");
-          oModel.setProperty(sPath + "/s4SyncState", "Error");
+          oModel.setProperty(sPath + "/s4SyncStatus", "Sync failed");
+          oModel.setProperty(sPath + "/s4SyncText",   "Sync failed");
+          oModel.setProperty(sPath + "/s4SyncState",  "Error");
         }
       }, 2000);
     },
@@ -146,35 +150,36 @@ sap.ui.define([
     onPullFromS4Press: function () {
       var oView = this.getView();
 
-      // Mock S4 data
-      var oS4Model = new JSONModel({
-        documents: [
-          { number: "200000001001", description: "S4 Drawing Rev A", type: "DRW", part: "000", version: "01", documentStatus: "Released" },
-          { number: "200000001002", description: "S4 IMU Document",  type: "IMU", part: "000", version: "00", documentStatus: "Released" },
-          { number: "200000001003", description: "S4 Test Report",   type: "TST", part: "000", version: "02", documentStatus: "Released" },
-          { number: "200000001004", description: "S4 Draft Drawing", type: "DRW", part: "001", version: "00", documentStatus: "In Work" },
-          { number: "200000001005", description: "S4 Material Form", type: "IMU", part: "000", version: "00", documentStatus: "New" }
-        ]
-      });
+      // S4 mock data — only shown after Go is clicked
+      this._oS4AllDocuments = [
+        { number: "200000001001", description: "S4 Drawing Rev A", type: "DRW", part: "000", version: "01", documentStatus: "Released" },
+        { number: "200000001002", description: "S4 IMU Document",  type: "IMU", part: "000", version: "00", documentStatus: "Released" },
+        { number: "200000001003", description: "S4 Test Report",   type: "TST", part: "000", version: "02", documentStatus: "Released" },
+        { number: "200000001004", description: "S4 Draft Drawing", type: "DRW", part: "001", version: "00", documentStatus: "In Work" },
+        { number: "200000001005", description: "S4 Material Form", type: "IMU", part: "000", version: "00", documentStatus: "New" }
+      ];
+
+      // Start with empty table
+      var oS4Model = new JSONModel({ documents: [], selectedPath: "" });
       oView.setModel(oS4Model, "pullFromS4");
 
-      if (!this._oPullFromS4Dialog) {
-        this._oPullFromS4Dialog = sap.ui.xmlfragment(
-          oView.getId(),
-          "com.sap.demo.managespec.view.PullFromS4Dialog",
-          this
-        );
-        oView.addDependent(this._oPullFromS4Dialog);
+      // Destroy old dialog to force fragment reload with a new id
+      if (this._oPullFromS4Dialog) {
+        this._oPullFromS4Dialog.destroy();
+        this._oPullFromS4Dialog = null;
       }
 
-      // Reset state
-      this.byId("pullFromS4ConfirmBtn").setEnabled(false);
-      var oFilterPanel = this.byId("pullFromS4FilterPanel");
-      if (oFilterPanel) { oFilterPanel.setVisible(false); }
-      var oShowFiltersBtn = this.byId("pullFromS4ShowFiltersBtn");
-      if (oShowFiltersBtn) { oShowFiltersBtn.setText("Show Filters"); }
-
-      this._oPullFromS4Dialog.open();
+      var that = this;
+      this._sPullFragId = oView.getId() + "--pull" + Date.now();
+      Fragment.load({
+        id: this._sPullFragId,
+        name: "com.sap.demo.managespec.view.PullFromS4DialogV2",
+        controller: that
+      }).then(function (oDialog) {
+        that._oPullFromS4Dialog = oDialog;
+        oView.addDependent(oDialog);
+        oDialog.open();
+      });
     },
 
     onPullFromS4Search: function (oEvent) {
@@ -182,12 +187,18 @@ sap.ui.define([
     },
 
     onPullFromS4GoSearch: function () {
+      var oS4Model = this.getView().getModel("pullFromS4");
+      // Reset selection and load all data, then filter
+      var aAll = this._oS4AllDocuments.map(function (o) { return Object.assign({}, o, { _selected: false }); });
+      oS4Model.setProperty("/documents", aAll);
+      oS4Model.setProperty("/selectedPath", "");
+      Fragment.byId(this._sPullFragId, "pullFromS4ConfirmBtn").setEnabled(false);
       this._applyPullFromS4Filters();
     },
 
     onPullFromS4ToggleFilters: function () {
-      var oPanel = this.byId("pullFromS4FilterPanel");
-      var oBtn = this.byId("pullFromS4ShowFiltersBtn");
+      var oPanel = Fragment.byId(this._sPullFragId, "pullFromS4FilterPanel");
+      var oBtn = Fragment.byId(this._sPullFragId, "pullFromS4ShowFiltersBtn");
       var bVisible = !oPanel.getVisible();
       oPanel.setVisible(bVisible);
       oBtn.setText(bVisible ? "Hide Filters" : "Show Filters");
@@ -198,11 +209,11 @@ sap.ui.define([
     },
 
     _applyPullFromS4Filters: function () {
-      var oTable = this.byId("pullFromS4ResultTable");
+      var oTable = Fragment.byId(this._sPullFragId, "pullFromS4ResultTable");
       var oBinding = oTable.getBinding("rows");
       var aFilters = [];
 
-      var sSearch = this.byId("pullFromS4SearchField").getValue();
+      var sSearch = Fragment.byId(this._sPullFragId, "pullFromS4SearchField").getValue();
       if (sSearch) {
         aFilters.push(new Filter({
           filters: [
@@ -213,28 +224,38 @@ sap.ui.define([
         }));
       }
 
-      var sType = this.byId("pullFromS4TypeFilter").getSelectedKey();
+      var sType = Fragment.byId(this._sPullFragId, "pullFromS4TypeFilter").getSelectedKey();
       if (sType) { aFilters.push(new Filter("type", FilterOperator.EQ, sType)); }
 
-      var sStatus = this.byId("pullFromS4StatusFilter").getSelectedKey();
-      if (sStatus) { aFilters.push(new Filter("documentStatus", FilterOperator.EQ, sStatus)); }
+      var sPart = Fragment.byId(this._sPullFragId, "pullFromS4PartFilter").getValue();
+      if (sPart) { aFilters.push(new Filter("part", FilterOperator.Contains, sPart)); }
+
+      var sVersion = Fragment.byId(this._sPullFragId, "pullFromS4VersionFilter").getValue();
+      if (sVersion) { aFilters.push(new Filter("version", FilterOperator.Contains, sVersion)); }
 
       oBinding.filter(aFilters);
     },
 
-    onPullFromS4RowSelectionChange: function () {
-      var oTable = this.byId("pullFromS4ResultTable");
-      var bSelected = oTable.getSelectedIndices().length > 0;
-      this.byId("pullFromS4ConfirmBtn").setEnabled(bSelected);
+    onPullFromS4RadioSelect: function (oEvent) {
+      var oS4Model = this.getView().getModel("pullFromS4");
+      var aDocuments = oS4Model.getProperty("/documents");
+      var oSelectedCtx = oEvent.getSource().getBindingContext("pullFromS4");
+      var sSelectedPath = oSelectedCtx.getPath();
+
+      aDocuments.forEach(function (oDoc, i) {
+        oS4Model.setProperty("/documents/" + i + "/_selected", "/documents/" + i === sSelectedPath);
+      });
+
+      oS4Model.setProperty("/selectedPath", sSelectedPath);
+      Fragment.byId(this._sPullFragId, "pullFromS4ConfirmBtn").setEnabled(true);
     },
 
     onPullFromS4Confirm: function () {
-      var oTable = this.byId("pullFromS4ResultTable");
-      var aIndices = oTable.getSelectedIndices();
-      if (aIndices.length === 0) { return; }
+      var oS4Model = this.getView().getModel("pullFromS4");
+      var sSelectedPath = oS4Model.getProperty("/selectedPath");
+      if (!sSelectedPath) { return; }
 
-      var oCtx = oTable.getContextByIndex(aIndices[0]);
-      var oData = oCtx.getObject();
+      var oData = oS4Model.getProperty(sSelectedPath);
 
       // Add pulled document to main table
       var oModel = this.getView().getModel();

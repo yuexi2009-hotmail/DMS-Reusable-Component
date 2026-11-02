@@ -2,8 +2,12 @@ sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/model/json/JSONModel",
   "sap/m/MessageToast",
-  "sap/m/MessageBox"
-], function (Controller, JSONModel, MessageToast, MessageBox) {
+  "sap/m/MessageBox",
+  "sap/m/MessagePopover",
+  "sap/m/MessageItem",
+  "sap/m/ActionSheet",
+  "sap/m/Button"
+], function (Controller, JSONModel, MessageToast, MessageBox, MessagePopover, MessageItem, ActionSheet, Button) {
   "use strict";
 
   return Controller.extend("com.sap.demo.managespec.controller.Detail", {
@@ -46,14 +50,6 @@ sap.ui.define([
           part: "001",
           documentStatus: "Released",
           version: "02"
-        },
-        {
-          name: "100000002849",
-          description: "Yuetest0000",
-          type: "DRW",
-          part: "000",
-          documentStatus: "Released",
-          version: "00"
         }
       ];
 
@@ -64,13 +60,14 @@ sap.ui.define([
         part: oDoc.part,
         documentStatus: oDoc.documentStatus,
         version: oDoc.version,
-        s4Number: oDoc.documentStatus === "Released" ? (oDoc.s4Number || "–") : "–",
-        s4Type:   oDoc.documentStatus === "Released" ? (oDoc.s4Type   || "–") : "–",
-        s4Part:   oDoc.documentStatus === "Released" ? (oDoc.s4Part   || "–") : "–",
+        s4Number: oDoc.documentStatus === "Released" ? (oDoc.s4Number || "") : "",
+        s4Type:   oDoc.documentStatus === "Released" ? (oDoc.s4Type   || "") : "",
+        s4Part:   oDoc.documentStatus === "Released" ? (oDoc.s4Part   || "") : "",
         owner: oDoc.owner || "IPD",
         s4SyncText: oDoc.s4SyncText || "Not Synced",
         s4SyncState: oDoc.s4SyncState || "None",
         s4SyncIcon: "",
+        s4SyncErrorMsg: oDoc.s4SyncErrorMsg || "",
         attachments: aAttachments,
         externalLinks: aExternalLinks,
         attHasSelection: false
@@ -106,7 +103,7 @@ sap.ui.define([
 
       oModel.setProperty("/s4SyncState", "Warning");
       oModel.setProperty("/s4SyncText", "Syncing in progress...");
-      oModel.setProperty("/s4SyncIcon", "sap-icon://synchronize");
+      oModel.setProperty("/s4SyncIcon", "");
 
       setTimeout(function () {
         var oDate = new Date();
@@ -116,16 +113,34 @@ sap.ui.define([
         });
         if (bSuccess) {
           oModel.setProperty("/s4SyncState", "Success");
-          oModel.setProperty("/s4SyncText", "Synced on " + sTimestamp);
+          oModel.setProperty("/s4SyncText", "Synced successfully");
           oModel.setProperty("/s4SyncIcon", "");
         } else {
           oModel.setProperty("/s4SyncState", "Error");
-          oModel.setProperty("/s4SyncText", "Sync failed on " + sTimestamp + ", please retry");
+          oModel.setProperty("/s4SyncText", "Sync failed");
           oModel.setProperty("/s4SyncIcon", "");
+          oModel.setProperty("/s4SyncErrorMsg", "Connection to S4 timed out on " + sTimestamp + ". Please check your network and retry.");
         }
       }, 2000);
     },
     onMoreActionsPress: function () { MessageToast.show("More Actions"); },
+
+    onSyncErrorInfoPress: function (oEvent) {
+      var oModel = this.getView().getModel("detail");
+      var sMsg = oModel.getProperty("/s4SyncErrorMsg") || "Sync failed. Please retry.";
+
+      if (!this._oSyncErrorPopover) {
+        this._oSyncErrorPopover = new MessagePopover({
+          items: new MessageItem({ type: "Error", title: "Sync Failed", description: sMsg })
+        });
+        this.getView().addDependent(this._oSyncErrorPopover);
+      } else {
+        this._oSyncErrorPopover.destroyItems();
+        this._oSyncErrorPopover.addItem(new MessageItem({ type: "Error", title: "Sync Failed", description: sMsg }));
+      }
+
+      this._oSyncErrorPopover.openBy(oEvent.getSource());
+    },
 
 
     onAttachmentSelectionChange: function () {
@@ -142,7 +157,26 @@ sap.ui.define([
     onAttCheckIn: function () { MessageToast.show("Check In"); },
     onAttProperties: function () { MessageToast.show("Properties"); },
     onAttRefresh: function () { MessageToast.show("Refreshed"); },
-    onAttRowMore: function () { MessageToast.show("More"); },
+    onAttRowMore: function (oEvent) {
+      var oButton = oEvent.getSource();
+      var oModel = this.getView().getModel("detail");
+      var bIsS4 = oModel.getProperty("/owner") === "S4";
+
+      if (this._oAttRowActionSheet) {
+        this._oAttRowActionSheet.destroy();
+        this._oAttRowActionSheet = null;
+      }
+
+      this._oAttRowActionSheet = new ActionSheet({
+        buttons: [
+          new Button({ text: "Properties", enabled: !bIsS4, press: function () { MessageToast.show("Properties"); } }),
+          new Button({ text: "Rename",     enabled: !bIsS4, press: function () { MessageToast.show("Rename"); } }),
+          new Button({ text: "Preview",    enabled: !bIsS4, press: function () { MessageToast.show("Preview"); } })
+        ]
+      });
+      this.getView().addDependent(this._oAttRowActionSheet);
+      this._oAttRowActionSheet.openBy(oButton);
+    },
 
     onExtLinkAdd: function () { MessageToast.show("Add External Link"); },
     onExtLinkDelete: function () { MessageToast.show("Delete"); },

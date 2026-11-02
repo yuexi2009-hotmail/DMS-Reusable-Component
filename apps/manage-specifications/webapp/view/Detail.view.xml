@@ -38,11 +38,11 @@
             </uxap:snappedHeading>
 
             <uxap:actions>
-              <Button text="Edit"          type="Emphasized" press=".onEditPress"         enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
-              <Button text="Delete"        type="Ghost"      press=".onDeletePress"       enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
-              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress" enabled="{= ${detail>/documentStatus} !== 'Released'}"/>
-              <Button text="New Version"   type="Ghost"      press=".onNewVersionPress"/>
-              <Button text="Sync with S4"  type="Ghost"      press=".onSyncWithS4Press"/>
+              <Button text="Edit"          type="Emphasized" press=".onEditPress"         enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="Delete"        type="Ghost"      press=".onDeletePress"       enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="Change Status" type="Ghost"      press=".onChangeStatusPress" enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="New Version"   type="Ghost"      press=".onNewVersionPress"   enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
+              <Button text="Push to S4"    type="Ghost"      press=".onSyncWithS4Press"   enabled="{= ${detail>/s4SyncState} !== 'Success'}"/>
               <Button icon="sap-icon://action" type="Transparent" press=".onMoreActionsPress" tooltip="Share"/>
             </uxap:actions>
 
@@ -56,11 +56,22 @@
             <Label text="Version:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
             <Label text="{detail>/version}" class="detailHeaderValue sapUiLargeMarginEnd"/>
             <Label text="Sync Status:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
-            <ObjectStatus
-              id="syncStatusDisplay"
-              text="{detail>/s4SyncText}"
-              state="{detail>/s4SyncState}"
-              icon="{detail>/s4SyncIcon}"/>
+            <HBox alignItems="Center" class="sapUiLargeMarginEnd">
+              <ObjectStatus
+                id="syncStatusDisplay"
+                text="{detail>/s4SyncText}"
+                state="{detail>/s4SyncState}"
+                icon="{detail>/s4SyncIcon}"/>
+              <Button
+                id="syncErrorInfoBtn"
+                icon="sap-icon://message-information"
+                type="Transparent"
+                press=".onSyncErrorInfoPress"
+                visible="{= ${detail>/s4SyncState} === 'Error' }"
+                class="sapUiSizeCompact"/>
+            </HBox>
+            <Label text="Owner:" class="detailHeaderLabel sapUiTinyMarginEnd"/>
+            <Label text="{detail>/owner}" class="detailHeaderValue"/>
           </FlexBox>
         </uxap:headerContent>
 
@@ -90,8 +101,6 @@
                     <Text text="{detail>/s4Part}"/>
                     <Label text="Description"/>
                     <Text text="{detail>/description}"/>
-                    <Label text="Owner"/>
-                    <Text text="{detail>/owner}"/>
                   </form:SimpleForm>
                 </uxap:blocks>
               </uxap:ObjectPageSubSection>
@@ -116,11 +125,11 @@
                         <Text text="Items ({= ${detail>/attachments/length}})" class="sapMText sapUiSmallMarginBegin"/>
                         <ToolbarSpacer/>
                         <SearchField id="attSearchField" width="15rem" placeholder="Search" search=".onAttSearch"/>
-                        <Button id="attUploadBtn"   icon="sap-icon://person-placeholder" type="Transparent" tooltip="Responsible" enabled="false"/>
-                        <Button id="attEditLinkBtn" text="Edit Link"  type="Transparent" enabled="{= ${detail>/documentStatus} !== 'Released' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttEditLink"/>
+                        <Button id="attUploadBtn"   icon="sap-icon://filter" type="Transparent" tooltip="Filter"/>
+                        <Button id="attEditLinkBtn" text="Edit Link"  type="Transparent" enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttEditLink"/>
                         <Button id="attDownloadBtn" text="Download"   type="Transparent" enabled="{detail>/attHasSelection}" press=".onAttDownload"/>
-                        <Button id="attDeleteBtn"   text="Delete"     type="Transparent" enabled="{= ${detail>/documentStatus} !== 'Released' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttDelete"/>
-                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="{= ${detail>/documentStatus} !== 'Released' &amp;&amp; ${detail>/attHasSelection}}">
+                        <Button id="attDeleteBtn"   text="Delete"     type="Transparent" enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}" press=".onAttDelete"/>
+                        <MenuButton id="attManageBtn" text="Manage Document" type="Transparent" buttonMode="Regular" menuPosition="BeginBottom" enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}">
                           <menu>
                             <Menu>
                               <items>
@@ -131,10 +140,10 @@
                             </Menu>
                           </menu>
                         </MenuButton>
-                        <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   enabled="false"/>
-                        <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onAttRefresh"/>
-                        <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"/>
-                        <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings"/>
+                        <Button icon="sap-icon://delete"          type="Transparent" tooltip="Delete"   enabled="{= ${detail>/owner} !== 'S4' &amp;&amp; ${detail>/attHasSelection}}"/>
+                        <Button icon="sap-icon://refresh"         type="Transparent" tooltip="Refresh"  press=".onAttRefresh" enabled="true"/>
+                        <Button icon="sap-icon://sort"            type="Transparent" tooltip="Sort"     enabled="true"/>
+                        <Button icon="sap-icon://action-settings" type="Transparent" tooltip="Settings" enabled="true"/>
                       </OverflowToolbar>
                     </headerToolbar>
                     <columns>
@@ -175,8 +184,8 @@
             </uxap:subSections>
           </uxap:ObjectPageSection>
 
-          <!-- Linked Objects Tab -->
-          <uxap:ObjectPageSection title="Linked Objects" titleUppercase="false">
+          <!-- Related Objects Tab -->
+          <uxap:ObjectPageSection title="Related Objects" titleUppercase="false">
             <uxap:subSections>
               <uxap:ObjectPageSubSection title=" ">
                 <uxap:blocks><VBox class="sapUiSmallMargin"><Text text="No data"/></VBox></uxap:blocks>
@@ -205,12 +214,12 @@
           <!-- External Links Tab -->
           <uxap:ObjectPageSection title="External Links" titleUppercase="false">
             <uxap:subSections>
-              <uxap:ObjectPageSubSection title=" " wrapperEnabled="false">
+              <uxap:ObjectPageSubSection title="Documents" titleUppercase="false" wrapperEnabled="false">
                 <uxap:blocks>
                   <Table
                     id="externalLinksTable"
                     items="{detail>/externalLinks}"
-                    mode="MultiSelect"
+                    mode="None"
                     sticky="ColumnHeaders"
                     growing="true"
                     growingThreshold="20"
@@ -238,6 +247,9 @@
                     </items>
                   </Table>
                 </uxap:blocks>
+              </uxap:ObjectPageSubSection>
+              <uxap:ObjectPageSubSection title=" ">
+                <uxap:blocks><VBox/></uxap:blocks>
               </uxap:ObjectPageSubSection>
             </uxap:subSections>
           </uxap:ObjectPageSection>

@@ -601,11 +601,11 @@ button[id$="linkDoc3ShowFiltersBtn"],
 }
 .linkDoc3VHDialog .linkDoc3FilterGrid [class*="sapUiRespGridSpan"] {
   margin-left: 0 !important;
-  margin-right: 0 !important;
+  margin-right: 16px !important;
   padding-right: 0 !important;
 }
-.linkDoc3VHDialog .linkDoc3FilterGrid [class*="sapUiRespGridSpan"]:first-child {
-  margin-right: 16px !important;
+.linkDoc3VHDialog .linkDoc3FilterGrid [class*="sapUiRespGridSpan"]:last-child {
+  margin-right: 0 !important;
 }
 .linkDoc3VHDialog .linkDoc3FilterItem {
   padding-right: 0 !important;
@@ -876,13 +876,23 @@ button[id$="-cancelBtn"] {
 button[id$="-cancelBtn"] {
   margin-left: 8px !important;
 }
-.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnEmphasized,
-.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnDefault {
+.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnEmphasized:not(.sapMMessageBoxButton),
+.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnDefault:not(.sapMMessageBoxButton) {
   height: 1.625rem !important;
   min-height: 1.625rem !important;
   line-height: 1.625rem !important;
   padding: 0 0.5rem !important;
   font-size: var(--sapFontSize) !important;
+}
+.sapMMessageBox .sapMBtnInner {
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  line-height: 2.25rem !important;
+  padding: 0 1rem !important;
+}
+.sapMMessageBox .sapMBtn {
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
 }
 /* File Properties dialog: compact button size (override p13n global rules) */
 #container-managespec---detail--filePropertiesDialog .sapMDialogFooter .sapMBtnInner {
@@ -1410,4 +1420,36 @@ div.sapMFlexItem:has(> label.doc7SwitchTypeLabel) {
 .detailHeaderValue {
   color: var(--sapTextColor) !important;
   font-weight: normal !important;
+}
+
+#syncStatusDisplay.sapMFlexItem,
+#syncStatusDisplay {
+  width: fit-content !important;
+  flex-grow: 0 !important;
+}
+
+/* MessageBox / Dialog footer buttons: fix text vertical alignment */
+.sapMMessageBox .sapMDialogFooter .sapMBtnInner,
+.sapMDialog .sapMDialogFooter .sapMBtnInner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  line-height: normal !important;
+  padding: 0 1rem !important;
+}
+.sapMMessageBox .sapMDialogFooter .sapMBtn,
+.sapMDialog .sapMDialogFooter .sapMBtn {
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+}
+/* MessageBox Close button text — override compact global rule */
+.sapMMessageBox .sapMDialogFooter .sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnDefault,
+.sapMMessageBox .sapMDialogFooter .sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnEmphasized {
+  height: 2.25rem !important;
+  min-height: 2.25rem !important;
+  line-height: normal !important;
+  display: flex !important;
+  align-items: center !important;
 }
